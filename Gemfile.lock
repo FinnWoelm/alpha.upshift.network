@@ -221,7 +221,7 @@ DEPENDENCIES
   pg (~> 0.15)
   pry-rails
   rails (= 4.2.6)
-  rake
+  rake (~> 11.2)
   rspec-rails (~> 3.4)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
