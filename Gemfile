@@ -49,6 +49,8 @@ group :development do
 end
 
 group :test do
+  # Add rake for Travis CI
+  gem 'rake', '~> 11.2'
   # Use cucumber for cleaner tests
   gem 'cucumber-rails', '~> 1.4', require: false
   # Quickly generate fake names, urls, etc
