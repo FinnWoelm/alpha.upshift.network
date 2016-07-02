@@ -33,10 +33,6 @@ gem 'bcrypt', '~> 3.1.7'
 group :development, :test do
   # We will use pry rails as our console
   gem 'pry-rails'
-  # Better testing
-  gem 'rspec-rails', '~> 3.5'
-  # Automatically generate testing models
-  gem 'factory_girl_rails', '~> 4.7'
 end
 
 group :development do
@@ -51,6 +47,10 @@ end
 group :test do
   # Add rake for Travis CI
   gem 'rake', '~> 11.2'
+  # Better testing
+  gem 'rspec-rails', '~> 3.5'
+  # Automatically generate testing models
+  gem 'factory_girl_rails', '~> 4.7'
   # Quickly generate fake names, urls, etc
   gem 'faker', '~> 1.6'
   # BDD testing

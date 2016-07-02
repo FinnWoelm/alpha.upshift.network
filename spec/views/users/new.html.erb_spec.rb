@@ -2,12 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "users/new", type: :view do
   before(:each) do
-    assign(:user, User.new(
-      :email => "MyString",
-      :username => "MyString",
-      :password => "",
-      :name => "MyString"
-    ))
+    assign(:user, build(:user))
   end
 
   it "renders new user form" do
