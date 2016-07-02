@@ -37,6 +37,8 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.5'
   # Automatically generate testing models
   gem 'factory_girl_rails', '~> 4.7'
+  # Quickly generate fake names, urls, etc
+  gem 'faker', '~> 1.6'
 end
 
 group :development do
@@ -51,8 +53,6 @@ end
 group :test do
   # Add rake for Travis CI
   gem 'rake', '~> 11.2'
-  # Quickly generate fake names, urls, etc
-  gem 'faker', '~> 1.6'
   # BDD testing
   gem 'capybara-webkit', '~> 1.11'
   # A few extra testing matchers
