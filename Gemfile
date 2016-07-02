@@ -34,7 +34,7 @@ group :development, :test do
   # We will use pry rails as our console
   gem 'pry-rails'
   # Better testing
-  gem 'rspec-rails', '~> 3.4'
+  gem 'rspec-rails', '~> 3.5'
   # Automatically generate testing models
   gem 'factory_girl_rails', '~> 4.7'
 end

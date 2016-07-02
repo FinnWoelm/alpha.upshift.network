@@ -6,7 +6,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'spec_helper'
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
-require 'capybara/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -22,9 +21,6 @@ require 'capybara/rspec'
 # require only the support files necessary.
 #
 # Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
-
-#set the default Capybara driver
-Capybara.javascript_driver = :webkit
 
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -58,12 +54,4 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-
-  g.stylesheets false
-  g.javascripts false
-  g.test_framework :rspec, :fixtures => true, :view_specs => false, :helper_specs => false, :routing_specs => false, :controller_specs => true, :request_specs => true
-  g.fixture_replacement :factory_girl, :dir => "spec/factories"
-
-  #it saves us time when using FactoryGirl methods.
-  config.include FactoryGirl::Syntax::Methods
 end
