@@ -7,16 +7,6 @@
 
 This is the source code for [Upshift Network](https://www.upshift.network).
 
-## 154 Day Sprint
+## Wiki
 
-###### Day 4 // June 4th, 2016
-+ 
-
-###### Day 3 // June 3rd, 2016
-+ 
-
-###### Day 2 // June 2nd, 2016
-+ 
-
-###### Day 1 // June 1st, 2016
-+ Added Travis CI automatic code testing
+More on the Upshift.Network [Wiki](https://github.com/UpshiftNetwork/upshift.network/wiki).
