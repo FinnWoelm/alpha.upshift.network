@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Friendship Requests</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sender</th>
+      <th>Recipient</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @friendship_requests.each do |friendship_request| %>
+      <tr>
+        <td><%= friendship_request.sender %></td>
+        <td><%= friendship_request.recipient %></td>
+        <td><%= link_to 'Accept', accept_friendship_request_path(friendship_request.sender) %></td>
+        <td><%= link_to 'Destroy', reject_friendship_request_path(friendship_request.sender), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

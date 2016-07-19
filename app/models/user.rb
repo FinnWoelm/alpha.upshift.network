@@ -3,6 +3,24 @@ class User < ApplicationRecord
 
   has_one :profile, inverse_of: :user, dependent: :destroy
 
+  has_many :friendship_requests_sent,
+    :class_name => "FriendshipRequest",
+    :foreign_key => "sender_id",
+    dependent: :destroy
+  has_many :friendship_requests_received,
+    :class_name => "FriendshipRequest",
+    :foreign_key => "recipient_id",
+    dependent: :destroy
+
+  has_many :friendships_initiated,
+    :class_name => "Friendship",
+    :foreign_key => "initiator_id",
+    dependent: :destroy
+  has_many :friendships_accepted,
+    :class_name => "Friendship",
+    :foreign_key => "acceptor_id",
+    dependent: :destroy
+
   validates :profile, presence: true
 
   validates :username,
@@ -32,6 +50,10 @@ class User < ApplicationRecord
   # We want to always use username in routes
   def to_param
     username
+  end
+
+  def friends
+    return self.friendships_initiated + self.friendships_accepted
   end
 
   protected
