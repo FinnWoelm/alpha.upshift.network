@@ -1,5 +1,5 @@
 class Profile < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, inverse_of: :profile
   enum visibility: [ :is_private, :is_network_only, :is_public ]
 
   validates :user, presence: true

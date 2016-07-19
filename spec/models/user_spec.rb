@@ -21,6 +21,13 @@ RSpec.describe User, type: :model do
     expect(u.profile.id).to eq(profile.id)
   end
 
+  it "deletes the profile when it is destroyed" do
+    u = create(:user)
+    p = u.profile
+    u.destroy
+    expect{p.reload}.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
   # Usernames
 
   it "is invalid with illegal username" do
