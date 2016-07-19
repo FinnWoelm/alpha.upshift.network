@@ -12,7 +12,3 @@ u = User.create(
   :email => "test@test.com",
   :password => "test"
 )
-
-Profile.create(
-  :user => u
-)
