@@ -8,7 +8,20 @@ RSpec.describe User, type: :model do
     expect(build(:user)).to be_valid
   end
 
-  # Usrenames
+  # Profile
+
+  it "creates a profile on create" do
+    u = create(:user)
+    expect(u.profile).to be_present
+  end
+
+  it "does not create a profile if one already exists" do
+    profile = Profile.create
+    u = create(:user, :profile => profile)
+    expect(u.profile.id).to eq(profile.id)
+  end
+
+  # Usernames
 
   it "is invalid with illegal username" do
     expect(build(:user, :username => Faker::Internet.email)).not_to be_valid

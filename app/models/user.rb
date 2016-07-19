@@ -1,7 +1,9 @@
 class User < ApplicationRecord
   has_secure_password
 
+  has_one :profile
 
+  validates :profile, presence: true
 
   validates :username,
     format: {
@@ -23,4 +25,12 @@ class User < ApplicationRecord
     length: { in: 3..26 }
   validates :username,
     uniqueness: { :case_sensitive => false }
+
+
+  before_validation :create_profile_if_not_exists, on: :create
+
+  protected
+   def create_profile_if_not_exists
+     self.profile ||= Profile.new(:visibility => "is_network_only")
+   end
 end

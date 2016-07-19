@@ -1,12 +1,12 @@
 require "rails_helper"
 
-RSpec.describe "routes for users", :type => :routing do
+RSpec.describe "routes for profiles", :type => :routing do
   it "routes to profile page" do
 
     @user = create(:user)
 
     expect(:get => "/" + @user.username).to route_to(
-      :controller => "users",
+      :controller => "profiles",
       :action => "show",
       :username => @user.username
     )
