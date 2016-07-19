@@ -40,6 +40,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.4.0)
     arel (7.0.0)
+    bcrypt (3.1.11)
     builder (3.2.2)
     capybara (2.7.1)
       addressable
@@ -201,6 +202,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt (~> 3.1.7)
   capybara-webkit (~> 1.11)
   database_cleaner (~> 1.5)
   factory_girl_rails (~> 4.7)
@@ -213,7 +215,7 @@ DEPENDENCIES
   puma (~> 3.0)
   rails (= 5.0)
   rake (~> 11.2)
-  rspec-rails (~> 3.4)
+  rspec-rails (~> 3.5)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   shoulda-matchers (~> 3.1)
