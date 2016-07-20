@@ -2,12 +2,12 @@ class FriendshipRequestsController < ApplicationController
   before_action :authorize
   before_action :set_friendship_request, only: [:destroy]
 
-  # GET /friendship_requests
+  # GET /friend-requests
   def index
     @friendship_requests = @current_user.friendship_requests_received.includes(:sender)
   end
 
-  # POST /friendship_requests
+  # POST /friendship-request/:username
   def create
     friendship_request = FriendshipRequest.new(:sender => @current_user)
     friendship_request.recipient = User.includes(:profile).find_by_username(params[:username])
@@ -19,15 +19,22 @@ class FriendshipRequestsController < ApplicationController
     end
   end
 
-  # DELETE /friendship_requests/1
+  # DELETE /friendship-request/:username
   def destroy
+
     @friendship_request.destroy
-    redirect_to friendship_requests_url, notice: 'Friendship request was successfully deleted.'
+
+    begin
+      redirect_to :back, notice: 'Friendship request was successfully deleted.'
+    rescue ActionController::RedirectBackError
+      redirect_to friendship_requests_received_path, notice: 'Friendship request was successfully deleted.'
+    end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_friendship_request
-      @friendship_request = FriendshipRequest.find(params[:id])
+      sender = User.find_by_username(params[:username])
+      @friendship_request = @current_user.friendship_requests_received.where(:sender => sender).first
     end
 end
