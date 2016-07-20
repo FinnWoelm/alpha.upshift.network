@@ -6,6 +6,7 @@ class FriendshipRequest < ApplicationRecord
   validates :recipient, presence: true
 
   validate :recipient_profile_must_be_visible_to_sender,
+    :friendship_request_is_unique,
     if: "sender.present? and recipient.present?"
 
   def recipient_profile_must_be_visible_to_sender
@@ -13,4 +14,14 @@ class FriendshipRequest < ApplicationRecord
       errors[:base] << "User does not exist or profile is private"
     end
   end
+
+  def friendship_request_is_unique
+    if FriendshipRequest.where(sender: sender).where(recipient: recipient).any?
+      errors[:base] << "You have already sent a friend request to this user"
+    end
+    if FriendshipRequest.where(sender: recipient).where(recipient: sender).any?
+      errors[:base] << "#{recipient.name} has already sent a friend request to you"
+    end
+  end
+
 end

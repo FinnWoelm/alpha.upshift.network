@@ -32,8 +32,8 @@ RSpec.describe FriendshipRequest, type: :model do
         :recipient => request.recipient
       )
     expect(same_request).not_to be_valid
-    expect(same_request.errors.full_messages).to
-      include("You have already sent a friend request to this user")
+    expect(same_request.errors.full_messages).
+      to include("You have already sent a friend request to this user")
   end
 
   it "cannot be created in both directions by the same users" do
@@ -45,7 +45,9 @@ RSpec.describe FriendshipRequest, type: :model do
         :recipient => request.sender
       )
 
-    pending "expect: create friendship right away"
+    expect(inverse_request).not_to be_valid
+    expect(inverse_request.errors.full_messages).
+      to include("#{request.sender.name} has already sent a friend request to you")
   end
 
 end
