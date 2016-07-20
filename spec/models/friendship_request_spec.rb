@@ -17,6 +17,12 @@ RSpec.describe FriendshipRequest, type: :model do
     expect(recipient.friendship_requests_received.size).to eq(1)
   end
 
+  it "cannot be created if the other user's profile is invisible to sender" do
+    request = build(:friendship_request)
+    request.recipient.profile.is_private!
+    expect(request).not_to be_valid
+  end
+
   it "can only be created once (it is unique)" do
     request = create(:friendship_request)
     same_request =
