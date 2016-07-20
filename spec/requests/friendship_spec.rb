@@ -17,4 +17,20 @@ RSpec.describe "Friendship", type: :request do
     end
 
   end
+
+  describe "DELETE friendship/:username" do
+
+    before(:each) do
+      @friendship = create(:friendship)
+      sign_in_as(@friendship.acceptor)
+    end
+
+    it "destroys the friendship" do
+      delete end_friendship_path(@friendship.initiator)
+      assert_redirected_to profile_path(@friendship.initiator)
+      expect(@friendship.acceptor.is_friends_with(@friendship.initiator)).to be false
+    end
+
+  end
+
 end
