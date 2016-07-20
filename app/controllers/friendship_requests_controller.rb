@@ -21,14 +21,8 @@ class FriendshipRequestsController < ApplicationController
 
   # DELETE /friendship-request/:username
   def destroy
-
     @friendship_request.destroy
-
-    begin
-      redirect_to :back, notice: 'Friendship request was successfully deleted.'
-    rescue ActionController::RedirectBackError
-      redirect_to friendship_requests_received_path, notice: 'Friendship request was successfully deleted.'
-    end
+    redirect_back fallback_location: friendship_requests_received_path, notice: 'Friendship request was successfully deleted'
   end
 
   private

@@ -16,14 +16,8 @@ class FriendshipsController < ApplicationController
 
   # DELETE /friendship/:username
   def destroy
-
     @friendship.destroy
-
-    begin
-      redirect_to :back, notice: "You have ended your friendship with #{@friend.name}."
-    rescue ActionController::RedirectBackError
-      redirect_to profile_path(@friend), notice: "You have ended your friendship with #{@friend.name}."
-    end
+    redirect_back fallback_location: profile_path(@friend), notice: "You have ended your friendship with #{@friend.name}."
   end
 
   private
