@@ -29,6 +29,11 @@ class User < ApplicationRecord
 
   before_validation :create_profile_if_not_exists, on: :create
 
+  # We want to always use username in routes
+  def to_param
+    username
+  end
+
   protected
    def create_profile_if_not_exists
      self.profile ||= Profile.new(:visibility => "is_network_only")
