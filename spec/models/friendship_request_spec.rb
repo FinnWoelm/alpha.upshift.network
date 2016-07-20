@@ -50,4 +50,18 @@ RSpec.describe FriendshipRequest, type: :model do
       to include("#{request.sender.name} has already sent a friend request to you")
   end
 
+  it "cannot be created if a friendship already exists" do
+    friendship = create(:friendship)
+    friendship_request =
+      build(
+        :friendship_request,
+        :sender => friendship.initiator,
+        :recipient => friendship.acceptor
+      )
+    expect(friendship_request).not_to be_valid
+    expect(friendship_request.errors.full_messages).
+      to include("You are already friends with #{friendship_request.recipient.name}")
+
+  end
+
 end

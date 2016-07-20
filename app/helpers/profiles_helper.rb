@@ -7,6 +7,9 @@ module ProfilesHelper
     # do not show add friend button if user is on their own profile
     return if @profile.user.id == @current_user.id
 
+    # do not show add friend button if user is already friends with this person
+    return if @current_user.is_friends_with(@profile.user)
+
     # do not show add friend button if user has already sent a friend request
     return if @profile.user.has_received_friend_request_from(@current_user)
 

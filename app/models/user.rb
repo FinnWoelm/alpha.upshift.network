@@ -59,6 +59,11 @@ class User < ApplicationRecord
     return friends_found + friends_made
   end
 
+  # checks whether this user is friends with another user
+  def is_friends_with user
+    return friends.include?(user)
+  end
+
   # checks whether this user has received a friend request from another user
   def has_received_friend_request_from user
     return friendship_requests_received.where(sender_id: user.id).any?

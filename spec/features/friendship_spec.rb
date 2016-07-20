@@ -72,8 +72,8 @@ feature 'Friendship' do
   end
 
   def then_we_should_both_be_friends
-    expect(@user.friends.first.id).to eq(@another_user.id)
-    expect(@another_user.friends.first.id).to eq(@user.id)
+    expect(@user.is_friends_with(@another_user)).to be true
+    expect(@another_user.is_friends_with(@user)).to be true
     expect(@user.friendship_requests_sent.size).to eq(0)
   end
 

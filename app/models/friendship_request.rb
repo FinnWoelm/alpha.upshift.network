@@ -7,6 +7,7 @@ class FriendshipRequest < ApplicationRecord
 
   validate :recipient_profile_must_be_visible_to_sender,
     :friendship_request_is_unique,
+    :friendship_must_not_already_exist,
     if: "sender.present? and recipient.present?"
 
   def recipient_profile_must_be_visible_to_sender
@@ -21,6 +22,12 @@ class FriendshipRequest < ApplicationRecord
     end
     if FriendshipRequest.where(sender: recipient).where(recipient: sender).any?
       errors[:base] << "#{recipient.name} has already sent a friend request to you"
+    end
+  end
+
+  def friendship_must_not_already_exist
+    if sender.is_friends_with(recipient)
+      errors[:base] << "You are already friends with #{recipient.name}"
     end
   end
 
