@@ -13,9 +13,19 @@ class Friendship < ApplicationRecord
   validates :initiator, presence: true
   validates :acceptor, presence: true
 
+  validate :friendship_is_unique,
+    if: "initiator.present? and acceptor.present?"
+
   after_create :destroy_friendship_request
 
   protected
+
+    def friendship_is_unique
+      if Friendship.find_friendship_between(initiator, acceptor).present?
+        errors[:base] << "You are already friends with #{initiator.name}"
+      end
+    end
+
     # destroys the friendship request that this friendship is based on
     def destroy_friendship_request
       friendship_request = FriendshipRequest.where(:sender => initiator).where(:recipient => acceptor)

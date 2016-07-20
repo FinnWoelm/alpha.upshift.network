@@ -26,8 +26,8 @@ RSpec.describe Friendship, type: :model do
         :acceptor => friendship.acceptor
       )
     expect(same_friendship).not_to be_valid
-    expect(same_friendship.errors.full_messages).to
-      include("You have already sent a friend friendship to this user")
+    expect(same_friendship.errors.full_messages).
+      to include("You are already friends with #{same_friendship.initiator.name}")
   end
 
   it "cannot be created in both directions by the same users" do
@@ -39,8 +39,9 @@ RSpec.describe Friendship, type: :model do
         :acceptor => friendship.initiator
       )
 
-    expect(inverse_friendship.errors.full_messages).to
-      include("You have already sent a friend friendship to this user")
+    expect(inverse_friendship).to be_invalid
+    expect(inverse_friendship.errors.full_messages).
+      to include("You are already friends with #{inverse_friendship.initiator.name}")
   end
 
 end
