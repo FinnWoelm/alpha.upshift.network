@@ -51,12 +51,12 @@ feature 'Friendship' do
   end
 
   def and_visit_my_friend_requests_page
-    visit friend_requests_received_path
+    visit friendship_requests_received_path
   end
 
   def then_i_should_see_some_friend_requests
     expect(@user.friendship_requests_received.size).to eq(5)
-    expect(page).to have_content(@user.friendship_requests_received.first.name)
+    expect(page).to have_content(@user.friendship_requests_received.first.sender.name)
   end
 
   def and_another_user_logs_in
@@ -67,13 +67,13 @@ feature 'Friendship' do
   end
 
   def and_accepts_my_friend_request
-    visit friend_requests_received_path
-    click_button 'Accept'
+    visit friendship_requests_received_path
+    click_link 'Accept'
   end
 
   def then_we_should_both_be_friends
-    expect(@user.friends.first.id).to (@another_user.id)
-    expect(@another_user.friends.first.id).to (@user.id)
+    expect(@user.friends.first.id).to eq(@another_user.id)
+    expect(@another_user.friends.first.id).to eq(@user.id)
     expect(@user.friend_requests_sent.size).to eq(0)
   end
 
