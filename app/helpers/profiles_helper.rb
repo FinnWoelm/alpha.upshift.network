@@ -1,20 +1,28 @@
 module ProfilesHelper
-  def add_friend_button
+  def friendship_actions
 
-    # do not show add friend button if user is not signed in
+    # do not show anything if user is not signed in
     return unless @current_user
 
-    # do not show add friend button if user is on their own profile
+    # do not show anything if user is on their own profile
     return if @profile.user.id == @current_user.id
 
-    # do not show add friend button if user is already friends with this person
-    return if @current_user.is_friends_with(@profile.user)
+    # if user has a friendship with this profile
+    if @current_user.is_friends_with(@profile.user)
+      render partial: "friendship/end_friendship_action", locals: { friend: @profile.user }
 
-    # do not show add friend button if user has already sent a friend request
-    return if @profile.user.has_received_friend_request_from(@current_user)
+    # if user has sent a friend request to this profile
+    elsif @current_user.has_sent_friend_request_to(@profile.user)
+      render partial: "friendship_requests/revoke_friendship_request_action", locals: { recipient: @profile.user }
 
-    # ok, we can show the add friend button
-    render partial: "friendship_requests/new", locals: { new_friend: @profile.user }
+    # if user has received a friend request from this profile
+    elsif @current_user.has_received_friend_request_from(@profile.user)
+      render partial: "friendship_requests/respond_to_friend_request_actions", locals: { sender: @profile.user }
+
+    # otherwise, just show the add friend button
+    else
+      render partial: "friendship_requests/add_friend_action", locals: { new_friend: @profile.user }
+    end
 
   end
 end

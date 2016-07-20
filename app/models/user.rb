@@ -69,6 +69,11 @@ class User < ApplicationRecord
     return friendship_requests_received.where(sender_id: user.id).any?
   end
 
+  # checks whether this user has sent a friend request to another user
+  def has_sent_friend_request_to user
+    return friendship_requests_sent.where(recipient_id: user.id).any?
+  end
+
   protected
    def create_profile_if_not_exists
      self.profile ||= Profile.new(:visibility => "is_network_only")

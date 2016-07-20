@@ -2,6 +2,14 @@ class FriendshipRequest < ApplicationRecord
   belongs_to :sender, :class_name => "User"
   belongs_to :recipient, :class_name => "User"
 
+  # finds the record that contains the friendship request between two users
+  scope :find_friendship_request_between,
+    ->(user_one, user_two) {
+      where(:sender => user_one).where(:recipient => user_two).
+        or(FriendshipRequest.where(:sender => user_two).where(:recipient => user_one)).
+        first
+    }
+
   validates :sender, presence: true
   validates :recipient, presence: true
 

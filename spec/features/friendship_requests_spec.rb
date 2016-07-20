@@ -30,6 +30,14 @@ feature 'Friendship Request' do
     then_we_should_not_be_friends
   end
 
+  scenario 'User revokes a friend request' do
+    given_i_am_logged_in_as_a_user
+    when_i_visit_the_page_of_another_user
+    and_i_send_a_friend_request
+    and_revoke_the_friend_request
+    then_we_should_not_be_friends
+  end
+
   def given_i_am_logged_in_as_a_user
     @user = create(:user)
     visit login_path
@@ -95,6 +103,10 @@ feature 'Friendship Request' do
     expect(@another_user.is_friends_with(@user)).to be false
     expect(@user.friendship_requests_sent.size).to eq(0)
     expect(@user.friends.size).to eq(0)
+  end
+
+  def and_revoke_the_friend_request
+    click_link "Revoke request"
   end
 
 end

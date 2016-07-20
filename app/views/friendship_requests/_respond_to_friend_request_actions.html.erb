@@ -1,0 +1,11 @@
+<p><%= sender.name %> has requested to be your friend</p>
+
+<%= form_tag(add_friend_path(sender), method: "post") do %>
+  <p>
+    <%= submit_tag "Accept" %>
+  </p>
+<% end %>
+
+<p>
+  <%= link_to 'Reject', reject_friendship_request_path(sender), method: :delete, data: { confirm: 'Are you sure?' } %>
+</p>
