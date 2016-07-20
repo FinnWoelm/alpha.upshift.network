@@ -16,10 +16,13 @@ class User < ApplicationRecord
     :class_name => "Friendship",
     :foreign_key => "initiator_id",
     dependent: :destroy
+  has_many :friends_found, :through => :friendships_initiated, :source => :acceptor
+
   has_many :friendships_accepted,
     :class_name => "Friendship",
     :foreign_key => "acceptor_id",
     dependent: :destroy
+  has_many :friends_made, :through => :friendships_accepted, :source => :initiator
 
   validates :profile, presence: true
 
@@ -53,7 +56,7 @@ class User < ApplicationRecord
   end
 
   def friends
-    return self.friendships_initiated + self.friendships_accepted
+    return friends_found + friends_made
   end
 
   # checks whether this user has received a friend request from another user

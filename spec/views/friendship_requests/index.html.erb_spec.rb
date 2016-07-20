@@ -14,8 +14,8 @@ RSpec.describe "friendship_requests/index", type: :view do
     expect(rendered).to match(@requests.first.sender.name)
     expect(rendered).to match(@requests.first.sender.name)
 
-    assert_select "tr>td", :text => "Accept", :count => @requests.size
-    assert_select "tr>td", :text => "Delete", :count => @requests.size
+    assert_select "input[type=submit][value='Accept']", :count => @requests.size
+    assert_select "tr>td", :text => "Reject", :count => @requests.size
 
   end
 end

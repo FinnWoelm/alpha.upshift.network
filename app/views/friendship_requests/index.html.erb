@@ -14,7 +14,7 @@
     <% @friendship_requests.each do |friendship_request| %>
       <tr>
         <td><%= friendship_request.sender.name %></td>
-        <td><%= link_to 'Accept', accept_friendship_request_path(friendship_request.sender) %></td>
+        <td><%= render partial: "accept_friendship_request_button", locals: { user: friendship_request.sender } %></td>
         <td><%= link_to 'Reject', reject_friendship_request_path(friendship_request.sender), method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
