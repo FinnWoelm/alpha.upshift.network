@@ -17,5 +17,8 @@ Rails.application.routes.draw do
   # Profiles
   get '/:username', to: 'profiles#show', as: :profile
 
+  # Posts
+  resources :posts, only: [:create, :show, :destroy]
+
   root 'sessions#new'
 end

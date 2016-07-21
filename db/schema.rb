@@ -10,11 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160719203408) do
+ActiveRecord::Schema.define(version: 20160721181115) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "citext"
+  enable_extension "uuid-ossp"
 
   create_table "friendship_requests", force: :cascade do |t|
     t.integer  "sender_id"
@@ -32,6 +33,15 @@ ActiveRecord::Schema.define(version: 20160719203408) do
     t.datetime "updated_at",   null: false
     t.index ["acceptor_id"], name: "index_friendships_on_acceptor_id", using: :btree
     t.index ["initiator_id"], name: "index_friendships_on_initiator_id", using: :btree
+  end
+
+  create_table "posts", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.integer  "author_id"
+    t.text     "content",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_posts_on_author_id", using: :btree
+    t.index ["created_at"], name: "index_posts_on_created_at", using: :btree
   end
 
   create_table "profiles", force: :cascade do |t|
