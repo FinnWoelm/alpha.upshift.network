@@ -6,12 +6,19 @@ class PostsController < ApplicationController
   def show
   end
 
+  # GET /new-post
+  def new
+    @post = Post.new
+  end
+
+
   # POST /posts
   def create
     @post = Post.new(post_params)
+    @post.author = @current_user
 
     if @post.save
-      redirect_to @post, notice: 'Post was successfully created.'
+      redirect_back fallback_location: @post, notice: 'Post was successfully created.'
     else
       render :new
     end

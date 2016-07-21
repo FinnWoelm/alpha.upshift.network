@@ -25,4 +25,14 @@ module ProfilesHelper
     end
 
   end
+
+  # shows form to write new post
+  def write_post_action
+
+    # do not show anything unless user is on their own profile
+    return unless @current_user and @profile.user.id == @current_user.id
+
+    render partial: 'posts/form', locals: {post: @post}
+
+  end
 end
