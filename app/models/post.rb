@@ -11,4 +11,14 @@ class Post < ApplicationRecord
     return self.author.profile.can_be_seen_by? user
   end
 
+  # whether the post can be deleted by a given user
+  def can_be_deleted_by? user
+
+    # no user
+    return false unless user
+
+    # the user is the author of the post
+    return self.author.id == user.id
+  end
+
 end
