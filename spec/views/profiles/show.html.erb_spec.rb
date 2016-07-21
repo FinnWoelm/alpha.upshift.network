@@ -5,6 +5,7 @@ RSpec.describe "profiles/show", type: :view do
   before(:each) do
     @profile = create(:user).profile
     @current_user = create(:user)
+    @posts = []
   end
 
   it "renders attributes in <p>" do
