@@ -8,6 +8,7 @@ class ProfilesController < ApplicationController
     render_404 and return unless @profile
     render_404 and return unless @profile.can_be_seen_by?(@current_user)
 
+    @posts = @user.posts.includes(:author)
     @post = Post.new
   end
 

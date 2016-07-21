@@ -1,0 +1,15 @@
+<div style="width: 100%; background-color: lightgray;">
+
+<p>
+  <strong>
+    <%= post.author.name %>
+    wrote on
+    <%= link_to render_timestamp(post.created_at), post, :title => "Show post on a separate page" %>
+  </strong>
+</p>
+
+<p>
+  <%= post.content %>
+</p>
+
+</div>
