@@ -9,8 +9,8 @@ RSpec.describe "Post", type: :request do
     end
 
     it "throws error if post does not exist" do
-      another_post = build(:post) # build but not create
-      get post_path(another_post)
+      @post.destroy
+      get post_path(@post)
       assert_response :not_found
     end
 

@@ -7,4 +7,8 @@ class Post < ApplicationRecord
   validates :content, presence: true
   validates :content, length: { maximum: 5000 }
 
+  def can_be_seen_by? user
+    return self.author.profile.can_be_seen_by? user
+  end
+
 end

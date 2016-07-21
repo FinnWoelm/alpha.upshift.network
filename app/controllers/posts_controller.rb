@@ -1,9 +1,12 @@
 class PostsController < ApplicationController
   before_action :authorize, except: [:show]
+  before_action :current_user, only: [:show]
   before_action :set_post, only: [:show, :destroy]
 
   # GET /posts/1
   def show
+    render_404 and return unless @post
+    render_404 and return unless @post.can_be_seen_by?(@current_user)
   end
 
   # GET /new-post
@@ -33,7 +36,7 @@ class PostsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      @post = Post.find(params[:id])
+      @post = Post.find_by id: params[:id]
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
