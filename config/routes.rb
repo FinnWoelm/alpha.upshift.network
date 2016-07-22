@@ -15,7 +15,9 @@ Rails.application.routes.draw do
   delete 'friendship/:username' => 'friendships#destroy', as: :end_friendship
 
   # Posts
-  resources :posts, only: [:new, :create, :show, :destroy], :path => "post"
+  resources :posts, only: [:new, :create, :show, :destroy], :path => "post" do
+    resources :comments, only: [:create, :destroy], :path => "comment"
+  end
 
   # Profiles -- this must be last
   get '/:username', to: 'profiles#show', as: :profile

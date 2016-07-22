@@ -10,12 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160721230542) do
+ActiveRecord::Schema.define(version: 20160721231000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "citext"
   enable_extension "uuid-ossp"
+
+  create_table "comments", force: :cascade do |t|
+    t.integer  "author_id"
+    t.uuid     "post_id"
+    t.string   "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_comments_on_author_id", using: :btree
+    t.index ["post_id"], name: "index_comments_on_post_id", using: :btree
+  end
 
   create_table "friendship_requests", force: :cascade do |t|
     t.integer  "sender_id"
@@ -64,6 +74,8 @@ ActiveRecord::Schema.define(version: 20160721230542) do
     t.index ["username"], name: "index_users_on_username", unique: true, using: :btree
   end
 
+  add_foreign_key "comments", "posts"
+  add_foreign_key "comments", "users", column: "author_id"
   add_foreign_key "friendship_requests", "users", column: "recipient_id"
   add_foreign_key "friendship_requests", "users", column: "sender_id"
   add_foreign_key "friendships", "users", column: "acceptor_id"
