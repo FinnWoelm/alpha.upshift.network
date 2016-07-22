@@ -3,7 +3,6 @@ require 'rails_helper.rb'
 feature 'Like' do
 
   scenario 'User can like post' do
-    pending "To be implemented"
     given_i_am_logged_in_as_a_user
     and_i_view_a_post
     when_i_like_the_post
@@ -11,7 +10,6 @@ feature 'Like' do
   end
 
   scenario 'User can unlike post' do
-    pending "To be implemented"
     given_i_am_logged_in_as_a_user
     and_i_view_a_post
     when_i_like_the_post

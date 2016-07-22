@@ -19,6 +19,10 @@ Rails.application.routes.draw do
     resources :comments, only: [:create, :destroy], :path => "comment"
   end
 
+  # Like Path
+  post '/:likable_type/:likable_id/like', to: 'likes#create', as: :like
+  delete '/:likable_type/likable_id/like', to: 'likes#destroy', as: :unlike
+
   # Profiles -- this must be last
   get '/:username', to: 'profiles#show', as: :profile
 

@@ -1,4 +1,7 @@
 class Post < ApplicationRecord
+
+  include Likable
+
   belongs_to :author, :class_name => "User"
   has_many :comments, -> { includes :author }, dependent: :destroy
 
