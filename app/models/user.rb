@@ -4,6 +4,7 @@ class User < ApplicationRecord
   has_one :profile, inverse_of: :user, dependent: :destroy
   has_many :posts, :foreign_key => "author_id", dependent: :destroy
   has_many :comments, :foreign_key => "author_id", dependent: :destroy
+  has_many :likes, :foreign_key => "liker_id", dependent: :destroy
 
   has_many :friendship_requests_sent,
     :class_name => "FriendshipRequest",
