@@ -3,19 +3,19 @@ class PostsController < ApplicationController
   before_action :current_user, only: [:show]
   before_action :set_post, only: [:show, :destroy]
 
-  # GET /posts/1
+  # GET /post/1
   def show
     render_404 and return unless @post
     render_404 and return unless @post.can_be_seen_by?(@current_user)
   end
 
-  # GET /new-post
+  # GET /post/new
   def new
     @post = Post.new
   end
 
 
-  # POST /posts
+  # POST /post
   def create
     @post = Post.new(post_params)
     @post.author = @current_user
@@ -27,7 +27,7 @@ class PostsController < ApplicationController
     end
   end
 
-  # DELETE /posts/1
+  # DELETE /post/1
   def destroy
     @post.destroy
     redirect_to profile_path(@current_user), notice: 'Post was successfully destroyed.'
