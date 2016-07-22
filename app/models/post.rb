@@ -1,6 +1,6 @@
 class Post < ApplicationRecord
   belongs_to :author, :class_name => "User"
-  has_many :comments, dependent: :destroy
+  has_many :comments, -> { includes :author }, dependent: :destroy
 
   default_scope -> { includes(:comments).order('created_at DESC') }
 

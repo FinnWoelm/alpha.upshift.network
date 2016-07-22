@@ -1,0 +1,19 @@
+<div style="width: 100%; background-color: lightgray;">
+
+<p>
+  <strong>
+    <%= comment.author.name %>
+    wrote on
+    <%= render_timestamp(comment.created_at) %>
+  </strong>
+</p>
+
+<p>
+  <%= comment.content %>
+</p>
+
+<%# if comment.can_be_deleted_by?(@current_user) %>
+  <%#= link_to 'Delete Comment', comment, method: :delete, data: { confirm: 'Are you sure?' } %>
+<%# end %>
+
+</div>

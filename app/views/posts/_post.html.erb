@@ -1,4 +1,4 @@
-<div style="width: 100%; background-color: lightgray;">
+<div style="display:block; background-color: lightgray; padding: 10px 30px; margin-top:30px;">
 
 <p>
   <strong>
@@ -15,5 +15,9 @@
 <% if post.can_be_deleted_by?(@current_user) %>
   <%= link_to 'Delete Post', post, method: :delete, data: { confirm: 'Are you sure?' } %>
 <% end %>
+
+<hr/>
+
+  <%= render post.comments %>
 
 </div>
