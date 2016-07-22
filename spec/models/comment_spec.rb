@@ -17,8 +17,9 @@ RSpec.describe Comment, type: :model do
     @comment = build(:comment, :post => @post)
     expect(@comment).not_to be_valid
     expect(@comment.errors.full_messages).
-      to include("An error occurred. Either the post never existed, it does not
-      exist anymore, or the author's profile privacy settings have changed.")
+      to include("An error occurred. " +
+      "Either the post never existed, it does not exist anymore, " +
+      "or the author's profile privacy settings have changed.")
   end
 
 end
