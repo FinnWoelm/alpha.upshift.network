@@ -17,6 +17,8 @@ class CommentsController < ApplicationController
 
   # DELETE /post/:post_id/comment/:id
   def destroy
+    @comment.destroy
+    redirect_to @comment.post, notice: 'Comment was successfully removed.'
   end
 
   private
