@@ -5,6 +5,8 @@ class Comment < ApplicationRecord
   belongs_to :author, :class_name => "User"
   belongs_to :post
 
+  default_scope -> { order('created_at ASC') }
+
   validates :author, presence: true
   validates :post, presence: true
   validates :content, presence: true
