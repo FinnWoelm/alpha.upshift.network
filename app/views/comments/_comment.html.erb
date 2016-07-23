@@ -24,7 +24,7 @@
 
 
 <% if comment.can_be_deleted_by?(@current_user) %>
-  <%= link_to 'Delete Comment', [comment.post, comment], method: :delete, data: { confirm: 'Are you sure?' } %>
+  <%= link_to 'Delete Comment', post_comment_path(post_id: comment.post_id, id: comment.id), method: :delete, data: { confirm: 'Are you sure?' } %>
 <% end %>
 
 </div>
