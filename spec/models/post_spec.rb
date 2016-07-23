@@ -7,7 +7,7 @@ RSpec.describe Post, type: :model do
   it { is_expected.to validate_length_of(:content).is_at_most(5000) }
 
   it "has a valid factory" do
-    expect(build(:user)).to be_valid
+    expect(build(:post)).to be_valid
   end
 
   it "retrieves posts in order of most recent to oldest" do
