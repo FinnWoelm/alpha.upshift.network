@@ -10,20 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160722200747) do
+ActiveRecord::Schema.define(version: 20160722220633) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "citext"
   enable_extension "uuid-ossp"
 
-  create_table "comments", force: :cascade do |t|
+  create_table "comments", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.integer  "author_id"
     t.uuid     "post_id"
     t.string   "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_comments_on_author_id", using: :btree
+    t.index ["created_at"], name: "index_comments_on_created_at", using: :btree
     t.index ["post_id"], name: "index_comments_on_post_id", using: :btree
   end
 
