@@ -14,13 +14,15 @@ module UpshiftNetwork
 
     # set up testing
     config.generators do |g|
-      g.stylesheets false
-      g.javascripts false
+      g.hidden_namespaces << :test_unit
+      g.assets false
+      g.helper false
       g.test_framework :rspec,
-        :fixtures => true,
+        :fixture => false,
         :routing_specs => false,
         :controller_specs => false,
         :request_specs => false
+      g.integration_tool :rspec
       g.fixture_replacement :factory_girl, :dir => "spec/factories"
 
     end
