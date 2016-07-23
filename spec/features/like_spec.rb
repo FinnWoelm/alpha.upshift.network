@@ -18,7 +18,6 @@ feature 'Like' do
   end
 
   scenario 'User can like comment' do
-    pending "To be implemented"
     given_i_am_logged_in_as_a_user
     and_i_view_a_post_with_a_comment
     when_i_like_the_comment
@@ -26,7 +25,6 @@ feature 'Like' do
   end
 
   scenario 'User can unlike comment' do
-    pending "To be implemented"
     given_i_am_logged_in_as_a_user
     and_i_view_a_post_with_a_comment
     when_i_like_the_comment

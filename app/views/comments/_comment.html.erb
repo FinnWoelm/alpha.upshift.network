@@ -12,6 +12,17 @@
   <%= comment.content %>
 </p>
 
+<p>
+  Likes: <%= comment.likes_count %>
+</p>
+
+<% if comment.can_be_liked_by?(@current_user) %>
+  <%= like_action comment %>
+<% elsif comment.can_be_unliked_by?(@current_user) %>
+  <%= unlike_action comment %>
+<% end %>
+
+
 <% if comment.can_be_deleted_by?(@current_user) %>
   <%= link_to 'Delete Comment', [comment.post, comment], method: :delete, data: { confirm: 'Are you sure?' } %>
 <% end %>

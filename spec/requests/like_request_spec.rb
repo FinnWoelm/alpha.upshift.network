@@ -37,6 +37,35 @@ RSpec.describe "Like", type: :request do
 
   end
 
+  describe "Comments" do
+
+    before(:each) do
+      @comment = create(:comment)
+    end
+
+    it "POST comment/:id/like creates a like" do
+      post like_path(:likable_id => @comment.id, :likable_type => "Comment")
+      follow_redirect!
+      assert_response :success
+      @comment.reload
+      expect(@comment.likes.size).to eq(1)
+      expect(@comment.likes_count).to eq(1)
+      expect(@user.likes.size).to eq(1)
+    end
+
+    it "DELETE comment/:id/unlike destroys a like" do
+      post like_path(:likable_id => @comment.id, :likable_type => "Comment")
+      delete unlike_path(:likable_id => @comment.id, :likable_type => "Comment")
+      follow_redirect!
+      assert_response :success
+      @comment.reload
+      expect(@comment.likes.size).to eq(0)
+      expect(@comment.likes_count).to eq(0)
+      expect(@user.likes.size).to eq(0)
+    end
+
+  end
+
   describe "Some Invalid Type" do
 
     it "POST some-invalid-type/:id/like throws an error" do

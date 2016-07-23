@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160722220633) do
+ActiveRecord::Schema.define(version: 20160722221025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,8 +21,9 @@ ActiveRecord::Schema.define(version: 20160722220633) do
     t.integer  "author_id"
     t.uuid     "post_id"
     t.string   "content"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "likes_count", default: 0
     t.index ["author_id"], name: "index_comments_on_author_id", using: :btree
     t.index ["created_at"], name: "index_comments_on_created_at", using: :btree
     t.index ["post_id"], name: "index_comments_on_post_id", using: :btree
