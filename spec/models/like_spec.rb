@@ -11,4 +11,14 @@ RSpec.describe Like, type: :model do
     expect(build(:like, :likable => create(:post))).to be_valid
   end
 
+  it "prevents users from liking the same content multiple times" do
+    @user = create(:user)
+    @post = create(:post)
+    create(:like, :likable => @post, :liker => @user)
+    same_like = build(:like, :likable => @post, :liker => @user)
+    expect(same_like).not_to be_valid
+    expect(same_like.errors.full_messages).
+      to include("You have already liked this #{same_like.likable_type.downcase}")
+  end
+
 end
