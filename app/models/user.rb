@@ -4,6 +4,9 @@ class User < ApplicationRecord
   has_one :profile, inverse_of: :user, dependent: :destroy
   has_many :posts, :foreign_key => "author_id", dependent: :destroy
   has_many :comments, :foreign_key => "author_id", dependent: :destroy
+  has_many :likes, :foreign_key => "liker_id", dependent: :destroy
+  has_many :liked_posts, :through => :likes, :source => :likable,  :source_type => 'Post'
+  has_many :liked_comments, :through => :likes, :source => :likable,  :source_type => 'Comment'
 
   has_many :friendship_requests_sent,
     :class_name => "FriendshipRequest",
@@ -55,6 +58,16 @@ class User < ApplicationRecord
   # We want to always use username in routes
   def to_param
     username
+  end
+
+  # get likes that have been made on posts
+  def likes_on_posts
+    return likes.where(:likable_type => "Post")
+  end
+
+  # get likes that have been made on comments
+  def likes_on_comments
+    return likes.where(:likable_type => "Comments")
   end
 
   def friends

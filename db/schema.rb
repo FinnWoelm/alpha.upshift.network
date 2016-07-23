@@ -10,20 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160721231000) do
+ActiveRecord::Schema.define(version: 20160722221025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "citext"
   enable_extension "uuid-ossp"
 
-  create_table "comments", force: :cascade do |t|
+  create_table "comments", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.integer  "author_id"
     t.uuid     "post_id"
     t.string   "content"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "likes_count", default: 0
     t.index ["author_id"], name: "index_comments_on_author_id", using: :btree
+    t.index ["created_at"], name: "index_comments_on_created_at", using: :btree
     t.index ["post_id"], name: "index_comments_on_post_id", using: :btree
   end
 
@@ -45,11 +47,22 @@ ActiveRecord::Schema.define(version: 20160721231000) do
     t.index ["initiator_id"], name: "index_friendships_on_initiator_id", using: :btree
   end
 
+  create_table "likes", force: :cascade do |t|
+    t.integer  "liker_id"
+    t.uuid     "likable_id"
+    t.string   "likable_type"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["likable_type", "likable_id"], name: "index_likes_on_likable_type_and_likable_id", using: :btree
+    t.index ["liker_id"], name: "index_likes_on_liker_id", using: :btree
+  end
+
   create_table "posts", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.integer  "author_id"
-    t.text     "content",    null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.text     "content",                 null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "likes_count", default: 0
     t.index ["author_id"], name: "index_posts_on_author_id", using: :btree
     t.index ["created_at"], name: "index_posts_on_created_at", using: :btree
   end
@@ -80,6 +93,7 @@ ActiveRecord::Schema.define(version: 20160721231000) do
   add_foreign_key "friendship_requests", "users", column: "sender_id"
   add_foreign_key "friendships", "users", column: "acceptor_id"
   add_foreign_key "friendships", "users", column: "initiator_id"
+  add_foreign_key "likes", "users", column: "liker_id"
   add_foreign_key "posts", "users", column: "author_id"
   add_foreign_key "profiles", "users"
 end
