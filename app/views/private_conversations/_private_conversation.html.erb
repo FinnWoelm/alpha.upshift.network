@@ -1,0 +1,9 @@
+<div class="private_conversation" style="display:block; padding: 10px 30px; background-color:lightblue; margin-bottom: 20px;">
+  <%= link_to link_to_private_conversation private_conversation do %>
+    Conversation with <%= list_participants private_conversation.participants %>
+  <% end %>
+
+  <br/><br/>
+
+  <%= link_to 'Delete Conversation', private_conversation, title: "Delete conversation with #{list_participants private_conversation.participants}", method: :delete, data: { confirm: 'Are you sure?' } %>
+</div>

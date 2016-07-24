@@ -1,0 +1,9 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Conversations</h1>
+
+<div class="new_private_conversation" style="display:block; padding: 10px 30px; background-color:lightgray; margin-bottom: 20px;">
+  <%= link_to "Start a new Conversation", new_private_conversation_path %>
+</div>
+
+<%= render(@private_conversations) || "You currently have no conversations." %>

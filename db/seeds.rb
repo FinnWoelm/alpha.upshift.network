@@ -6,6 +6,7 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
+# Create some users
 alice = User.create(
   :name => "Alice",
   :username => "alice",
@@ -19,3 +20,24 @@ bob = User.create(
   :email => "bob",
   :password => "bob"
 )
+
+carla = User.create(
+  :name => "Carla",
+  :username => "carla",
+  :email => "carla",
+  :password => "carla"
+)
+
+dennis = User.create(
+:name => "Dennis",
+:username => "dennis",
+:email => "dennis",
+:password => "dennis"
+)
+
+# Create some private conversations
+PrivateConversation.create([
+  {:sender => alice, :recipient => bob},
+  {:sender => carla, :recipient => alice},
+  {:sender => dennis, :recipient => alice},
+])

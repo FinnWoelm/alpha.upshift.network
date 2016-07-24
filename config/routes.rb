@@ -19,6 +19,10 @@ Rails.application.routes.draw do
     resources :comments, only: [:create, :destroy], :path => "comment"
   end
 
+  # Private Conversations
+  resources :private_conversations, only: [:new, :create, :show, :destroy], :path => "conversation"
+  get '/conversations' => "private_conversations#index", as: :private_conversations_home
+
   # Like Path
   post '/:likable_type/:likable_id/like', to: 'likes#create', as: :like
   delete '/:likable_type/likable_id/like', to: 'likes#destroy', as: :unlike

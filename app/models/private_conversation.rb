@@ -11,7 +11,7 @@ class PrivateConversation < ApplicationRecord
     :source => :participant
 
   # # Scopes
-  default_scope -> { order('"private_conversations"."created_at" ASC') }
+  default_scope -> { includes(:participants).order('"private_conversations"."created_at" ASC') }
 
   # finds the conversations between a set of users
   # use like PrivateConversations.find_conversations_between [alice, bob]
