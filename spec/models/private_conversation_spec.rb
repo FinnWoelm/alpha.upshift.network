@@ -64,6 +64,31 @@ RSpec.describe PrivateConversation, type: :model do
 
   end
 
+  it "is invalid if recipient's profile cannot be seen by sender" do
+    @sender = create(:user)
+    @recipient = create(:user)
+    @recipient.profile.is_private!
+
+    expect(@recipient.profile.can_be_seen_by?(@sender)).to be false
+
+    conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
+    expect(conversation).not_to be_valid
+    expect(conversation.errors.full_messages).
+      to include("Recipient does not exist or their profile is private.")
+
+  end
+
+  it "is valid as long as recipient's profile can be seen by sender (even if sender's profile cannot be seen by recipient)" do
+    @sender = create(:user)
+    @recipient = create(:user)
+    @sender.profile.is_private!
+
+    expect(@sender.profile.can_be_seen_by?(@recipient)).to be false
+
+    conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
+    expect(conversation).to be_valid
+  end
+
   it "does not create conversation if another between sender and recipient already exists" do
     @user_one = create(:user)
     @user_two = create(:user)

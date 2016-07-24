@@ -35,6 +35,8 @@ class PrivateConversation < ApplicationRecord
       message: "needs exactly two conversation participants"}
   validate :private_conversation_is_unique_for_participants, on: :create,
     if: "participantships.present?"
+  validate :recipient_can_be_messaged_by_sender, on: :create,
+    if: "sender.present? and recipient.present?"
 
   # # Methods
 
@@ -73,4 +75,9 @@ class PrivateConversation < ApplicationRecord
       end
     end
 
+    def recipient_can_be_messaged_by_sender
+      if not recipient.profile.can_be_seen_by? sender
+        errors.add :recipient, "does not exist or their profile is private."
+      end
+    end
 end
