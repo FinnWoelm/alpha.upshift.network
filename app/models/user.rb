@@ -8,6 +8,14 @@ class User < ApplicationRecord
   has_many :liked_posts, :through => :likes, :source => :likable,  :source_type => 'Post'
   has_many :liked_comments, :through => :likes, :source => :likable,  :source_type => 'Comment'
 
+  # Private Messages
+  has_many :participantships_in_private_conversations,
+    :class_name => "ParticipantshipInPrivateConversation",
+    :foreign_key => "participant_id",
+    :dependent => :destroy,
+    :inverse_of => :participant
+  has_many :private_conversations, :through => :participantships_in_private_conversations, :source => :private_conversation
+
   has_many :friendship_requests_sent,
     :class_name => "FriendshipRequest",
     :foreign_key => "sender_id",
