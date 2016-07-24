@@ -11,7 +11,7 @@ class PrivateConversation < ApplicationRecord
     :source => :participant
 
   # # Scopes
-  default_scope -> { order('created_at ASC') }
+  default_scope -> { order('"private_conversations"."created_at" ASC') }
 
   # finds the conversations between a set of users
   # use like PrivateConversations.find_conversations_between [alice, bob]
@@ -33,6 +33,8 @@ class PrivateConversation < ApplicationRecord
     length: {
       is: 2,
       message: "needs exactly two conversation participants"}
+  validate :private_conversation_is_unique_for_participants, on: :create,
+    if: "participantships.present?"
 
   # # Methods
 
@@ -58,6 +60,16 @@ class PrivateConversation < ApplicationRecord
     def remove_participant participant
       self.participantships.each do |p|
         p.mark_for_destruction if p.participant_id == participant.id
+      end
+    end
+
+    def private_conversation_is_unique_for_participants
+      # since :participants is not yet initiated before creation, we need to
+      # generate our own hash of user ids
+      participation_ids = self.participantships.map {|p| {:id => p.participant_id}}
+
+      if PrivateConversation.find_conversations_between(participation_ids).any?
+        errors[:base] << "You already have a conversation with #{recipient.name}."
       end
     end
 

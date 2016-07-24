@@ -64,4 +64,18 @@ RSpec.describe PrivateConversation, type: :model do
 
   end
 
+  it "does not create conversation if another between sender and recipient already exists" do
+    @user_one = create(:user)
+    @user_two = create(:user)
+
+    conversation = PrivateConversation.create(:sender => @user_one, :recipient => @user_two)
+    expect(conversation.participants.size).to eq(2)
+
+    same_conversation = PrivateConversation.new(:sender => @user_one, :recipient => @user_two)
+    expect(same_conversation).not_to be_valid
+    expect(same_conversation.errors.full_messages).
+      to include("You already have a conversation with #{same_conversation.recipient.name}.")
+
+  end
+
 end
