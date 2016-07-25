@@ -38,4 +38,13 @@ module PrivateConversationsHelper
     return private_conversation_path(private_conversation)
   end
 
+  # shows a preview of the conversation by showing its first messages
+  def show_conversation_preview private_conversation
+    if private_conversation.most_recent_message
+      return truncate(private_conversation.most_recent_message.content)
+    else
+      return "No messages yet."
+    end
+  end
+
 end

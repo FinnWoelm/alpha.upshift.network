@@ -5,7 +5,12 @@ class PrivateConversationsController < ApplicationController
 
   # GET /conversations
   def index
-    @private_conversations = @current_user.private_conversations
+    # Get the user's private conversations ordered by most recent,
+    # include the most recent message
+    @private_conversations =
+      @current_user.
+      private_conversations.
+      includes(:most_recent_message)
   end
 
   # GET /conversation/new

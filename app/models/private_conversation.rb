@@ -17,9 +17,15 @@ class PrivateConversation < ApplicationRecord
     :foreign_key => "private_conversation_id",
     :dependent => :destroy,
     :inverse_of => :conversation
+  has_one :most_recent_message, -> {
+      self.select_values = ["DISTINCT ON(private_messages.private_conversation_id) private_messages.*"]
+      reorder('private_messages.private_conversation_id, private_messages.id DESC')
+    },
+    :class_name => "PrivateMessage",
+    :foreign_key => "private_conversation_id"
 
   # # Scopes
-  default_scope -> { includes(:participants).order('"private_conversations"."created_at" ASC') }
+  default_scope -> { includes(:participants).order('"private_conversations"."updated_at" DESC') }
 
   # finds the conversations between a set of users
   # use like PrivateConversations.find_conversations_between [alice, bob]

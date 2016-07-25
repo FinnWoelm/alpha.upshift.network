@@ -3,7 +3,7 @@
     Conversation with <%= list_participants private_conversation.participants %>
   <% end %>
 
-  <br/><br/>
+  <p><%= show_conversation_preview private_conversation %></p>
 
   <%= link_to 'Delete Conversation', private_conversation, title: "Delete conversation with #{list_participants private_conversation.participants}", method: :delete, data: { confirm: 'Are you sure?' } %>
 </div>
