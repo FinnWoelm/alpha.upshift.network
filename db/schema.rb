@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160724070833) do
+ActiveRecord::Schema.define(version: 20160724155718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -83,6 +83,16 @@ ActiveRecord::Schema.define(version: 20160724070833) do
     t.index ["created_at"], name: "index_private_conversations_on_created_at", using: :btree
   end
 
+  create_table "private_messages", force: :cascade do |t|
+    t.uuid     "private_conversation_id"
+    t.integer  "sender_id"
+    t.string   "content"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.index ["private_conversation_id"], name: "index_private_messages_on_private_conversation_id", using: :btree
+    t.index ["sender_id"], name: "index_private_messages_on_sender_id", using: :btree
+  end
+
   create_table "profiles", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "visibility", default: 0
@@ -113,5 +123,7 @@ ActiveRecord::Schema.define(version: 20160724070833) do
   add_foreign_key "participantship_in_private_conversations", "private_conversations"
   add_foreign_key "participantship_in_private_conversations", "users", column: "participant_id"
   add_foreign_key "posts", "users", column: "author_id"
+  add_foreign_key "private_messages", "private_conversations"
+  add_foreign_key "private_messages", "users", column: "sender_id"
   add_foreign_key "profiles", "users"
 end

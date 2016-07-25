@@ -35,9 +35,19 @@ dennis = User.create(
 :password => "dennis"
 )
 
+
 # Create some private conversations
-PrivateConversation.create([
-  {:sender => alice, :recipient => bob},
-  {:sender => carla, :recipient => alice},
-  {:sender => dennis, :recipient => alice},
-])
+conversations = []
+20.times do |i|
+ u = User.create(:username => "user#{i}", :password => "user#{i}", :name => "user#{i}", :email => "user#{i}")
+  conversations << PrivateConversation.create(:sender => alice, :recipient => u)
+end
+
+# Create some private messages
+100.times do |i|
+  conversation = conversations[rand(0..conversations.size-1)]
+  PrivateMessage.create(:sender => alice, :conversation => conversation, :content => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus quis placerat diam. Donec tempor consectetur sem ac accumsan. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Proin aliquam justo vel massa vehicula, id finibus magna auctor. Vivamus luctus tristique quam, in molestie orci convallis sed.")
+  if (i+1)%10 == 0
+    puts "Generated #{i+1} messages"
+  end
+end

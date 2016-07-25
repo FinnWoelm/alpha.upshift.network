@@ -17,15 +17,29 @@ RSpec.describe PrivateConversation, type: :model do
     expect(conversation.participants.size).to eq(2)
   end
 
-  it "deletes the participantship associations" do
+  it "deletes associated participantships upon destroy" do
     conversation = PrivateConversation.create(:sender => create(:user), :recipient => create(:user))
     expect(PrivateConversation.all.size).to eq(1)
     expect(ParticipantshipInPrivateConversation.all.size).to eq(2)
     expect(User.all.size).to eq(2)
-    
+
     conversation.destroy
     expect(PrivateConversation.all.size).to eq(0)
     expect(ParticipantshipInPrivateConversation.all.size).to eq(0)
+    expect(User.all.size).to eq(2)
+  end
+
+  it "deletes associated private messages upon destroy" do
+    conversation = PrivateConversation.create(:sender => create(:user), :recipient => create(:user))
+    5.times { create(:private_message, :conversation => conversation) }
+    expect(PrivateConversation.all.size).to eq(1)
+    expect(PrivateMessage.all.size).to eq(5)
+    expect(User.all.size).to eq(2)
+
+    conversation.destroy
+
+    expect(PrivateConversation.all.size).to eq(0)
+    expect(PrivateMessage.all.size).to eq(0)
     expect(User.all.size).to eq(2)
   end
 

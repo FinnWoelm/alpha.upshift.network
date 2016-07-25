@@ -1,6 +1,7 @@
 class PrivateConversation < ApplicationRecord
 
-  # # Relations
+  # # Assocations
+  # ## Participantships/Participants
   has_many :participantships,
     :class_name => "ParticipantshipInPrivateConversation",
     :foreign_key => "private_conversation_id",
@@ -9,6 +10,13 @@ class PrivateConversation < ApplicationRecord
   has_many :participants,
     :through => :participantships,
     :source => :participant
+
+  # ## Private Messages
+  has_many :messages,
+    :class_name => "PrivateMessage",
+    :foreign_key => "private_conversation_id",
+    :dependent => :destroy,
+    :inverse_of => :conversation
 
   # # Scopes
   default_scope -> { includes(:participants).order('"private_conversations"."created_at" ASC') }
