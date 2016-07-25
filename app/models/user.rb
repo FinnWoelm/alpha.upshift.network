@@ -94,6 +94,14 @@ class User < ApplicationRecord
     return likes.where(:likable_type => "Comments")
   end
 
+  # gets unread conversations
+  def unread_private_conversations
+    return private_conversations.
+      where('private_conversations.updated_at > participantship_in_private_conversations.read_at ' +
+      'OR ' +
+      'participantship_in_private_conversations.read_at IS NULL')
+  end
+
   def friends
     return friends_found + friends_made
   end

@@ -56,5 +56,47 @@ RSpec.describe User, type: :model do
     expect(User.find_by_username(user.username.upcase)).to be_present
   end
 
+  # Private conversations
+  it "can get unread private conversations" do
+
+    @current_user = create(:user)
+
+    @my_conversations = []
+    5.times do
+      @my_conversations << create(:private_conversation, :sender => @current_user)
+    end
+
+    @unread_conversations = []
+    20.times do
+      conversation = @my_conversations[rand(0..@my_conversations.size-1)]
+      sender = conversation.participants[rand(0..1)]
+      create(:private_message, :conversation => conversation, :sender => sender)
+
+      # remove conversation in any case (we'll add it to front of queue again
+      # in a second as long as the sender wasn't @current_user)
+      @unread_conversations -= [conversation]
+
+      # track conversation if it was not sent by current user
+      if sender.id != @current_user.id
+        @unread_conversations.unshift conversation
+      end
+    end
+
+    @unread_conversations_to_test = @current_user.unread_private_conversations
+
+    expect(@unread_conversations.size).to eq(@unread_conversations_to_test.size)
+
+    # check each element
+    @unread_conversations.each_with_index do |conversation, i|
+      expect(conversation.id).to eq(@unread_conversations_to_test[i].id)
+    end
+
+    # check each element
+    @unread_conversations_to_test.each_with_index do |conversation, i|
+      expect(conversation.id).to eq(@unread_conversations[i].id)
+    end
+
+  end
+
 
 end
