@@ -6,7 +6,7 @@ class PrivateMessage < ApplicationRecord
     :foreign_key => "private_conversation_id",
     :inverse_of => :messages,
     :optional => false,
-    :validate => true
+    :autosave => true
   # User
   belongs_to :sender, :class_name => "User",
     :inverse_of => :private_messages_sent,
@@ -45,10 +45,11 @@ class PrivateMessage < ApplicationRecord
     # conversation. So that the new message won't be marked as unread for the
     # sender
     def update_read_at_of_sender
-      sender.
-        participantships_in_private_conversations.
-        find_by(:private_conversation => conversation).
-        touch(:read_at)
+      conversation.participantships.each do |participantship|
+        if participantship.participant_id == sender.id
+          participantship.touch(:read_at)
+        end
+      end
     end
 
 end
