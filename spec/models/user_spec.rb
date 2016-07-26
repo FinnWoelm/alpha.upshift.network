@@ -63,13 +63,13 @@ RSpec.describe User, type: :model do
 
     @my_conversations = []
     5.times do
-      @my_conversations << create(:private_conversation, :sender => @current_user)
+      @my_conversations << build(:private_conversation, :sender => @current_user)
     end
 
     @unread_conversations = []
     20.times do
       conversation = @my_conversations[rand(0..@my_conversations.size-1)]
-      sender = conversation.participants[rand(0..1)]
+      sender = conversation.participantships[rand(0..1)].participant
       create(:private_message, :conversation => conversation, :sender => sender)
 
       # remove conversation in any case (we'll add it to front of queue again
