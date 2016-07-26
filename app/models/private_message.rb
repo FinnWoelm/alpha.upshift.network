@@ -15,6 +15,8 @@ class PrivateMessage < ApplicationRecord
   # # Validations
   validates :content, presence: true
   validates :content, length: { maximum: 50000 }
+  validate :sender_is_part_of_conversation, on: :create,
+    if: "sender.present? and conversation.present?"
 
   # # Scopes
   default_scope -> { order('"private_messages"."id" DESC') }
@@ -32,6 +34,16 @@ class PrivateMessage < ApplicationRecord
   after_create :update_read_at_of_sender
 
   protected
+    # Validation: Sender must be part of the conversation to send messages
+    def sender_is_part_of_conversation
+
+      participant_ids = conversation.participantships.map {|p| p.participant_id}
+
+      if not participant_ids.include? sender.id
+        errors[:base] << "#{self.sender.name} (sender) does not belong to this conversation."
+      end
+    end
+
     # Touches the conversation that this message belongs to so that we know there
     # is a new message in the conversation.
     # Warning: This MUST precede the :update_read_at_of_sender callback, otherwise

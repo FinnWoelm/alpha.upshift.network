@@ -38,4 +38,11 @@ RSpec.describe PrivateMessage, type: :model do
     expect(PrivateConversation.all.size).to eq(1)
   end
 
+  it "is invalid if the sender is not part of the conversation" do
+    message = build(:private_message, :sender => create(:user))
+    expect(message).to be_invalid
+    expect(message.errors.full_messages).
+      to include("#{message.sender.name} (sender) does not belong to this conversation.")
+  end
+
 end
