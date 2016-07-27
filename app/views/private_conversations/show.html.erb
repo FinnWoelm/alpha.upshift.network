@@ -2,4 +2,6 @@
 
 <h1>Conversation with <%= list_participants @private_conversation.participants %></h1>
 
+<%= render partial: 'private_messages/form', locals: {private_message: @private_message} %>
+
 <%= render @private_conversation.messages %>

@@ -8,7 +8,10 @@ module PrivateMessageHelper
     return "you" if private_message.sender_id == @current_user.id
 
     # is the message from the conversation partner?
-    return @conversation_partner.name if private_message.sender_id == @conversation_partner.id
+
+    private_message.conversation.participants.each do |participant|
+      return participant.name if private_message.sender_id == participant.id
+    end
 
     # fallback
     return private_message.sender.name
