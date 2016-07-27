@@ -1,7 +1,6 @@
 class PrivateConversationsController < ApplicationController
   before_action :authorize
-  before_action :set_conversation_by_id, only: [:show, :destroy]
-  before_action :set_conversation_by_recipient_username, only: :show
+  before_action :set_conversation, only: [:show, :destroy]
 
   # GET /conversations
   def index
@@ -34,15 +33,29 @@ class PrivateConversationsController < ApplicationController
   end
 
   protected
-    # Use callbacks to share common setup or constraints between actions.
-    def set_conversation_by_recipient_username
-      # return if we already have loaded a private_conversation by ID
-      return if @private_conversation
 
-      @conversation_partner = User.find_by_username(params[:id])
-      @private_conversation = PrivateConversation.find_conversation_between([@current_user, @conversation_partner]).first if @conversation_partner
+    # Use callbacks to share common setup or constraints between actions.
+    def set_conversation
+
+      username_format = /^[a-zA-Z0-9_]+$/
+
+      # if the ID matches this format, then we are dealing with a username
+      # and we want to set conversation by username
+      if params[:id].match(username_format)
+        set_conversation_by_recipient_username
+      else
+        set_conversation_by_id
+      end
+
     end
 
+    # sets the conversation by username
+    def set_conversation_by_recipient_username
+      @conversation_partner = User.readonly.find_by_username(params[:id])
+      @private_conversation = PrivateConversation.includes(:messages).find_conversation_between([@current_user, @conversation_partner]) if @conversation_partner
+    end
+
+    # sets the conversation by ID
     def set_conversation_by_id
       @private_conversation = @current_user.private_conversations.find_by id: params[:id]
     end
