@@ -92,6 +92,19 @@ RSpec.describe PrivateConversation, type: :model do
 
   end
 
+  it "is invalid if sender and recipient are the same person" do
+    @sender = create(:user)
+    @recipient = @sender
+
+    expect(@recipient.profile.can_be_seen_by?(@sender)).to be true
+
+    conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
+    expect(conversation).not_to be_valid
+    expect(conversation.errors.full_messages).
+      to include("You cannot create a conversation with yourself.")
+
+  end
+
   it "is valid as long as recipient's profile can be seen by sender (even if sender's profile cannot be seen by recipient)" do
     @sender = create(:user)
     @recipient = create(:user)

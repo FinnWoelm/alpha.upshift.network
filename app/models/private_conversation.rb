@@ -51,6 +51,8 @@ class PrivateConversation < ApplicationRecord
     if: "participantships.present?"
   validate :recipient_can_be_messaged_by_sender, on: :create,
     if: "sender.present? and recipient.present?"
+  validate :recipient_and_sender_must_not_be_the_same_person, on: :create,
+    if: "sender.present? and recipient.present?"
 
   # # Methods
 
@@ -94,4 +96,12 @@ class PrivateConversation < ApplicationRecord
         errors.add :recipient, "does not exist or their profile is private."
       end
     end
+
+    # Conversation sender and recipient must not be the same person
+    def recipient_and_sender_must_not_be_the_same_person
+      if sender.id == recipient.id
+        errors[:base] << "You cannot create a conversation with yourself."
+      end
+    end
+
 end
