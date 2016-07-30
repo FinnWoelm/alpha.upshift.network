@@ -10,9 +10,9 @@ RSpec.describe "profiles/show", type: :view do
 
   it "renders attributes in <p>" do
     render
-    expect(rendered).to match(/Email/)
-    expect(rendered).to match(/Username/)
-    expect(rendered).to match(@profile.user.name)
+    expect(rendered).to have_text("Email")
+    expect(rendered).to have_text("Username")
+    expect(rendered).to have_text(@profile.user.name)
   end
 
   context "No friendship request has been sent" do

@@ -7,21 +7,21 @@ RSpec.describe "posts/show", type: :view do
 
   it "renders author, content, and timestamp" do
     render
-    expect(rendered).to match(@post.author.name)
-    expect(rendered).to match(/Some text/)
-    expect(rendered).to match(render_timestamp(@post.created_at))
+    expect(rendered).to have_text(@post.author.name)
+    expect(rendered).to have_text("Some text")
+    expect(rendered).to have_text(render_timestamp(@post.created_at))
   end
 
   it "shows new comment form if user is signed in" do
     @current_user = create(:user)
     render
-    expect(rendered).to match("New Comment")
+    expect(rendered).to have_text("New Comment")
   end
 
   it "does not show new comment form if user is not signed in" do
     @current_user = nil
     render
-    expect(rendered).not_to match("New Comment")
+    expect(rendered).not_to have_text("New Comment")
   end
 
 end
