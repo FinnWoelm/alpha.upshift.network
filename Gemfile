@@ -33,6 +33,8 @@ gem 'bcrypt', '~> 3.1.7'
 group :development, :test do
   # We will use pry rails as our console
   gem 'pry-rails'
+  # and also as our debugger
+  gem 'pry-byebug'
   # We will use bullet to avoid N+1 queries
   gem 'bullet', '~> 5.2.0'
 end

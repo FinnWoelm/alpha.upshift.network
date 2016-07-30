@@ -45,6 +45,7 @@ GEM
     bullet (5.2.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
+    byebug (9.0.5)
     capybara (2.7.1)
       addressable
       mime-types (>= 1.16)
@@ -101,6 +102,9 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-byebug (3.4.0)
+      byebug (~> 9.0)
+      pry (~> 0.10)
     pry-rails (0.3.4)
       pry (>= 0.9.10)
     puma (3.6.0)
@@ -212,6 +216,7 @@ DEPENDENCIES
   jquery-rails
   listen (~> 3.0.5)
   pg (~> 0.15)
+  pry-byebug
   pry-rails
   puma (~> 3.0)
   rails (= 5.0)
