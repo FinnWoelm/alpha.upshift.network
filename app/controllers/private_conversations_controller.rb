@@ -14,11 +14,8 @@ class PrivateConversationsController < ApplicationController
 
   # GET /conversation/new
   def new
-    @private_conversation = PrivateConversation.new
-  end
-
-  # POST /conversation/
-  def create
+    conversation = PrivateConversation.new(:sender => @current_user)
+    @private_message = PrivateMessage.new(:sender => @current_user, :conversation => conversation)
   end
 
   # GET /conversation/:username
@@ -27,6 +24,7 @@ class PrivateConversationsController < ApplicationController
     @private_message =
       PrivateMessage.new(
         :sender => @current_user,
+        :recipient => @private_conversation.participants_other_than(@current_user).first,
         :conversation => @private_conversation)
   end
 
@@ -56,7 +54,7 @@ class PrivateConversationsController < ApplicationController
     # sets the conversation by username
     def set_conversation_by_recipient_username
       @conversation_partner = User.readonly.find_by_username(params[:id])
-      @private_conversation = PrivateConversation.includes(:messages).find_conversation_between([@current_user, @conversation_partner]) if @conversation_partner
+      @private_conversation = PrivateConversation.includes(:messages).find_conversations_between([@current_user, @conversation_partner]).first if @conversation_partner.present?
     end
 
     # sets the conversation by ID

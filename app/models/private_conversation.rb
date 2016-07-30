@@ -29,7 +29,7 @@ class PrivateConversation < ApplicationRecord
 
   # finds the conversations between a set of users
   # use like PrivateConversations.find_conversations_between [alice, bob]
-  scope :find_conversation_between,
+  scope :find_conversations_between,
     ->(users) {
       joins(participantships: :participant).
       where(users: {id: users.pluck(:id)}).
@@ -68,6 +68,18 @@ class PrivateConversation < ApplicationRecord
     @recipient = user
   end
 
+  # returns a list of participants that exclude the participant (object or ID)
+  # supplied by the this_participant argument
+  def participants_other_than this_participant
+    case this_participant
+    when Fixnum
+      id_of_this_participant = this_participant
+    else
+      id_of_this_participant = this_participant.id
+    end
+    return participants.select {|p| p.id != id_of_this_participant}
+  end
+
   protected
     # adds a participant to the conversation
     def add_participant participant
@@ -100,7 +112,7 @@ class PrivateConversation < ApplicationRecord
     # Conversation sender and recipient must not be the same person
     def recipient_and_sender_must_not_be_the_same_person
       if sender.id == recipient.id
-        errors[:base] << "You cannot create a conversation with yourself."
+        errors.add :recipient, "cannot be yourself."
       end
     end
 

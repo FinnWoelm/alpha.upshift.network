@@ -101,7 +101,7 @@ RSpec.describe PrivateConversation, type: :model do
     conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
     expect(conversation).not_to be_valid
     expect(conversation.errors.full_messages).
-      to include("You cannot create a conversation with yourself.")
+      to include("Recipient cannot be yourself.")
 
   end
 

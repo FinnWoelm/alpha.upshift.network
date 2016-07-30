@@ -12,16 +12,37 @@ class PrivateMessage < ApplicationRecord
     :inverse_of => :private_messages_sent,
     :optional => false
 
+  # # Scopes
+  default_scope -> { order('"private_messages"."id" DESC') }
+
+  # # Accessors
+  # We use the recipient_username and recipient accessors to convert from the
+  # username that we receive in the params to the User object that we need to
+  # build the conversation
+  attr_accessor(:recipient_username)
+  def recipient=(val)
+    if val.is_a? String
+      @recipient_username = val
+    elsif val.is_a? User
+      @recipient_username = val.username
+    end
+  end
+  def recipient
+    User.find_by(:username => self.recipient_username)
+  end
+
   # # Validations
   validates :content, presence: true
   validates :content, length: { maximum: 50000 }
   validate :sender_is_part_of_conversation, on: :create,
     if: "sender.present? and conversation.present?"
 
-  # # Scopes
-  default_scope -> { order('"private_messages"."id" DESC') }
-
   # # Callbacks
+  # Sets the recipient username on the basis of this message's conversation
+  # (only if conversation is eager loaded and not a new record, for performance
+  # reasons)
+  after_initialize :set_recipient_username, if: "sender_id.present?"
+
   # Touches the conversation that this message belongs to so that we know there
   # is a new message in the conversation.
   # Warning: This MUST precede the :update_read_at_of_sender callback, otherwise
@@ -41,6 +62,17 @@ class PrivateMessage < ApplicationRecord
 
       if not participant_ids.include? sender.id
         errors[:base] << "#{self.sender.name} (sender) does not belong to this conversation."
+      end
+    end
+
+    # Callback: After Intiliaize
+    # Sets the recipient username on the basis of this message's conversation
+    # (only if conversation is eager loaded and not a new record, for performance
+    # reasons)
+    def set_recipient_username
+      if self.association(:conversation).loaded? and not self.conversation.new_record?
+        self.recipient_username =
+          self.conversation.participants_other_than(self.sender.id).first.username
       end
     end
 
