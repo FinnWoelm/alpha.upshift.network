@@ -21,6 +21,9 @@ class PrivateConversationsController < ApplicationController
   # GET /conversation/:username
   def show
     render_404 and return unless @private_conversation
+
+    @private_conversation.mark_read_for @current_user
+
     @private_message =
       PrivateMessage.new(
         :sender => @current_user,

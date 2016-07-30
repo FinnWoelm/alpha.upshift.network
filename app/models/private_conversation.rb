@@ -80,6 +80,29 @@ class PrivateConversation < ApplicationRecord
     return participants.select {|p| p.id != id_of_this_participant}
   end
 
+  # returns the participantship of a given participant
+  def participantship_of this_participant
+    case this_participant
+    when Fixnum
+      id_of_this_participant = this_participant
+    else
+      id_of_this_participant = this_participant.id
+    end
+    return participantships.
+      select{|p| p.participant_id == id_of_this_participant}.first
+  end
+
+  # marks the current conversation as read for the participant (only if there
+  # are new messages, to avoid unnessecary database insert statements)
+  def mark_read_for participant
+    if participantship_of( participant ).read_at.nil? or
+      participantship_of( participant ).read_at < messages.first.created_at
+
+      participantship_of( participant ).touch(:read_at)
+
+    end
+  end
+
   protected
     # adds a participant to the conversation
     def add_participant participant
