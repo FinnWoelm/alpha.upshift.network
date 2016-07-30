@@ -33,7 +33,7 @@ module PrivateMessageHelper
 
     whitedlisted_errors = {
       :"recipient" => ["does not exist or their profile is private", "can't be blank", "can't be yourself"],
-      :"content" => ["ALL"],
+      :"content" => "ALL",
       :conversation => ["was deleted"]
     }
 
