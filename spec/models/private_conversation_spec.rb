@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe PrivateConversation, type: :model do
 
   it { is_expected.to validate_presence_of(:sender) }
-  it { is_expected.to validate_presence_of(:recipient) }
+  it { is_expected.to validate_presence_of(:recipient).with_message("does not exist or their profile is private") }
   it { is_expected.to validate_length_of(:participantships).with_message("needs exactly two conversation participants") }
 
   it "has a valid factory" do
@@ -88,7 +88,7 @@ RSpec.describe PrivateConversation, type: :model do
     conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
     expect(conversation).not_to be_valid
     expect(conversation.errors.full_messages).
-      to include("Recipient does not exist or their profile is private.")
+      to include("Recipient does not exist or their profile is private")
 
   end
 
@@ -101,7 +101,7 @@ RSpec.describe PrivateConversation, type: :model do
     conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
     expect(conversation).not_to be_valid
     expect(conversation.errors.full_messages).
-      to include("Recipient cannot be yourself.")
+      to include("Recipient can't be yourself")
 
   end
 
@@ -126,7 +126,7 @@ RSpec.describe PrivateConversation, type: :model do
     same_conversation = PrivateConversation.new(:sender => @user_one, :recipient => @user_two)
     expect(same_conversation).not_to be_valid
     expect(same_conversation.errors.full_messages).
-      to include("You already have a conversation with #{same_conversation.recipient.name}.")
+      to include("You already have a conversation with #{same_conversation.recipient.name}")
 
   end
 

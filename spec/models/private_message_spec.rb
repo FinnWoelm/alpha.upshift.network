@@ -25,9 +25,9 @@ RSpec.describe PrivateMessage, type: :model do
     @conversation.recipient.profile.is_private!
     expect(@message).to be_invalid
     expect(@message.errors.messages[:"conversation.recipient"]).
-      to include("does not exist or their profile is private.")
+      to include("does not exist or their profile is private")
     expect(@conversation.errors.full_messages).
-      to include("Recipient does not exist or their profile is private.")
+      to include("Recipient does not exist or their profile is private")
   end
 
   it "creates the conversation if it does not yet exist" do
