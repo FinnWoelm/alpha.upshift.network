@@ -54,6 +54,19 @@ RSpec.configure do |config|
   # Randomize order in which tests are run
   config.order = "random"
 
+  # Use bullet in feature specs
+  if defined? Bullet
+    config.before(:type => :feature) do
+      Bullet.enable = true
+      Bullet.start_request
+    end
+    config.after(:type => :feature) do
+      Bullet.perform_out_of_channel_notifications if Bullet.notification?
+      Bullet.end_request
+      Bullet.enable = false
+    end
+  end
+
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
   # `post` in specs under `spec/controllers`.
