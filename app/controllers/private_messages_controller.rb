@@ -22,6 +22,9 @@ class PrivateMessagesController < ApplicationController
             :sender => @private_message.sender,
             :recipient => @private_message.recipient)
         end
+
+        conversation_was_deleted = true
+
       end
 
     # no conversation set yet
@@ -67,6 +70,9 @@ class PrivateMessagesController < ApplicationController
 
       # if the conversation does not exist (or no longer exists)
       elsif @private_conversation.new_record?
+        if conversation_was_deleted
+          @private_message.errors.add :conversation, "was deleted"
+        end
         render 'private_conversations/new'
 
       # this should not be necessary, but just to be save

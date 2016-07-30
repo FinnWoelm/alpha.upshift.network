@@ -27,13 +27,15 @@ module PrivateMessageHelper
   def filter_errors private_message
 
     error_keys_to_transform = [
-      {:from => :"conversation.recipient", :to => :"recipient"}
+      {:from => :"conversation.recipient", :to => :recipient},
+      {:from => :recipient_username, :to => :recipient}
     ]
 
-    whitedlisted_error_keys = [
-      :"recipient",
-      :"content"
-    ]
+    whitedlisted_errors = {
+      :"recipient" => ["does not exist or their profile is private", "can't be blank", "can't be yourself"],
+      :"content" => ["ALL"],
+      :conversation => ["was deleted"]
+    }
 
     # Transform
     error_keys_to_transform.each do |key|
@@ -47,19 +49,22 @@ module PrivateMessageHelper
     private_message.errors.keys.clone.each do |key|
 
       # delete everything that's not whitelisted
-      if not whitedlisted_error_keys.include? key
+      if not whitedlisted_errors.keys.include? key
         private_message.errors.delete key
+      else
+        private_message.errors[key].select! { |msg|
+          whitedlisted_errors[key] == "ALL" or
+          whitedlisted_errors[key].include? msg
+        }
       end
-
     end
 
     # Custom Transformations
     if private_message.errors.has_key? :recipient
-      private_message.errors.delete :recipient
       if not private_message.recipient_username.empty?
-        private_message.errors.add :recipient, "does not exist or their profile is private"
+        private_message.errors[:recipient].select! {|msg| msg != "can't be blank" }
       else
-        private_message.errors.add :recipient, "can't be blank"
+        private_message.errors[:recipient].select! {|msg| msg != "does not exist or their profile is private" }
       end
     end
 

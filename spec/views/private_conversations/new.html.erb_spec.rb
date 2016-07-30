@@ -68,6 +68,44 @@ RSpec.describe "private_conversations/new.html.erb", type: :view do
       expect(rendered).to have_text("Recipient can't be blank")
     end
 
+    it "shows error if recipient equals sender" do
+
+      @private_message =
+        PrivateMessage.new(
+          :sender => @sender,
+          :recipient => @sender.username,
+          :content => Faker::Lorem.paragraph)
+
+      @private_message.build_conversation(:sender => @sender, :recipient => @private_message.recipient)
+
+      @private_message.valid?
+
+      render
+
+      expect(@private_message.errors.size).to eq(1)
+      expect(rendered).to have_text("Recipient can't be yourself")
+    end
+
+    it "shows error if conversation was deleted" do
+
+      @private_message =
+        PrivateMessage.new(
+          :sender => @sender,
+          :recipient => @recipient.username,
+          :content => Faker::Lorem.paragraph)
+
+      @private_message.build_conversation(:sender => @sender, :recipient => @private_message.recipient)
+
+      @private_message.valid?
+
+      @private_message.errors.add :conversation, "was deleted"
+
+      render
+
+      expect(@private_message.errors.size).to eq(1)
+      expect(rendered).to have_text("Conversation was deleted")
+    end
+
     it "does not show any other errors" do
 
       @private_message =

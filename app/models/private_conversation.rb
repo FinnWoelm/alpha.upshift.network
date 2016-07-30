@@ -42,7 +42,7 @@ class PrivateConversation < ApplicationRecord
 
   # # Validations
   validates :sender, presence: true, on: :create
-  validates :recipient, presence: true, on: :create
+  validates :recipient, presence: { message: "does not exist or their profile is private" }, on: :create
   validates :participantships,
     length: {
       is: 2,
@@ -122,20 +122,20 @@ class PrivateConversation < ApplicationRecord
       participation_ids = self.participantships.map {|p| {:id => p.participant_id}}
 
       if PrivateConversation.find_conversations_between(participation_ids).any?
-        errors[:base] << "You already have a conversation with #{recipient.name}."
+        errors[:base] << "You already have a conversation with #{recipient.name}"
       end
     end
 
     def recipient_can_be_messaged_by_sender
       if not recipient.profile.can_be_seen_by? sender
-        errors.add :recipient, "does not exist or their profile is private."
+        errors.add :recipient, "does not exist or their profile is private"
       end
     end
 
     # Conversation sender and recipient must not be the same person
     def recipient_and_sender_must_not_be_the_same_person
       if sender.id == recipient.id
-        errors.add :recipient, "cannot be yourself."
+        errors.add :recipient, "can't be yourself"
       end
     end
 

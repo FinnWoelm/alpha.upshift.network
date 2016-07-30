@@ -32,6 +32,7 @@ class PrivateMessage < ApplicationRecord
   end
 
   # # Validations
+  validates :recipient_username, presence: true, allow_nil: true
   validates :content, presence: true
   validates :content, length: { maximum: 50000 }
   validate :sender_is_part_of_conversation, on: :create,
