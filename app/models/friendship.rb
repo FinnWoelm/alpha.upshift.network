@@ -6,8 +6,8 @@ class Friendship < ApplicationRecord
   scope :find_friendship_between,
     ->(user_one, user_two) {
       where(:initiator => user_one).where(:acceptor => user_two).
-        or(Friendship.where(:initiator => user_two).where(:acceptor => user_one)).
-        first
+        or(where(:initiator => user_two).where(:acceptor => user_one)).
+        limit(1)
     }
 
   validates :initiator, presence: true

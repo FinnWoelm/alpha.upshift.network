@@ -44,4 +44,44 @@ RSpec.describe Friendship, type: :model do
       to include("You are already friends with #{inverse_friendship.initiator.name}")
   end
 
+  it "can find a friendship between users" do
+    3.times { create(:user) }
+
+    # user 1 is friends with user 2
+    Friendship.create(:initiator => User.first, :acceptor => User.second)
+
+    # user 1 is friends with user 3
+    Friendship.create(:acceptor => User.first, :initiator => User.third)
+
+    # test
+    friendship_one = Friendship.find_friendship_between(User.first, User.second).first
+    friendship_two = Friendship.find_friendship_between(User.first, User.third).first
+    friendship_three = Friendship.find_friendship_between(User.second, User.third).first
+
+    expect(friendship_one).to be_present
+    expect(friendship_one.initiator_id).to eq(User.first.id)
+    expect(friendship_one.acceptor_id).to eq(User.second.id)
+
+    expect(friendship_two).to be_present
+    expect(friendship_two.initiator_id).to eq(User.third.id)
+    expect(friendship_two.acceptor_id).to eq(User.first.id)
+
+    expect(friendship_three).not_to be_present
+
+    # test the reverse direction
+    friendship_one = Friendship.find_friendship_between(User.second, User.first).first
+    friendship_two = Friendship.find_friendship_between(User.third, User.first).first
+    friendship_three = Friendship.find_friendship_between(User.third, User.second).first
+
+    expect(friendship_one).to be_present
+    expect(friendship_one.initiator_id).to eq(User.first.id)
+    expect(friendship_one.acceptor_id).to eq(User.second.id)
+
+    expect(friendship_two).to be_present
+    expect(friendship_two.initiator_id).to eq(User.third.id)
+    expect(friendship_two.acceptor_id).to eq(User.first.id)
+
+    expect(friendship_three).not_to be_present
+  end
+
 end
