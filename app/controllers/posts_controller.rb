@@ -1,7 +1,8 @@
 class PostsController < ApplicationController
   before_action :authorize, except: [:show]
   before_action :current_user, only: [:show]
-  before_action :set_post, only: [:show, :destroy]
+  before_action :set_post_with_assocations, only: [:show]
+  before_action :set_post_without_associations, only: [:destroy]
 
   # GET /post/1
   def show
@@ -35,7 +36,11 @@ class PostsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_post
+    def set_post_without_associations
+      @post = Post.find_by id: params[:id]
+    end
+
+    def set_post_with_assocations
       @post = Post.with_associations.find_by id: params[:id]
     end
 
