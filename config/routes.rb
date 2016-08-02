@@ -31,6 +31,9 @@ Rails.application.routes.draw do
   post '/:likable_type/:likable_id/like', to: 'likes#create', as: :like
   delete '/:likable_type/likable_id/like', to: 'likes#destroy', as: :unlike
 
+  # Feed
+  get 'feed', to: 'feeds#show', as: :feed
+
   # Profiles -- this must be last
   get '/:username', to: 'profiles#show', as: :profile
 
