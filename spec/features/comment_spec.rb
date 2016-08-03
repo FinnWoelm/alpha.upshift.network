@@ -1,6 +1,6 @@
 require 'rails_helper.rb'
 
-feature 'Post' do
+feature 'Comment' do
 
   scenario 'User can write a comment' do
     given_i_am_logged_in_as_a_user
