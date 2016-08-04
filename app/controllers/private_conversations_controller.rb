@@ -9,6 +9,8 @@ class PrivateConversationsController < ApplicationController
     @private_conversations =
       @current_user.
       private_conversations.
+      most_recent_activity_first.
+      includes(:participants).
       includes(:most_recent_message)
   end
 
@@ -57,12 +59,12 @@ class PrivateConversationsController < ApplicationController
     # sets the conversation by username
     def set_conversation_by_recipient_username
       @conversation_partner = User.readonly.find_by_username(params[:id])
-      @private_conversation = PrivateConversation.includes(:messages).find_conversations_between([@current_user, @conversation_partner]).first if @conversation_partner.present?
+      @private_conversation = PrivateConversation.with_associations.find_conversations_between([@current_user, @conversation_partner]).first if @conversation_partner.present?
     end
 
     # sets the conversation by ID
     def set_conversation_by_id
-      @private_conversation = @current_user.private_conversations.find_by id: params[:id]
+      @private_conversation = @current_user.private_conversations.with_associations.find_by id: params[:id]
     end
 
 end

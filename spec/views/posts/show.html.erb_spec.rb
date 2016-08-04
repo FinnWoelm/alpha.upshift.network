@@ -24,4 +24,19 @@ RSpec.describe "posts/show", type: :view do
     expect(rendered).not_to have_text("New Comment")
   end
 
+  it "renders oldest comments first" do
+    @comments_to_check = []
+    5.times { @comments_to_check << create(:comment, :author => @post.author, :post => @post) }
+
+    @post = Post.with_associations.find_by id: @post.id
+
+    render
+
+    expect(@comments_to_check[0].content).to appear_before(@comments_to_check[1].content)
+    expect(@comments_to_check[1].content).to appear_before(@comments_to_check[2].content)
+    expect(@comments_to_check[2].content).to appear_before(@comments_to_check[3].content)
+    expect(@comments_to_check[3].content).to appear_before(@comments_to_check[4].content)
+
+  end
+
 end

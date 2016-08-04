@@ -5,7 +5,10 @@ class Post < ApplicationRecord
   belongs_to :author, :class_name => "User"
   has_many :comments, -> { includes :author }, dependent: :destroy
 
-  default_scope -> { includes(:comments).order('created_at DESC') }
+  scope :most_recent_first,
+    -> { order('posts.created_at DESC') }
+  scope :with_associations,
+    -> { includes(:comments => :author).includes(:author) }
 
   validates :author, presence: true
   validates :content, presence: true
