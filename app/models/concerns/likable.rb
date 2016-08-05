@@ -22,7 +22,12 @@ module Likable
 
   # whether the object is liked by a given user
   def is_liked_by? user
-    return self.likers.include? user
+    # check if we have preloaded likes
+    if self.association(:likes).loaded?
+      return self.likes.map{|like| like.liker_id}.include? user.id
+    else
+      return self.likers.include? user
+    end
   end
-  
+
 end

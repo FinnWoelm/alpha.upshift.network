@@ -25,7 +25,10 @@ class PrivateConversation < ApplicationRecord
     :foreign_key => "private_conversation_id"
 
   # # Scopes
-  default_scope -> { includes(:participants).order('"private_conversations"."updated_at" DESC') }
+  scope :most_recent_activity_first,
+    -> { order('"private_conversations"."updated_at" DESC') }
+  scope :with_associations,
+    -> { includes(:messages).includes(:participants) }
 
   # finds the conversations between a set of users
   # use like PrivateConversations.find_conversations_between [alice, bob]
@@ -127,6 +130,12 @@ class PrivateConversation < ApplicationRecord
     end
 
     def recipient_can_be_messaged_by_sender
+      # eager load profile if not already loaded
+      if not recipient.association(:profile).loaded?
+        ActiveRecord::Associations::Preloader.new.preload(recipient, :profile)
+      end
+
+      # validate that recipient can be messaged by sender
       if not recipient.profile.can_be_seen_by? sender
         errors.add :recipient, "does not exist or their profile is private"
       end
