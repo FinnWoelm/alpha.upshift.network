@@ -130,6 +130,12 @@ class PrivateConversation < ApplicationRecord
     end
 
     def recipient_can_be_messaged_by_sender
+      # eager load profile if not already loaded
+      if not recipient.association(:profile).loaded?
+        ActiveRecord::Associations::Preloader.new.preload(recipient, :profile)
+      end
+
+      # validate that recipient can be messaged by sender
       if not recipient.profile.can_be_seen_by? sender
         errors.add :recipient, "does not exist or their profile is private"
       end
