@@ -1,6 +1,6 @@
 class PrivateConversationsController < ApplicationController
   before_action :authorize
-  before_action :set_conversation, only: [:show, :destroy]
+  before_action :set_conversation, only: [:show]
 
   # GET /conversations
   def index
@@ -35,6 +35,7 @@ class PrivateConversationsController < ApplicationController
 
   # DELETE /conversation/:id
   def destroy
+    @private_conversation = @current_user.private_conversations.find_by id: params[:id]
     @private_conversation.destroy
     redirect_to private_conversations_home_path, notice: 'Conversation was successfully deleted.'
   end
