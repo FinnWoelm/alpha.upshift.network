@@ -16,7 +16,7 @@ class Comment < ApplicationRecord
     if: "author.present? and post.present?"
 
   def author_must_be_able_to_see_post
-    if not post.can_be_seen_by? author
+    if not post.readable_by? author
       errors[:base] << "An error occurred. " +
         "Either the post never existed, it does not exist anymore, " +
         "or the author's profile privacy settings have changed."
@@ -24,7 +24,7 @@ class Comment < ApplicationRecord
   end
 
   # whether the comment can be deleted by a given user
-  def can_be_deleted_by? user
+  def deletable_by? user
       # no user
       return false unless user
 
