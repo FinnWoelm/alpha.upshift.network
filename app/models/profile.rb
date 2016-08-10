@@ -4,7 +4,8 @@ class Profile < ApplicationRecord
 
   validates :user, presence: true
 
-  def can_be_seen_by? user
+  # whether the profile visible to a given user
+  def viewable_by? user
 
     # public profile can be seen by everyone
     return true if self.is_public?

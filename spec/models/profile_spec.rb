@@ -15,17 +15,17 @@ RSpec.describe Profile, type: :model do
 
     it "can be seen by a public user" do
       @user = nil
-      expect(@profile.can_be_seen_by?(@user)).to be true
+      expect(@profile).to be_viewable_by(@user)
     end
 
     it "can be seen by a network user" do
       @user = create(:user)
-      expect(@profile.can_be_seen_by?(@user)).to be true
+      expect(@profile).to be_viewable_by(@user)
     end
 
     it "can be seen by a friend" do
       @user = create(:friendship, :initiator => @profile.user).acceptor
-      expect(@profile.can_be_seen_by?(@user)).to be true
+      expect(@profile).to be_viewable_by(@user)
     end
 
   end
@@ -38,17 +38,17 @@ RSpec.describe Profile, type: :model do
 
     it "cannot be seen by a public user" do
       @user = nil
-      expect(@profile.can_be_seen_by?(@user)).to be false
+      expect(@profile).not_to be_viewable_by(@user)
     end
 
     it "can be seen by a network user" do
       @user = create(:user)
-      expect(@profile.can_be_seen_by?(@user)).to be true
+      expect(@profile).to be_viewable_by(@user)
     end
 
     it "can be seen by a friend" do
       @user = create(:friendship, :initiator => @profile.user).acceptor
-      expect(@profile.can_be_seen_by?(@user)).to be true
+      expect(@profile).to be_viewable_by(@user)
     end
 
   end
@@ -61,17 +61,17 @@ RSpec.describe Profile, type: :model do
 
     it "cannot be seen by a public user" do
       @user = nil
-      expect(@profile.can_be_seen_by?(@user)).to be false
+      expect(@profile).not_to be_viewable_by(@user)
     end
 
     it "cannot be seen by a network user" do
       @user = create(:user)
-      expect(@profile.can_be_seen_by?(@user)).to be false
+      expect(@profile).not_to be_viewable_by(@user)
     end
 
     it "can be seen by a friend" do
       @user = create(:friendship, :initiator => @profile.user).acceptor
-      expect(@profile.can_be_seen_by?(@user)).to be true
+      expect(@profile).to be_viewable_by(@user)
     end
 
   end

@@ -83,7 +83,7 @@ RSpec.describe PrivateConversation, type: :model do
     @recipient = create(:user)
     @recipient.profile.is_private!
 
-    expect(@recipient.profile.can_be_seen_by?(@sender)).to be false
+    expect(@recipient.profile).not_to be_viewable_by(@sender)
 
     conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
     expect(conversation).not_to be_valid
@@ -96,7 +96,7 @@ RSpec.describe PrivateConversation, type: :model do
     @sender = create(:user)
     @recipient = @sender
 
-    expect(@recipient.profile.can_be_seen_by?(@sender)).to be true
+    expect(@recipient.profile).to be_viewable_by(@sender)
 
     conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
     expect(conversation).not_to be_valid
@@ -110,7 +110,7 @@ RSpec.describe PrivateConversation, type: :model do
     @recipient = create(:user)
     @sender.profile.is_private!
 
-    expect(@sender.profile.can_be_seen_by?(@recipient)).to be false
+    expect(@sender.profile).not_to be_viewable_by(@recipient)
 
     conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
     expect(conversation).to be_valid

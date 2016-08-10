@@ -136,7 +136,7 @@ class PrivateConversation < ApplicationRecord
       end
 
       # validate that recipient can be messaged by sender
-      if not recipient.profile.can_be_seen_by? sender
+      if not recipient.profile.viewable_by? sender
         errors.add :recipient, "does not exist or their profile is private"
       end
     end

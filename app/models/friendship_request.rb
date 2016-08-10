@@ -13,13 +13,13 @@ class FriendshipRequest < ApplicationRecord
   validates :sender, presence: true
   validates :recipient, presence: true
 
-  validate :recipient_profile_must_be_visible_to_sender,
+  validate :recipient_profile_must_be_viewable_by_sender,
     :friendship_request_is_unique,
     :friendship_must_not_already_exist,
     if: "sender.present? and recipient.present?"
 
-  def recipient_profile_must_be_visible_to_sender
-    if not recipient.profile.can_be_seen_by?(sender)
+  def recipient_profile_must_be_viewable_by_sender
+    if not recipient.profile.viewable_by?(sender)
       errors[:base] << "User does not exist or profile is private"
     end
   end
