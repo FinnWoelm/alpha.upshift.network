@@ -107,8 +107,8 @@ class User < ApplicationRecord
   end
 
   # checks whether this user is friends with another user
-  def is_friends_with user
-    return friends.include?(user)
+  def has_friendship_with? user
+    !! friends.include?(user)
   end
 
   # checks whether this user has received a friend request from another user

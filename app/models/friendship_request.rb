@@ -34,7 +34,7 @@ class FriendshipRequest < ApplicationRecord
   end
 
   def friendship_must_not_already_exist
-    if sender.is_friends_with(recipient)
+    if sender.has_friendship_with?(recipient)
       errors[:base] << "You are already friends with #{recipient.name}"
     end
   end

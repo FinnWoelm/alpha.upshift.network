@@ -32,8 +32,8 @@ feature 'Friendship' do
   end
 
   def then_we_should_not_be_friends
-    expect(@user.is_friends_with(@friend)).to be false
-    expect(@friend.is_friends_with(@user)).to be false
+    expect(@user).not_to have_friendship_with (@friend)
+    expect(@friend).not_to have_friendship_with (@user)
     expect(@user.friendship_requests_sent.size).to eq(0)
     expect(@user.friends.size).to eq(0)
   end

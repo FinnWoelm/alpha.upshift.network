@@ -8,7 +8,7 @@ module ProfilesHelper
     return if @profile.user.id == @current_user.id
 
     # if user has a friendship with this profile
-    if @current_user.is_friends_with(@profile.user)
+    if @current_user.has_friendship_with?(@profile.user)
       render partial: "friendship/end_friendship_action", locals: { friend: @profile.user }
 
     # if user has sent a friend request to this profile
