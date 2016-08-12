@@ -9,25 +9,18 @@ module Likable
   # whether the object can be liked by a given user
   def likable_by? user
     return false unless user
-    return false if self.liked_by? user
-    return true
+    ! self.liked_by?(user)
   end
 
   # whether the object can be unliked by a given user
   def unlikable_by? user
     return false unless user
-    return true if self.liked_by? user
-    return false
+    !! self.liked_by?(user)
   end
 
   # whether the object is liked by a given user
   def liked_by? user
-    # check if we have preloaded likes
-    if self.association(:likes).loaded?
-      return self.likes.map{|like| like.liker_id}.include? user.id
-    else
-      return self.likers.include? user
-    end
+    return self.likes.map{|like| like.liker_id}.include? user.id
   end
 
 end
