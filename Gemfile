@@ -32,6 +32,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+# MaterializeCSS (http://materializecss.com/)
+gem 'materialize-sass'
+
 group :development, :test do
   # We will use pry rails as our console
   gem 'pry-rails'
