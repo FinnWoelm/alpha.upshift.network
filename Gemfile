@@ -34,6 +34,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 # MaterializeCSS (http://materializecss.com/)
 gem 'materialize-sass'
+# Material Icons (https://design.google.com/icons/)
+gem 'material_icons'
 
 group :development, :test do
   # We will use pry rails as our console
