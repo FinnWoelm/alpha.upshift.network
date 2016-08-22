@@ -1,0 +1,17 @@
+# Add configuration values here, as shown below.
+MAILJET_API_KEY: abbd693b29f9627ba40c703931e25fa7
+MAILJET_SECRET_KEY: 82a3b84e745a263914f7f13dfdee4d0c
+
+production:
+  UPSHIFT_NETWORK_DATABASE_NAME: un_upshift_network_production
+  UPSHIFT_NETWORK_DATABASE_USERNAME: un_upshift_network_user
+  UPSHIFT_NETWORK_DATABASE_PASSWORD: 3+!ubvnW=>cnP7!kjmNN9,T@J7"i(V
+# pusher_app_id: "2954"
+# pusher_key: 7381a978f7dd7f9a1117
+# pusher_secret: abdc3b896a0ffb85d373
+# stripe_api_key: sk_test_2J0l093xOyW72XUYJHE4Dv2r
+# stripe_publishable_key: pk_test_ro9jV5SNwGb1yYlQfzG17LHK
+#
+# production:
+#   stripe_api_key: sk_live_EeHnL644i6zo4Iyq4v1KdV9H
+#   stripe_publishable_key: pk_live_9lcthxpSIHbGwmdO941O1XVU

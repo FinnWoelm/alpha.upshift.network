@@ -11,3 +11,51 @@
 
 // Styles for static pages
 @import "static";
+
+
+// FORMS
+@each $color_name, $color in $colors {
+  @each $color_type, $color_value in $color {
+    @if $color_type == "base" {
+
+      div.input-field.#{$color_name} {
+
+        background-color: inherit !important;
+
+        input:focus {
+          border-bottom: 1px solid $color_value;
+          box-shadow: 0 1px 0 0 $color_value;
+
+          & + label {
+            color: $color_value;
+          }
+        }
+
+        .prefix.active {
+          color: $color_value;
+        }
+      }
+
+    }
+    @else {
+      div.input-field.#{$color_name}.#{$color_type} {
+
+        background-color: inherit !important;
+
+        input:focus {
+          border-bottom: 1px solid $color_value;
+          box-shadow: 0 1px 0 0 $color_value;
+
+          & + label {
+            color: $color_value;
+          }
+        }
+
+        .prefix.active {
+          color: $color_value;
+        }
+
+      }
+    }
+  }
+}

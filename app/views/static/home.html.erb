@@ -1,2 +1,113 @@
-<h1>Static#home</h1>
-<p>Find me in app/views/static/home.html.erb</p>
+<div id="static_home" class="container-fluid">
+
+  <% # central call to action %>
+  <div id="call_to_action" class="valign-wrapper">
+
+    <div class="valign">
+
+        <div class="center-align">
+          <%= image_tag "logo.png", width: 400 %>
+        </div>
+
+        <div class="floating-text">
+          <h1 class="center-align">Upshift Network</h1>
+          <h3 class="center-align">Community. Collaboration. Democracy.</h3>
+        </div>
+
+        <div>
+          <br><br>
+        </div>
+
+        <div class="center-align">
+          <a href="#join" class="waves-effect waves-light btn-large red modal-trigger">Join</a>
+        </div>
+
+      </div>
+
+    </div>
+
+</div>
+
+<!-- Modal Structure -->
+<div id="join" class="modal">
+  <div class="modal-content">
+    <h4>Upshift Network is coming soon</h4>
+    <p class="flow-text">Join our newsletter to get updates and receive early
+      access to Upshift Network.</p>
+    <div class="divider"></div>
+    <div class="section"></div>
+
+
+    <div class="row">
+      <form class="col s12">
+        <div class="row">
+          <div class="input-field col s12 red">
+            <i class="material-icons prefix">account_circle</i>
+            <input id="name" type="text">
+            <label for="name">Name</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s12 red">
+            <i class="material-icons prefix">email</i>
+            <input id="email" type="email">
+            <label for="email">Email</label>
+          </div>
+        </div>
+
+        <div class="center-align">
+          <button class="btn btn-large waves-effect waves-light red" type="submit" name="action">
+            Join Our Newsletter <i class="material-icons right">send</i>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  $(document).ready(function(){
+
+    // initialize the modal(s)
+    $('.modal-trigger').leanModal();
+
+    // # resize_home_to_fullscreen()
+    // Resizes the top-most div (home) that holds all the contain the user
+    // first sees when visiting the website. It is made fullscreen unless the
+    // height of the home div is already greater than the height of the
+    // viewport
+    function resize_home_to_fullscreen() {
+
+      // reset height of home
+      $("#call_to_action").css("height", "unset");
+
+      // get the natural height
+      var natural_height_of_call_to_action = $("#call_to_action").height();
+
+      // get the viewport height
+      var height_of_viewport = $(window).height();
+
+      // if viewport height is greater than call_to_action's natural height,
+      // then set call_to_action height to viewport height
+      if ( height_of_viewport > natural_height_of_call_to_action ) {
+        $("#call_to_action").height( height_of_viewport );
+      }
+
+    }
+
+    // resize home div when the DOM is loaded
+    resize_home_to_fullscreen();
+
+    // and whenever we resize the window
+    $( window ).resize(function() {
+      resize_home_to_fullscreen();
+    });
+
+
+  });
+
+</script>
