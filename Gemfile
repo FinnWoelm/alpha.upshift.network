@@ -29,6 +29,7 @@ gem 'mailjet', '~> 1.4'
 # For simple-to-use environment variables
 gem "figaro", '~> 1.1'
 
+gem 'puma', '~> 3.6'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -57,6 +58,12 @@ group :development do
   gem 'web-console', '~> 2.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+
+  gem 'capistrano',         require: false
+  gem 'capistrano-rvm',     require: false
+  gem 'capistrano-rails',   require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano3-puma',   require: false
 end
 
 group :test do
