@@ -23,6 +23,13 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
+# mailjet for marketing and transactional email
+gem 'mailjet', '~> 1.4'
+
+# For simple-to-use environment variables
+gem "figaro", '~> 1.1'
+
+gem 'puma', '~> 3.6'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -31,6 +38,11 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+
+# MaterializeCSS (http://materializecss.com/)
+gem 'materialize-sass'
+# Material Icons (https://design.google.com/icons/)
+gem 'material_icons'
 
 group :development, :test do
   # We will use pry rails as our console
@@ -46,6 +58,12 @@ group :development do
   gem 'web-console', '~> 2.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+
+  gem 'capistrano',         require: false
+  gem 'capistrano-rvm',     require: false
+  gem 'capistrano-rails',   require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano3-puma',   require: false
 end
 
 group :test do

@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  post 'subscribe_to_newsletter' => 'newsletter_subcriptions#create', as: :create_subscription
+
+  root 'static#home'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

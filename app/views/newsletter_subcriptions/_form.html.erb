@@ -1,0 +1,68 @@
+<div class="row">
+  <%= form_tag(create_subscription_path, id: 'create_subscription', class: 'col s12', remote: true) do %>
+
+    <div class="errors red-text">
+    </div>
+
+    <div class="row">
+      <div class="input-field col s12 red">
+        <i class="material-icons prefix">account_circle</i>
+        <%= text_field_tag :name %>
+        <%= label_tag :name %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-field col s12 red">
+        <i class="material-icons prefix">email</i>
+        <%= email_field_tag :email %>
+        <%= label_tag :email, "Email" %>
+      </div>
+    </div>
+
+    <div class="center-align">
+      <button class="btn btn-large waves-effect waves-light red" type="submit" name="action">
+        Join Our Newsletter <i class="material-icons right">send</i>
+      </button>
+    </div>
+
+  <% end %>
+
+  <% # awaiting response %>
+  <div id="create_subscription_awaiting_response" class="center-align init-hidden">
+    <div class="preloader-wrapper small active">
+     <div class="spinner-layer spinner-red-only">
+       <div class="circle-clipper left">
+         <div class="circle"></div>
+       </div><div class="gap-patch">
+         <div class="circle"></div>
+       </div><div class="circle-clipper right">
+         <div class="circle"></div>
+       </div>
+     </div>
+   </div>
+  </div>
+
+  <% # success %>
+  <div id="create_subscription_success" class="init-hidden">
+    <p class="flow-text">Thank you for joining, <span class="name"></span>!</p>
+  </div>
+
+</div>
+
+<% # JS Logic %>
+<script type="text/javascript">
+
+  $(document).ready(function(){
+
+    $("form#create_subscription").submit( function() {
+
+      $(this).slideUp();
+      $("div#create_subscription_awaiting_response").slideDown();
+
+    });
+
+
+  });
+
+</script>
