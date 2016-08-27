@@ -4,12 +4,12 @@ class NewsletterSubcriptionsController < ApplicationController
     @name = params[:name]
     email = params[:email]
 
-    respond_to do |format|
-      if @name.present? && email.present?
-        format.js
-      else
-        format.js { render 'new' }
-      end
+    begin
+      raise error unless @name.present? && email.present?
+      Mailjet::Contactslist_managecontact.create(id: 1663798, action: "addnoforce", email: email, name: @name)
+    rescue
+      render 'new'
     end
+    
   end
 end
