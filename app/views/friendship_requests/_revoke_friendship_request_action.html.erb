@@ -1,0 +1,4 @@
+<p>
+  You have sent a friend request to <%= recipient.name %>.
+  <%= link_to 'Revoke request', reject_friendship_request_path(recipient), method: :delete, data: { confirm: 'Are you sure?' } %>
+</p>

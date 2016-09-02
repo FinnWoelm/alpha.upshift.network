@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<div id="banner" style="width:100%; height:300px; background-color:gray;">
+</div>
+
+<h1><%= @profile.user.name %></h1>
+
+<p>
+  <strong>Email:</strong>
+  <%= @profile.user.email %>
+</p>
+
+<p>
+  <strong>Username:</strong>
+  <%= @profile.user.username %>
+</p>
+
+<%= friendship_actions %>
+
+<h1>Posts</h1>
+
+<%= write_post_action %>
+
+<%= render(@posts) || no_posts_yet_message %>

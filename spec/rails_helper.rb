@@ -6,7 +6,22 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'spec_helper'
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
-require 'capybara/rspec'
+
+require "capybara/rspec"
+require 'faker'
+require 'shoulda/matchers'
+require 'database_cleaner'
+
+# Shoulda Matchers: https://www.sitepoint.com/learn-the-first-best-practices-for-rails-and-rspec/
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
+
+#set the default driver
+Capybara.javascript_driver = :webkit
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -20,11 +35,8 @@ require 'capybara/rspec'
 # of increasing the boot-up time by auto-requiring all files in the support
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
-#
-# Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
-
-#set the default Capybara driver
-Capybara.javascript_driver = :webkit
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+#require Rails.root.join('spec/support/database_cleaner.rb')
 
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -37,7 +49,23 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
+
+  # Randomize order in which tests are run
+  config.order = "random"
+
+  # Use bullet in feature specs
+  if defined? Bullet
+    config.before(:type => :feature) do
+      Bullet.enable = true
+      Bullet.start_request
+    end
+    config.after(:type => :feature) do
+      Bullet.perform_out_of_channel_notifications if Bullet.notification?
+      Bullet.end_request
+      Bullet.enable = false
+    end
+  end
 
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
@@ -59,11 +87,7 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
-  # g.stylesheets false
-  # g.javascripts false
-  # g.test_framework :rspec, :fixtures => true, :view_specs => false, :helper_specs => false, :routing_specs => false, :controller_specs => true, :request_specs => true
-  # g.fixture_replacement :factory_girl, :dir => "spec/factories"
-
+  #add this line at the bottom of the config section
   #it saves us time when using FactoryGirl methods.
   config.include FactoryGirl::Syntax::Methods
 end
