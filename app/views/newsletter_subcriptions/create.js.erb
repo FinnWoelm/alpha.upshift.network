@@ -1,0 +1,4 @@
+$("div#create_subscription_awaiting_response").slideUp();
+$("div#create_subscription_success span.name").html(
+  "<%= escape_javascript(@name) %>");
+$("div#create_subscription_success").slideDown();

@@ -80,6 +80,6 @@ test:
 #
 production:
   <<: *default
-  database: upshift_network_production
-  username: upshift_network
+  database: <%= ENV['UPSHIFT_NETWORK_DATABASE_NAME'] %>
+  username: <%= ENV['UPSHIFT_NETWORK_DATABASE_USERNAME'] %>
   password: <%= ENV['UPSHIFT_NETWORK_DATABASE_PASSWORD'] %>

@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
 
+  # External
+  post 'subscribe_to_newsletter' => 'newsletter_subcriptions#create', as: :create_subscription
+
   # Sessions
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
@@ -31,5 +34,9 @@ Rails.application.routes.draw do
   # Profiles -- this must be last
   get '/:username', to: 'profiles#show', as: :profile
 
-  root 'sessions#new'
+  # we need to route people based on whether or not they are logged in
+  #root 'sessions#new'
+
+  root 'static#home'
+
 end
