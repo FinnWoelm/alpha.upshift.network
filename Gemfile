@@ -61,6 +61,7 @@ group :development do
   gem 'capistrano-rails',   require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano3-puma',   require: false
+  gem 'capistrano-figaro-yml', '~> 1.0.2', require: false
 end
 
 group :test do
