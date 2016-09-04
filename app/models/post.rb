@@ -15,16 +15,12 @@ class Post < ApplicationRecord
   validates :content, length: { maximum: 5000 }
 
   def readable_by? user
-    return self.author.profile.viewable_by? user
+    !! self.author.profile.viewable_by?(user)
   end
 
   # whether the post can be deleted by a given user
   def deletable_by? user
-
-    # no user
     return false unless user
-
-    # the user is the author of the post
     return self.author.id == user.id
   end
 
