@@ -6,6 +6,7 @@ class PrivateConversation < ApplicationRecord
     :class_name => "ParticipantshipInPrivateConversation",
     :foreign_key => "private_conversation_id",
     :dependent => :destroy,
+    :autosave => true,
     :inverse_of => :private_conversation
   has_many :participants,
     :through => :participantships,
@@ -50,24 +51,24 @@ class PrivateConversation < ApplicationRecord
     length: {
       is: 2,
       message: "needs exactly two conversation participants"}
-  validate :private_conversation_is_unique_for_participants, on: :create,
+  validate :uniqueness_for_participants, on: :create,
     if: "participantships.present?"
   validate :recipient_can_be_messaged_by_sender, on: :create,
     if: "sender.present? and recipient.present?"
-  validate :recipient_and_sender_must_not_be_the_same_person, on: :create,
+  validate :recipient_and_sender_cannot_be_the_same_person, on: :create,
     if: "sender.present? and recipient.present?"
 
   # # Methods
 
   def sender=(user)
-    self.remove_participant @sender if @sender
-    self.add_participant user
+    remove_participant @sender if @sender
+    add_participant user
     @sender = user
   end
 
   def recipient=(user)
-    self.remove_participant @recipient if @recipient
-    self.add_participant user
+    remove_participant @recipient if @recipient
+    add_participant user
     @recipient = user
   end
 
@@ -106,7 +107,7 @@ class PrivateConversation < ApplicationRecord
     end
   end
 
-  protected
+  private
     # adds a participant to the conversation
     def add_participant participant
       self.participantships.build(:participant => participant)
@@ -119,7 +120,7 @@ class PrivateConversation < ApplicationRecord
       end
     end
 
-    def private_conversation_is_unique_for_participants
+    def uniqueness_for_participants
       # since :participants is not yet initiated before creation, we need to
       # generate our own hash of user ids
       participation_ids = self.participantships.map {|p| {:id => p.participant_id}}
@@ -142,7 +143,7 @@ class PrivateConversation < ApplicationRecord
     end
 
     # Conversation sender and recipient must not be the same person
-    def recipient_and_sender_must_not_be_the_same_person
+    def recipient_and_sender_cannot_be_the_same_person
       if sender.id == recipient.id
         errors.add :recipient, "can't be yourself"
       end
