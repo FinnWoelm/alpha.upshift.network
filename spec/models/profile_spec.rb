@@ -2,78 +2,84 @@ require 'rails_helper'
 
 RSpec.describe Profile, type: :model do
 
-  it {
-    should define_enum_for(:visibility).
-      with([:is_private, :is_network_only, :is_public])
-  }
+  subject(:profile) { build_stubbed(:profile) }
 
-  context "profile is public, therefore it" do
-
-    before(:each) do
-      @profile = create(:profile, :visibility => "is_public")
-    end
-
-    it "can be seen by a public user" do
-      @user = nil
-      expect(@profile).to be_viewable_by(@user)
-    end
-
-    it "can be seen by a network user" do
-      @user = create(:user)
-      expect(@profile).to be_viewable_by(@user)
-    end
-
-    it "can be seen by a friend" do
-      @user = create(:friendship, :initiator => @profile.user).acceptor
-      expect(@profile).to be_viewable_by(@user)
-    end
-
+  it "has a valid factory" do
+    is_expected.to be_valid
   end
 
-  context "profile is network-only, therefore it" do
-
-    before(:each) do
-      @profile = create(:profile, :visibility => "is_network_only")
-    end
-
-    it "cannot be seen by a public user" do
-      @user = nil
-      expect(@profile).not_to be_viewable_by(@user)
-    end
-
-    it "can be seen by a network user" do
-      @user = create(:user)
-      expect(@profile).to be_viewable_by(@user)
-    end
-
-    it "can be seen by a friend" do
-      @user = create(:friendship, :initiator => @profile.user).acceptor
-      expect(@profile).to be_viewable_by(@user)
-    end
-
+  describe "associations" do
+    it { is_expected.to belong_to(:user).dependent(false).inverse_of(:profile) }
   end
 
-  context "profile is friends-only (private), therefore it" do
+  describe "accessors" do
+    it {
+      is_expected.to define_enum_for(:visibility).
+        with([:is_private, :is_network_only, :is_public])
+    }
+  end
 
-    before(:each) do
-      @profile = create(:profile, :visibility => "is_private")
+  describe "validations" do
+    it { is_expected.to validate_presence_of(:user) }
+  end
+
+  describe "#viewable_by?" do
+    subject(:profile) { create(:profile)}
+    let(:anonymous_user) { nil }
+    let(:registered_user) { build_stubbed(:user) }
+    let(:friend) { create(:friendship, initiator: profile.user, acceptor: create(:user)).acceptor }
+    let(:profile_owner) { profile.user }
+
+    context "when visibility is public" do
+      before { profile.is_public! }
+
+      it "is viewable by anonymous users" do
+        is_expected.to be_viewable_by anonymous_user
+      end
+      it "is viewable by registered users" do
+        is_expected.to be_viewable_by registered_user
+      end
+      it "is viewable by friends" do
+        is_expected.to be_viewable_by friend
+      end
+      it "is viewable by profile owner" do
+        is_expected.to be_viewable_by profile_owner
+      end
     end
 
-    it "cannot be seen by a public user" do
-      @user = nil
-      expect(@profile).not_to be_viewable_by(@user)
+    context "when visibility is network-only" do
+      before { profile.is_network_only! }
+
+      it "is not viewable by anonymous users" do
+        is_expected.not_to be_viewable_by anonymous_user
+      end
+      it "is viewable by registered users" do
+        is_expected.to be_viewable_by registered_user
+      end
+      it "is viewable by friends" do
+        is_expected.to be_viewable_by friend
+      end
+      it "is viewable by profile owner" do
+        is_expected.to be_viewable_by profile_owner
+      end
     end
 
-    it "cannot be seen by a network user" do
-      @user = create(:user)
-      expect(@profile).not_to be_viewable_by(@user)
-    end
+    context "when visibility is network-only" do
+      before { profile.is_private! }
 
-    it "can be seen by a friend" do
-      @user = create(:friendship, :initiator => @profile.user).acceptor
-      expect(@profile).to be_viewable_by(@user)
+      it "is not viewable by anonymous users" do
+        is_expected.not_to be_viewable_by anonymous_user
+      end
+      it "is not viewable by registered users" do
+        is_expected.not_to be_viewable_by registered_user
+      end
+      it "is viewable by friends" do
+        is_expected.to be_viewable_by friend
+      end
+      it "is viewable by profile owner" do
+        is_expected.to be_viewable_by profile_owner
+      end
     end
-
   end
 
 end

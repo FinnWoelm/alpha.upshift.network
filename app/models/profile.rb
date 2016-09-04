@@ -1,7 +1,12 @@
 class Profile < ApplicationRecord
+
+  # # Associations
   belongs_to :user, inverse_of: :profile
+
+  # # Accessors
   enum visibility: [ :is_private, :is_network_only, :is_public ]
 
+  # # Validations
   validates :user, presence: true
 
   # whether the profile visible to a given user
