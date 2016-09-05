@@ -56,7 +56,6 @@ feature 'Feed' do
   end
 
   def then_i_should_see_the_posts
-    pending "Not yet implemented"
     @posts.each do |post|
       expect(page).to have_content(post.content)
     end

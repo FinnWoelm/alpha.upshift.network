@@ -4,9 +4,14 @@ class FeedsController < ApplicationController
   # GET /
   def show
 
-    @posts = Post.none
     # get friends
+    friend_ids = current_user.friends.map {|f| f.id}
+    friend_ids << current_user.id
 
-    # get posts with comments and content that user has liked
+    # get 30 most recent posts
+    @posts =
+      Post.with_associations.most_recent_first.
+        where(:author_id => friend_ids).limit(30)
+
   end
 end
