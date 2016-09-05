@@ -24,6 +24,9 @@
 #  * zeus: 'zeus rspec' (requires the server to be started separately)
 #  * 'just' rspec: 'rspec'
 
+# for .singularize
+require 'active_support/inflector'
+
 guard :rspec, cmd: "bundle exec rspec" do
   require "guard/rspec/dsl"
   dsl = Guard::RSpec::Dsl.new(self)
@@ -49,6 +52,7 @@ guard :rspec, cmd: "bundle exec rspec" do
     [
       rspec.spec.call("routing/#{m[1]}_routing"),
       rspec.spec.call("controllers/#{m[1]}_controller"),
+      rspec.spec.call("requests/#{m[1].singularize}_request"),
       rspec.spec.call("acceptance/#{m[1]}")
     ]
   end
