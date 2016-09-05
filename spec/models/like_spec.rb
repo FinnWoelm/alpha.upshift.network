@@ -2,23 +2,65 @@ require 'rails_helper'
 
 RSpec.describe Like, type: :model do
 
-  it { is_expected.to validate_presence_of(:liker) }
-  it { is_expected.to validate_presence_of(:likable_id) }
-  it { is_expected.to validate_presence_of(:likable_type) }
-  it { is_expected.to validate_inclusion_of(:likable_type).in_array(Like.likable_types) }
+  subject(:like) { build(:like) }
 
   it "has a valid factory" do
-    expect(build(:like, :likable => create(:post))).to be_valid
+    is_expected.to be_valid
   end
 
-  it "prevents users from liking the same content multiple times" do
-    @user = create(:user)
-    @post = create(:post)
-    create(:like, :likable => @post, :liker => @user)
-    same_like = build(:like, :likable => @post, :liker => @user)
-    expect(same_like).not_to be_valid
-    expect(same_like.errors.full_messages).
-      to include("You have already liked this #{same_like.likable_type.downcase}")
+  describe "associations" do
+    it { is_expected.to belong_to(:liker).dependent(false).class_name('User') }
+    it { is_expected.to belong_to(:likable).dependent(false).counter_cache }
+  end
+
+  describe "validations" do
+    it { is_expected.to validate_presence_of(:liker) }
+    it { is_expected.to validate_presence_of(:likable_id) }
+    it { is_expected.to validate_presence_of(:likable_type) }
+    it { is_expected.to validate_inclusion_of(:likable_type).
+          in_array(Like.likable_types) }
+
+    context "custom validations" do
+      after { like.valid? }
+      it { is_expected.to receive(:like_must_be_unique_for_user_and_content) }
+    end
+  end
+
+  describe ".likable_types" do
+    it { expect(Like.likable_types).to match_array( ["Post", "Comment"] ) }
+  end
+
+  describe "#like_must_be_unique_for_user_and_content" do
+    let(:liker)   { like.liker }
+    let(:likable) { like.likable }
+    after { like.send(:like_must_be_unique_for_user_and_content) }
+
+    it "checks whether a like with same liker and likable exists" do
+      expect(Like).to receive(:exists?).with({
+        likable_id: like.likable_id,
+        likable_type: like.likable_type,
+        liker: liker
+      })
+    end
+
+    context "when like with user and content exists" do
+      before { allow(Like).to receive(:exists?) { true } }
+
+      it "adds an error message" do
+        expect(like.errors[:base]).to receive(:<<).
+          with("You have already liked this #{like.likable_type.downcase}")
+      end
+
+    end
+
+    context "when like with user and content does not exist" do
+      before { allow(Like).to receive(:exists?) { false } }
+
+      it "does not add an error message" do
+        expect(like.errors[:base]).not_to receive(:<<)
+      end
+
+    end
   end
 
 end

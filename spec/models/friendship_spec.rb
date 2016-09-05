@@ -2,86 +2,125 @@ require 'rails_helper'
 
 RSpec.describe Friendship, type: :model do
 
-  it { is_expected.to validate_presence_of(:initiator) }
-  it { is_expected.to validate_presence_of(:acceptor) }
+  subject(:friendship) { build_stubbed(:friendship) }
 
   it "has a valid factory" do
-    expect(build(:friendship)).to be_valid
+    is_expected.to be_valid
   end
 
-  it "is accessible to both users" do
-    friendship = create(:friendship)
-    initiator = friendship.initiator
-    acceptor = friendship.acceptor
-    expect(initiator.friends.size).to eq(1)
-    expect(acceptor.friends.size).to eq(1)
+  describe "associations" do
+    it { is_expected.to belong_to(:initiator).dependent(false).class_name('User') }
+    it { is_expected.to belong_to(:acceptor).dependent(false).class_name('User') }
   end
 
-  it "can only be created once (it is unique)" do
-    friendship = create(:friendship)
-    same_friendship =
-      build(
-        :friendship,
-        :initiator => friendship.initiator,
-        :acceptor => friendship.acceptor
-      )
-    expect(same_friendship).not_to be_valid
-    expect(same_friendship.errors.full_messages).
-      to include("You are already friends with #{same_friendship.initiator.name}")
+  describe "scopes" do
+
+    describe ":find_friendships_between" do
+      let(:user_one) { create(:user) }
+      let(:user_two) { create(:user) }
+      subject!(:friendship) do
+        create(:friendship, initiator: user_one, acceptor: user_two)
+      end
+
+      context "when first argument is initiator" do
+        it "returns the friendship" do
+          expect(Friendship.find_friendships_between(user_one, user_two)).
+            to eq([friendship])
+        end
+      end
+
+      context "when first argument is acceptor" do
+        it "returns the friendship" do
+          expect(Friendship.find_friendships_between(user_two, user_one)).
+            to eq([friendship])
+        end
+      end
+
+      context "when there is no friendship between two users" do
+        it "returns empty array" do
+          expect(Friendship.find_friendships_between(user_two, create(:user))).
+            to eq([])
+        end
+      end
+
+    end
   end
 
-  it "cannot be created in both directions by the same users" do
-    friendship = create(:friendship)
-    inverse_friendship =
-      build(
-        :friendship,
-        :initiator => friendship.acceptor,
-        :acceptor => friendship.initiator
-      )
+  describe "validations" do
+    it { is_expected.to validate_presence_of(:initiator) }
+    it { is_expected.to validate_presence_of(:acceptor) }
 
-    expect(inverse_friendship).to be_invalid
-    expect(inverse_friendship.errors.full_messages).
-      to include("You are already friends with #{inverse_friendship.initiator.name}")
+    context "custom validations" do
+      after { friendship.valid? }
+      it { is_expected.to receive(:friendship_must_be_unique) }
+    end
   end
 
-  it "can find a friendship between users" do
-    3.times { create(:user) }
+  describe "callbacks" do
+    subject(:friendship) { build(:friendship) }
 
-    # user 1 is friends with user 2
-    Friendship.create(:initiator => User.first, :acceptor => User.second)
+    context "after create" do
+      after { friendship.save }
 
-    # user 1 is friends with user 3
-    Friendship.create(:acceptor => User.first, :initiator => User.third)
+      it { is_expected.to receive(:destroy_friendship_requests) }
+    end
+  end
 
-    # test
-    friendship_one = Friendship.find_friendship_between(User.first, User.second).first
-    friendship_two = Friendship.find_friendship_between(User.first, User.third).first
-    friendship_three = Friendship.find_friendship_between(User.second, User.third).first
+  describe "#friendship_must_be_unique" do
+    let(:initiator) { friendship.initiator }
+    let(:acceptor)  { friendship.acceptor }
+    after do
+      friendship.send(:friendship_must_be_unique)
+    end
 
-    expect(friendship_one).to be_present
-    expect(friendship_one.initiator_id).to eq(User.first.id)
-    expect(friendship_one.acceptor_id).to eq(User.second.id)
+    it "queries for friendships between initiator and acceptor" do
+      expect(Friendship).to receive(:find_friendships_between).
+        with(initiator, acceptor) { [] }
+    end
 
-    expect(friendship_two).to be_present
-    expect(friendship_two.initiator_id).to eq(User.third.id)
-    expect(friendship_two.acceptor_id).to eq(User.first.id)
+    context "when friendship already exists" do
+      before do
+        allow(Friendship).
+          to receive(:find_friendships_between) { [friendship] }
+      end
 
-    expect(friendship_three).not_to be_present
+      it "adds an error message" do
+        expect(friendship.errors[:base]).to receive(:<<).
+          with("A friendship between #{initiator.name} and #{acceptor.name} " +
+            "already exists.")
+      end
+    end
 
-    # test the reverse direction
-    friendship_one = Friendship.find_friendship_between(User.second, User.first).first
-    friendship_two = Friendship.find_friendship_between(User.third, User.first).first
-    friendship_three = Friendship.find_friendship_between(User.third, User.second).first
+    context "when friendship does not yet exist" do
+      before do
+        allow(Friendship).
+          to receive(:find_friendships_between) { [] }
+      end
 
-    expect(friendship_one).to be_present
-    expect(friendship_one.initiator_id).to eq(User.first.id)
-    expect(friendship_one.acceptor_id).to eq(User.second.id)
+      it "does not add an error message" do
+        expect(friendship.errors[:base]).not_to receive(:<<)
+      end
+    end
+  end
 
-    expect(friendship_two).to be_present
-    expect(friendship_two.initiator_id).to eq(User.third.id)
-    expect(friendship_two.acceptor_id).to eq(User.first.id)
+  describe "#destroy_friendship_requests" do
+    let(:initiator) { friendship.initiator }
+    let(:acceptor)  { friendship.acceptor }
+    after do
+      friendship.send(:destroy_friendship_requests)
+    end
 
-    expect(friendship_three).not_to be_present
+    it "queries for friendship requests between initiator and acceptor" do
+      expect(FriendshipRequest).to receive(:find_friendship_requests_between).
+        with(initiator, acceptor) { FriendshipRequest.none }
+    end
+
+    it "deletes all friendship requests retrieved" do
+      retrieved_requests = double
+      allow(FriendshipRequest).to receive(:find_friendship_requests_between) { retrieved_requests }
+      expect(retrieved_requests).to receive(:destroy_all)
+    end
+
   end
 
 end

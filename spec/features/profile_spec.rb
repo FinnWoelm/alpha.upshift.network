@@ -37,7 +37,7 @@ feature 'Profile' do
   end
 
   def then_i_should_see_their_profile
-    expect(current_path).to eq("/" + @another_user.username)
+    expect(page).to have_current_path("/" + @another_user.username)
     expect(page).to have_content(@another_user.name)
   end
 

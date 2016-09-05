@@ -2,131 +2,407 @@ require 'rails_helper'
 
 RSpec.describe PrivateConversation, type: :model do
 
-  it { is_expected.to validate_presence_of(:sender) }
-  it { is_expected.to validate_presence_of(:recipient).with_message("does not exist or their profile is private") }
-  it { is_expected.to validate_length_of(:participantships).with_message("needs exactly two conversation participants") }
+  subject(:private_conversation) { build_stubbed(:private_conversation) }
+  let(:sender) { private_conversation.sender }
+  let(:recipient) { private_conversation.recipient }
 
   it "has a valid factory" do
-    expect(build(:private_conversation)).to be_valid
+    is_expected.to be_valid
   end
 
-  it "creates a conversation between sender and recipient" do
-    conversation = PrivateConversation.new(:sender => create(:user), :recipient => create(:user))
-    expect(conversation).to be_valid
-    expect(conversation.save).to be true
-    expect(conversation.participants.size).to eq(2)
+  describe "associations" do
+    it {
+      is_expected.to have_many(:participantships).
+        dependent(:destroy).autosave(true).
+        class_name('ParticipantshipInPrivateConversation').
+        with_foreign_key("private_conversation_id").
+        inverse_of(:private_conversation)
+    }
+    it {
+      is_expected.to have_many(:participants).dependent(false).
+        through(:participantships).source(:participant)
+    }
+    it {
+      is_expected.to have_many(:messages).dependent(:destroy).
+        class_name('PrivateMessage').
+        with_foreign_key("private_conversation_id").
+        inverse_of(:conversation)
+    }
+    it {
+      is_expected.to have_one(:most_recent_message).
+        class_name('PrivateMessage').
+        with_foreign_key("private_conversation_id")
+    }
+
+    describe ":most_recent_message" do
+      subject(:private_conversation) { create(:private_conversation) }
+      before {
+        create_list(:private_message, 3, conversation: private_conversation)
+      }
+      let!(:most_recent_message) {
+        create(:private_message, conversation: private_conversation)
+      }
+      before { create_list(:private_message, 3) }
+
+      it "returns the most recent message" do
+        expect(private_conversation.most_recent_message).
+          to eq(most_recent_message)
+      end
+    end
   end
 
-  it "deletes associated participantships upon destroy" do
-    conversation = PrivateConversation.create(:sender => create(:user), :recipient => create(:user))
-    expect(PrivateConversation.all.size).to eq(1)
-    expect(ParticipantshipInPrivateConversation.all.size).to eq(2)
-    expect(User.all.size).to eq(2)
+  describe "scopes" do
 
-    conversation.destroy
-    expect(PrivateConversation.all.size).to eq(0)
-    expect(ParticipantshipInPrivateConversation.all.size).to eq(0)
-    expect(User.all.size).to eq(2)
-  end
+    describe ":most_recent_activity_first" do
+      after { PrivateConversation.most_recent_activity_first }
 
-  it "deletes associated private messages upon destroy" do
-    conversation = PrivateConversation.create(:sender => create(:user), :recipient => create(:user))
-    5.times { create(:private_message, :conversation => conversation) }
-    expect(PrivateConversation.all.size).to eq(1)
-    expect(PrivateMessage.all.size).to eq(5)
-    expect(User.all.size).to eq(2)
+      it "orders private conversations by their last updated time" do
+        expect(PrivateConversation).to receive(:order).
+          with('"private_conversations"."updated_at" DESC')
+      end
 
-    conversation.destroy
+    end
 
-    expect(PrivateConversation.all.size).to eq(0)
-    expect(PrivateMessage.all.size).to eq(0)
-    expect(User.all.size).to eq(2)
-  end
+    describe ":with_associations" do
+      before { create(:private_conversation) }
+      let(:private_conversation) { PrivateConversation.with_associations.first }
 
-  it "must have two participants" do
-    conversation = PrivateConversation.new(:sender => create(:user), :recipient => create(:user))
-    conversation.participantships.clear
+      it "eagerloads messages" do
+        expect(private_conversation.association(:messages)).to be_loaded
+      end
 
-    # create with zero participants -> fail
-    expect(conversation).not_to be_valid
-    expect(conversation.errors.messages).to include(:participantships)
+      it "eagerloads participants" do
+        expect(private_conversation.association(:participants)).to be_loaded
+      end
 
-    # create with one participants -> fail
-    conversation.participantships.build(participant: create(:user))
-    expect(conversation).not_to be_valid
-    expect(conversation.errors.messages).to include(:participantships)
+    end
 
-    # create with two participants -> success
-    conversation.participantships.build(participant: create(:user))
-    expect(conversation).to be_valid
-    expect(conversation.errors.messages).not_to include(:participantships)
+    describe ":find_conversations_between" do
+      let(:user_one) { create(:user) }
+      let(:user_two) { create(:user) }
+      subject!(:private_conversation) do
+        create(:private_conversation, sender: user_one, recipient: user_two)
+      end
 
-    # create with three participants -> fail
-    conversation.participantships.build(participant: create(:user))
-    expect(conversation).not_to be_valid
-    expect(conversation.errors.messages).to include(:participantships)
+      context "when first argument is sender" do
+        it "returns the private conversation" do
+          expect(PrivateConversation.
+            find_conversations_between([user_one, user_two])).
+            to eq([private_conversation])
+        end
+      end
 
-    # create with four participants -> fail
-    conversation.participantships.build(participant: create(:user))
-    expect(conversation).not_to be_valid
-    expect(conversation.errors.messages).to include(:participantships)
+      context "when first argument is recipient" do
+        it "returns the private conversation" do
+          expect(PrivateConversation.
+            find_conversations_between([user_one, user_two])).
+            to eq([private_conversation])
+        end
+      end
 
-    # create with five participants -> fail
-    conversation.participantships.build(participant: create(:user))
-    expect(conversation).not_to be_valid
-    expect(conversation.errors.messages).to include(:participantships)
+      context "when there is no private conversation between two users" do
+        it "returns empty array" do
+          expect(PrivateConversation.
+            find_conversations_between([user_two, create(:user)])).
+            to eq([])
+        end
+      end
 
-  end
-
-  it "is invalid if recipient's profile cannot be seen by sender" do
-    @sender = create(:user)
-    @recipient = create(:user)
-    @recipient.profile.is_private!
-
-    expect(@recipient.profile.can_be_seen_by?(@sender)).to be false
-
-    conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
-    expect(conversation).not_to be_valid
-    expect(conversation.errors.full_messages).
-      to include("Recipient does not exist or their profile is private")
+    end
 
   end
 
-  it "is invalid if sender and recipient are the same person" do
-    @sender = create(:user)
-    @recipient = @sender
+  describe "validations" do
+    it { is_expected.to validate_presence_of(:sender).on(:create) }
+    it { is_expected.to validate_presence_of(:recipient).
+          with_message("does not exist or their profile is private").on(:create)
+    }
+    it { is_expected.to validate_length_of(:participantships).
+          with_message("needs exactly two conversation participants")
+    }
 
-    expect(@recipient.profile.can_be_seen_by?(@sender)).to be true
+    context "custom validations" do
+      after { private_conversation.valid? }
+      it { is_expected.to receive(:uniqueness_for_participants) }
+      it { is_expected.to receive(:recipient_can_be_messaged_by_sender) }
+      it { is_expected.to receive(:recipient_and_sender_cannot_be_the_same_person) }
+    end
+  end
 
-    conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
-    expect(conversation).not_to be_valid
-    expect(conversation.errors.full_messages).
-      to include("Recipient can't be yourself")
+  describe "#sender=" do
+    let(:sender) { build_stubbed(:user) }
+    after { private_conversation.sender = sender }
+
+    context "when sender is already set" do
+      let(:previous_sender) { build_stubbed(:user) }
+      before { private_conversation.sender = previous_sender }
+
+      it "removes the existing sender" do
+        expect(private_conversation).
+          to receive(:remove_participant).with(previous_sender)
+      end
+    end
+
+    it "adds sender as participant" do
+      expect(private_conversation).to receive(:add_participant).with(sender)
+    end
+
+    it "sets the sender" do
+      private_conversation.sender = sender
+      expect(private_conversation.sender).to eq(sender)
+    end
+  end
+
+  describe "#recipient=" do
+    let(:recipient) { build_stubbed(:user) }
+    after { private_conversation.recipient = recipient }
+
+    context "when recipient is already set" do
+      let(:previous_recipient) { build_stubbed(:user) }
+      before { private_conversation.recipient = previous_recipient }
+
+      it "removes the existing recipient" do
+        expect(private_conversation).
+          to receive(:remove_participant).with(previous_recipient)
+      end
+    end
+
+    it "adds recipient as participant" do
+      expect(private_conversation).to receive(:add_participant).with(recipient)
+    end
+
+    it "sets the recipient" do
+      private_conversation.recipient = recipient
+      expect(private_conversation.recipient).to eq(recipient)
+    end
+  end
+
+  describe "#participants_other_than" do
+    let(:other_participants) { build_stubbed_list(:user, 4) }
+    let(:this_participant) { build_stubbed(:user) }
+    before {
+      private_conversation.participants << other_participants
+      private_conversation.participants << this_participant
+    }
+
+    context "when this_participant is an ID" do
+      it "selects all participants other than this one" do
+        expect(private_conversation.participants_other_than(this_participant)).
+          to eq(other_participants)
+      end
+    end
+
+    context "when this_participant is a user" do
+      it "selects all participants other than this one" do
+        expect(private_conversation.participants_other_than(this_participant)).
+          to eq(other_participants)
+      end
+    end
 
   end
 
-  it "is valid as long as recipient's profile can be seen by sender (even if sender's profile cannot be seen by recipient)" do
-    @sender = create(:user)
-    @recipient = create(:user)
-    @sender.profile.is_private!
+  describe "#participantship_of" do
+    subject(:private_conversation) { build(:private_conversation) }
+    let(:other_participants) { build_list(:user, 4) }
+    let(:this_participant) { build(:user) }
+    before {
+      private_conversation.participants << other_participants
+      private_conversation.participants << this_participant
+      private_conversation.save(validate: false)
+    }
 
-    expect(@sender.profile.can_be_seen_by?(@recipient)).to be false
+    context "when this_participant is an ID" do
+      it "selects their participantship" do
+        expect(private_conversation.participantship_of(this_participant)).
+          to eq(this_participant.participantships_in_private_conversations.first)
+      end
+    end
 
-    conversation = PrivateConversation.new(:sender => @sender, :recipient => @recipient)
-    expect(conversation).to be_valid
+    context "when this_participant is a user" do
+      it "selects their participantship" do
+        expect(private_conversation.participantship_of(this_participant)).
+          to eq(this_participant.participantships_in_private_conversations.first)
+      end
+    end
+
   end
 
-  it "does not create conversation if another between sender and recipient already exists" do
-    @user_one = create(:user)
-    @user_two = create(:user)
+  describe "#mark_read_for" do
+    let(:this_participant) { build(:user) }
+    let!(:participantship) { instance_double(ParticipantshipInPrivateConversation) }
+    before {
+      allow(private_conversation).
+        to receive(:participantship_of) { participantship }
+    }
+    after { private_conversation.mark_read_for this_participant }
 
-    conversation = PrivateConversation.create(:sender => @user_one, :recipient => @user_two)
-    expect(conversation.participants.size).to eq(2)
+    context "when participant has not read conversation" do
+      before {
+        allow(participantship).to receive_message_chain(:read_at, :nil?) { true }
+      }
 
-    same_conversation = PrivateConversation.new(:sender => @user_one, :recipient => @user_two)
-    expect(same_conversation).not_to be_valid
-    expect(same_conversation.errors.full_messages).
-      to include("You already have a conversation with #{same_conversation.recipient.name}")
+      it "touches read_at of participant's participantship" do
+        expect(participantship).to receive(:touch).with(:read_at)
+      end
+    end
+
+    context "when latest message is newer than participant's read_at" do
+      before {
+        allow(private_conversation).
+          to receive_message_chain(:messages, :first, :created_at) { Time.now }
+        allow(participantship).
+          to receive(:read_at) { Time.now - 1.minute }
+      }
+
+      it "touches read_at of participant's participantship" do
+        expect(participantship).to receive(:touch).with(:read_at)
+      end
+    end
+
+    context "when participant's read_at is newer than latest message" do
+      before {
+        allow(private_conversation).
+          to receive_message_chain(:messages, :first, :created_at) {
+            Time.now - 1.minute
+          }
+        allow(participantship).
+          to receive(:read_at) { Time.now }
+      }
+
+      it "does not touch read_at of participant's participantship" do
+        expect(participantship).not_to receive(:touch).with(:read_at)
+      end
+    end
+  end
+
+  describe "#add_participant" do
+    let(:participant) { build_stubbed(:user) }
+    after { private_conversation.send(:add_participant, participant) }
+
+    it "builds a participantship" do
+      expect(private_conversation.participantships).
+        to receive(:build).with(participant: participant)
+    end
+  end
+
+  describe "#remove_participant" do
+    let(:participantship) { private_conversation.participantships.first }
+    let(:participant) { participantship.participant }
+
+    it "marks participantship for destruction" do
+      expect { private_conversation.send(:remove_participant, participant) }.
+        to change { participantship.marked_for_destruction? }.
+        from(false).to(true)
+    end
+
+    context "when saving private conversation" do
+      subject(:private_conversation) { create(:private_conversation) }
+      before { private_conversation.send(:remove_participant, participant) }
+
+      it "destructs the participantship" do
+        expect { private_conversation.save(validate: false) }.
+          to change {
+            ParticipantshipInPrivateConversation.
+              exists?(id: participantship.id)
+          }.
+          from(true).to(false)
+      end
+
+    end
+
+  end
+
+  describe "#uniqueness_for_participants" do
+    let(:participant_ids) { [{id: sender.id}, {id: recipient.id}] }
+    after { private_conversation.send(:uniqueness_for_participants) }
+
+    it "checks whether conversations between these participants exists" do
+      conversations_between_participants = class_double(PrivateConversation)
+      expect(PrivateConversation).to receive(:find_conversations_between).
+        with(participant_ids) { conversations_between_participants }
+      expect(conversations_between_participants).to receive(:any?)
+    end
+
+    context "when a conversation between these participants exists" do
+      before {
+        allow(PrivateConversation).
+          to receive_message_chain(:find_conversations_between, :any?) { true }
+      }
+
+      it "adds an error message" do
+        expect(private_conversation.errors[:base]).to receive(:<<).
+          with("You already have a conversation with #{recipient.name}")
+      end
+    end
+
+    context "when a conversation between these participants does not exist" do
+      before {
+        allow(PrivateConversation).
+          to receive_message_chain(:find_conversations_between, :any?) { false }
+      }
+
+      it "does not add an error message" do
+        expect(private_conversation.errors[:base]).not_to receive(:<<)
+      end
+    end
+
+  end
+
+  describe "#recipient_can_be_messaged_by_sender" do
+    after { private_conversation.send(:recipient_can_be_messaged_by_sender) }
+
+    it "checks whether recipient profile is viewable by sender" do
+      recipient_profile = instance_double(Profile)
+      expect(recipient).to receive(:profile) { recipient_profile }
+      expect(recipient_profile).to receive(:viewable_by?).with(sender)
+    end
+
+    context "when recipient profile is viewable by sender" do
+      before {
+        allow(recipient).
+          to receive_message_chain(:profile, :viewable_by?) { true }
+      }
+
+      it "does not add an error message" do
+        expect(private_conversation.errors[:recipient]).not_to receive(:<<)
+      end
+    end
+
+    context "when recipient profile is not viewable by sender" do
+      before {
+        allow(recipient).
+          to receive_message_chain(:profile, :viewable_by?) { false }
+      }
+
+      it "adds an error message" do
+        expect(private_conversation.errors[:recipient]).to receive(:<<).
+          with("does not exist or their profile is private")
+      end
+    end
+
+  end
+
+  describe "#recipient_and_sender_cannot_be_the_same_person" do
+    after {
+      private_conversation.send(:recipient_and_sender_cannot_be_the_same_person)
+    }
+
+    context "when IDs of sender and recipient are not identical" do
+      before { sender.id = recipient.id + 1 }
+
+      it "does not add an error message" do
+        expect(private_conversation.errors[:recipient]).not_to receive(:<<)
+      end
+    end
+
+    context "when IDs of sender and recipient are identical" do
+      before { sender.id = recipient.id }
+
+      it "adds an error message" do
+        expect(private_conversation.errors[:recipient]).to receive(:<<).
+          with("can't be yourself")
+      end
+    end
 
   end
 

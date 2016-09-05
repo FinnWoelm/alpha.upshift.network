@@ -28,7 +28,7 @@ RSpec.describe "Friendship", type: :request do
     it "destroys the friendship" do
       delete end_friendship_path(@friendship.initiator)
       assert_redirected_to profile_path(@friendship.initiator)
-      expect(@friendship.acceptor.is_friends_with(@friendship.initiator)).to be false
+      expect(@friendship.acceptor).not_to have_friendship_with (@friendship.initiator)
     end
 
   end

@@ -61,7 +61,7 @@ feature 'Private Conversation' do
   end
 
   def then_i_should_have_started_a_new_private_conversation_with_that_user
-    expect(PrivateConversation.find_conversations_between([@user, @user_to_message]).any?).to be true
+    expect(PrivateConversation.find_conversations_between([@user, @user_to_message])).to be_any
   end
 
   def and_i_delete_one_of_the_private_conversations
