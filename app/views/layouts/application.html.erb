@@ -23,5 +23,13 @@
 
   <%= yield %>
 
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+      Materialize.toast("<%= notice %>", 5000);
+    });
+
+  </script>
+
   </body>
 </html>
