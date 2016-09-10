@@ -1,3 +1,11 @@
+class AuthenticationConstraint
+
+  # Signed-in users only
+  def matches?(request)
+    request.session[:user_id].present?
+  end
+end
+
 Rails.application.routes.draw do
 
   # External
@@ -31,11 +39,14 @@ Rails.application.routes.draw do
   post '/:likable_type/:likable_id/like', to: 'likes#create', as: :like
   delete '/:likable_type/likable_id/like', to: 'likes#destroy', as: :unlike
 
+  # Feed (merged into root path)
+  # get 'feed', to: 'feeds#show', as: :feed
+
   # Profiles -- this must be last
   get '/:username', to: 'profiles#show', as: :profile
 
   # we need to route people based on whether or not they are logged in
-  #root 'sessions#new'
+  root 'feeds#show', constraints: AuthenticationConstraint.new, as: :feed
 
   root 'static#home'
 
