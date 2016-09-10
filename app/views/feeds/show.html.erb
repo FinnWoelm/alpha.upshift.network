@@ -1,2 +1,5 @@
 <h1>Feed</h1>
+
+<%= render :partial => "posts/form", locals: {post: @post} %>
+
 <%= render(@posts) || "There are no posts to show. Why don't you write one to get started?" %>

@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe "feeds/show.html.erb", type: :view do
 
+  before do
+    assign(:post, Post.new)
+  end
+
   it "has a header: Feed" do
    assign(:posts, Post.none)
    render
@@ -13,8 +17,7 @@ RSpec.describe "feeds/show.html.erb", type: :view do
    assign(:posts, Post.none)
    render
 
-   pending "Not yet implemented"
-   expect(rendered).to have_selector("form", text: "Write new post")
+   expect(rendered).to have_selector("form", text: "Content")
   end
 
   context "when there are posts to show" do

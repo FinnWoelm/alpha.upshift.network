@@ -13,5 +13,8 @@ class FeedsController < ApplicationController
       Post.with_associations.most_recent_first.
         where(:author_id => friend_ids).limit(30)
 
+    # create new post
+    @post = Post.new
+
   end
 end
