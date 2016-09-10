@@ -52,7 +52,8 @@ feature 'Feed' do
   end
 
   def and_i_am_seeing_my_feed
-    visit feed_path
+    # root_path = feed_path
+    visit root_path
   end
 
   def then_i_should_see_the_posts
