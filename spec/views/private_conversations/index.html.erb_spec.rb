@@ -64,10 +64,15 @@ RSpec.describe "private_conversations/index.html.erb", type: :view do
 
     render
 
-    expect(@most_recently_active_conversations[0].recipient.name).to appear_before(@most_recently_active_conversations[1].recipient.name)
-    expect(@most_recently_active_conversations[1].recipient.name).to appear_before(@most_recently_active_conversations[2].recipient.name)
-    expect(@most_recently_active_conversations[2].recipient.name).to appear_before(@most_recently_active_conversations[3].recipient.name)
-    expect(@most_recently_active_conversations[3].recipient.name).to appear_before(@most_recently_active_conversations[4].recipient.name)
+    previous_recipient_name = ""
+
+    @most_recently_active_conversations.each do |conversation|
+      if not previous_recipient_name.empty? and not conversation.new_record?
+        expect(previous_recipient_name).
+          to appear_before(conversation.recipient.name)
+        previous_recipient_name = conversation.recipient.name
+      end
+    end
 
   end
 

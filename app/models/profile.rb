@@ -1,10 +1,16 @@
 class Profile < ApplicationRecord
+
+  # # Associations
   belongs_to :user, inverse_of: :profile
+
+  # # Accessors
   enum visibility: [ :is_private, :is_network_only, :is_public ]
 
+  # # Validations
   validates :user, presence: true
 
-  def can_be_seen_by? user
+  # whether the profile visible to a given user
+  def viewable_by? user
 
     # public profile can be seen by everyone
     return true if self.is_public?
@@ -19,7 +25,7 @@ class Profile < ApplicationRecord
     return true if self.is_network_only?
 
     # network user: friend's profile
-    return true if self.is_private? and user.is_friends_with(self.user)
+    return true if self.is_private? and user.has_friendship_with?(self.user)
 
     # other cases: false
     return false

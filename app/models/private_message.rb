@@ -5,12 +5,10 @@ class PrivateMessage < ApplicationRecord
   belongs_to :conversation, :class_name => "PrivateConversation",
     :foreign_key => "private_conversation_id",
     :inverse_of => :messages,
-    :optional => false,
     :autosave => true
   # User
   belongs_to :sender, :class_name => "User",
-    :inverse_of => :private_messages_sent,
-    :optional => false
+    :inverse_of => :private_messages_sent
 
   # # Scopes
   default_scope -> { order('"private_messages"."id" DESC') }
@@ -32,7 +30,8 @@ class PrivateMessage < ApplicationRecord
   end
 
   # # Validations
-  validates :recipient_username, presence: true, allow_nil: true
+  validates :conversation, presence: true
+  validates :sender, presence: true
   validates :content, presence: true
   validates :content, length: { maximum: 50000 }
   validate :sender_is_part_of_conversation, on: :create,
@@ -55,24 +54,24 @@ class PrivateMessage < ApplicationRecord
   # conversations from appearing as unread to the user who sent the message
   after_create :update_read_at_of_sender
 
-  protected
+  private
     # Validation: Sender must be part of the conversation to send messages
     def sender_is_part_of_conversation
 
       participant_ids = conversation.participantships.map {|p| p.participant_id}
 
       if not participant_ids.include? sender.id
-        errors[:base] << "#{self.sender.name} (sender) does not belong to this conversation."
+        errors[:base] << "#{self.sender.name} (sender) does not belong to this conversation"
       end
     end
 
-    # Callback: After Intiliaize
+    # Callback: After Initialize
     # Sets the recipient username on the basis of this message's conversation
     # (only if conversation is eager loaded and not a new record, for performance
     # reasons)
     def set_recipient_username
       if self.association(:conversation).loaded? and not self.conversation.new_record?
-        self.recipient_username =
+        @recipient_username =
           self.conversation.participants_other_than(self.sender.id).first.username
       end
     end
@@ -90,11 +89,7 @@ class PrivateMessage < ApplicationRecord
     # conversation. So that the new message won't be marked as unread for the
     # sender
     def update_read_at_of_sender
-      conversation.participantships.each do |participantship|
-        if participantship.participant_id == sender.id
-          participantship.touch(:read_at)
-        end
-      end
+      conversation.participantship_of( sender ).touch(:read_at)
     end
 
 end

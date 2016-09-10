@@ -52,7 +52,7 @@ feature 'Like' do
   def then_the_post_should_have_my_like
     @post.reload
     expect(@post.likes.size).to eq(1)
-    expect(@user.liked_posts.size).to eq(1)
+    expect(@user.likes.size).to eq(1)
     expect(page).to have_content("Likes: 1")
   end
 
@@ -63,7 +63,7 @@ feature 'Like' do
   def then_the_post_should_not_have_my_like
     @post.reload
     expect(@post.likes.size).to eq(0)
-    expect(@user.liked_posts.size).to eq(0)
+    expect(@user.likes.size).to eq(0)
     expect(page).to have_content("Likes: 0")
   end
 
@@ -79,7 +79,7 @@ feature 'Like' do
   def then_the_comment_should_have_my_like
     @comment.reload
     expect(@comment.likes.size).to eq(1)
-    expect(@user.liked_comments.size).to eq(1)
+    expect(@user.likes.size).to eq(1)
     expect(page).to have_content("Likes: 1")
   end
 
@@ -90,7 +90,7 @@ feature 'Like' do
   def then_the_comment_should_not_have_my_like
     @comment.reload
     expect(@comment.likes.size).to eq(0)
-    expect(@user.liked_comments.size).to eq(0)
+    expect(@user.likes.size).to eq(0)
     expect(page).to have_content("Likes: 0")
   end
 

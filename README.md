@@ -7,6 +7,11 @@
 
 This is the source code for [Upshift Network](https://www.upshift.network).
 
+## Development
+
+We're using [guard-rspec](https://github.com/guard/guard-rspec) for automated
+running of tests. Run `bundle exec guard` to enable Guard. TDD & BDD away.
+
 ## Wiki
 
 More on the Upshift.Network [Wiki](https://github.com/UpshiftNetwork/upshift.network/wiki).

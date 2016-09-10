@@ -29,6 +29,8 @@ class FriendshipRequestsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_friendship_request
       other_user = User.find_by_username(params[:username])
-      @friendship_request = FriendshipRequest.find_friendship_request_between(@current_user, other_user)
+      @friendship_request =
+        FriendshipRequest.
+        find_friendship_requests_between(@current_user, other_user).first
     end
 end

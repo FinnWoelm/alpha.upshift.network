@@ -2,47 +2,144 @@ require 'rails_helper'
 
 RSpec.describe PrivateMessage, type: :model do
 
-  it { is_expected.to validate_presence_of(:content) }
-  it { is_expected.to validate_length_of(:content).is_at_most(50000) }
+  subject(:private_message) { build_stubbed(:private_message) }
+  let(:conversation) { private_message.conversation }
+  let(:sender) { private_message.sender }
 
   it "has a valid factory" do
-    expect(build(:private_message)).to be_valid
+    is_expected.to be_valid
   end
 
-  it "is invalid without sender" do
-    expect(build(:private_message, :sender => nil)).to be_invalid
+  describe "associations" do
+    it {
+      is_expected.to belong_to(:conversation).
+        dependent(false).autosave(true).
+        class_name('PrivateConversation').
+        with_foreign_key("private_conversation_id").
+        inverse_of(:messages)
+    }
+    it {
+      is_expected.to belong_to(:sender).
+        dependent(false).
+        class_name('User').
+        inverse_of(:private_messages_sent)
+    }
   end
 
-  it "is invalid without conversation" do
-    expect(build(:private_message, :conversation => nil)).to be_invalid
+  describe "scopes" do
+
+    describe "default_scope" do
+
+      it "orders by largest to smallest ID" do
+        expect(PrivateMessage.all.to_sql).
+          to include('ORDER BY "private_messages"."id" DESC')
+      end
+    end
   end
 
-  it "is invalid if conversation is invalid" do
-    @conversation = build(:private_conversation)
-    @message = build(:private_message, :conversation => @conversation, :sender => @conversation.sender)
+  describe "validations" do
+    it { is_expected.to validate_presence_of(:sender) }
+    it { is_expected.to validate_presence_of(:conversation) }
+    it { is_expected.to validate_presence_of(:content) }
+    it { is_expected.to validate_length_of(:content).is_at_most(50000) }
 
-    # set the recipient to invisible and it should fail to validate
-    @conversation.recipient.profile.is_private!
-    expect(@message).to be_invalid
-    expect(@message.errors.messages[:"conversation.recipient"]).
-      to include("does not exist or their profile is private")
-    expect(@conversation.errors.full_messages).
-      to include("Recipient does not exist or their profile is private")
+    context "custom validations" do
+      after { private_message.valid? }
+
+      context "on create" do
+        subject(:private_message) { build(:private_message) }
+        it { is_expected.to receive(:sender_is_part_of_conversation) }
+      end
+
+      context "on update" do
+        subject(:private_message) { create(:private_message) }
+        it { is_expected.not_to receive(:sender_is_part_of_conversation) }
+      end
+
+    end
   end
 
-  it "creates the conversation if it does not yet exist" do
-    @conversation = build(:private_conversation)
-    @message = create(:private_message, :conversation => @conversation, :sender => @conversation.sender)
+  describe "callbacks" do
 
-    expect(PrivateMessage.all.size).to eq(1)
-    expect(PrivateConversation.all.size).to eq(1)
+    context "after initialize" do
+      subject(:private_message) { PrivateMessage.allocate }
+      after {
+        private_message.send(:initialize, :sender => build_stubbed(:user))
+      }
+
+      it { is_expected.to receive(:set_recipient_username) }
+    end
+
+    context "after create" do
+      subject(:private_message) { build(:private_message) }
+      after { private_message.save }
+
+      it { is_expected.to receive(:touch_conversation) }
+      it { is_expected.to receive(:update_read_at_of_sender) }
+    end
   end
 
-  it "is invalid if the sender is not part of the conversation" do
-    message = build(:private_message, :sender => create(:user))
-    expect(message).to be_invalid
-    expect(message.errors.full_messages).
-      to include("#{message.sender.name} (sender) does not belong to this conversation.")
+  describe "#sender_is_part_of_conversation" do
+    after { private_message.send(:sender_is_part_of_conversation) }
+
+    it "checks whether the sender is among the conversation participants" do
+      participantships = instance_double(Array)
+      participant_ids = instance_double(Array)
+
+      expect(conversation).to receive(:participantships) { participantships }
+      expect(participantships).to receive(:map) { participant_ids }
+      expect(participant_ids).to receive(:include?).with(sender.id)
+    end
+
+    context "when sender is among conversation participants" do
+      before {
+        allow(conversation).
+          to receive_message_chain(:participantships, :map, :include?) { true }
+      }
+
+      it "does not add an error message" do
+        expect(private_message.errors[:base]).not_to receive(:<<)
+      end
+    end
+
+    context "when sender is not among conversation participants" do
+      before {
+        allow(conversation).
+          to receive_message_chain(:participantships, :map, :include?) { false }
+      }
+
+      it "adds an error message" do
+        expect(private_message.errors[:base]).to receive(:<<).
+          with("#{self.sender.name} (sender) does not belong to this conversation")
+      end
+    end
+
+  end
+
+  describe "#set_recipient_username" do
+    xit "will be deleted"
+  end
+
+  describe "#touch_conversation" do
+    after { private_message.send(:touch_conversation) }
+
+    it "touches the conversation" do
+      expect(conversation).to receive(:touch)
+    end
+  end
+
+  describe "#update_read_at_of_sender" do
+    subject(:private_message) { create(:private_message) }
+    after { private_message.send(:update_read_at_of_sender) }
+
+    it "touches the read_at of participantship of sender" do
+      participantship_of_sender =
+        instance_double(ParticipantshipInPrivateConversation)
+
+      expect(conversation).
+        to receive(:participantship_of).with(sender) { participantship_of_sender }
+      expect(participantship_of_sender).to receive(:touch).with(:read_at)
+    end
   end
 
 end

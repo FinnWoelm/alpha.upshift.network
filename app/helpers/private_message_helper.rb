@@ -27,6 +27,7 @@ module PrivateMessageHelper
   def filter_errors private_message
 
     error_keys_to_transform = [
+      {:from => :"conversation.participantships.participant", :to => :recipient},
       {:from => :"conversation.recipient", :to => :recipient},
       {:from => :recipient_username, :to => :recipient}
     ]
@@ -60,7 +61,7 @@ module PrivateMessageHelper
     end
 
     # Custom Transformations
-    if private_message.errors.has_key? :recipient
+    if private_message.errors.keys.include? :recipient
       if not private_message.recipient_username.empty?
         private_message.errors[:recipient].select! {|msg| msg != "can't be blank" }
       else
