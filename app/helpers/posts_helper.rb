@@ -4,8 +4,8 @@ module PostsHelper
     # do not show anything unless user is signed in
     return unless @current_user
 
-    @comment ||= Comment.new(:post => post)
-    render partial: 'comments/form', locals: {comment: @comment}
+    render partial: 'comments/form',
+      locals: {comment: @comment || Comment.new(:post => post)}
   end
 
 end
