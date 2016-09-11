@@ -3,18 +3,38 @@ require 'rails_helper'
 RSpec.describe "Pending Newsletter Subscription", type: :request do
 
   describe "POST #create" do
-
-    it "attempts to create a PendingNewsletterSubscription" do
-      expect_any_instance_of(PendingNewsletterSubscription).
-        to receive(:save) { true }
+    let(:perform_request) do
       post pending_newsletter_subscriptions_path,
         :params => {
           :pending_newsletter_subscription => {
             :name => Faker::Name.name,
             :email => Faker::Internet.email
           },
-         format: :js
+          format: :js
         }
+    end
+    before do
+      allow(Mailjet::Send).to receive(:create)
+    end
+
+    it "attempts to create a PendingNewsletterSubscription" do
+      expect_any_instance_of(PendingNewsletterSubscription).
+        to receive(:save) { true }
+      perform_request
+    end
+
+    it "sends a confirmation email" do
+      expect(Mailjet::Send).to receive(:create).with(
+        "FromEmail": "hello@upshift.network",
+        "FromName": "Upshift Network",
+        "Subject": "Please Confirm Your Subscription",
+        "Mj-TemplateID": "49351",
+        "Mj-TemplateLanguage": "true",
+        "Mj-trackclick": "1",
+        recipients: anything,
+        vars: anything
+      )
+      perform_request
     end
 
   end

@@ -12,6 +12,26 @@ class PendingNewsletterSubscriptionsController < ApplicationController
     @pending_newsletter_subscription.regenerate_confirmation_token
 
     if @pending_newsletter_subscription.save
+      Mailjet::Send.create(
+        "FromEmail": "hello@upshift.network",
+        "FromName": "Upshift Network",
+        "Subject": "Please Confirm Your Subscription",
+        "Mj-TemplateID": "49351",
+        "Mj-TemplateLanguage": "true",
+        "Mj-trackclick": "1",
+        recipients: [{
+          'Email' => @pending_newsletter_subscription.email,
+          'Name' => @pending_newsletter_subscription.name
+          }],
+        vars: {
+          "NAME" => @pending_newsletter_subscription.name,
+          "CONFIRMATION_PATH" =>
+            confirm_pending_newsletter_subscriptions_path(
+              :email => @pending_newsletter_subscription.email,
+              :confirmation_token => @pending_newsletter_subscription.confirmation_token
+            )
+        }
+      )
       render :create
     else
       render :new

@@ -2,13 +2,17 @@ require 'rails_helper.rb'
 
 feature 'Newsletter Subscription' do
 
+  before do
+    allow(Mailjet::Send).to receive(:create)
+  end
+
   scenario 'Visitor can subscribe', :js => true do
     given_i_visit_the_home_page
     when_i_click_join
     and_i_submit_my_information
+    and_i_expect_to_receive_a_confirmation_email
     then_i_should_see_a_success_message
     and_be_a_pending_subscriber
-    and_receive_a_confirmation_email
   end
 
   scenario 'Visitor can confirm subscription' do
@@ -36,17 +40,16 @@ feature 'Newsletter Subscription' do
     click_on 'Join Our Newsletter'
   end
 
+  def and_i_expect_to_receive_a_confirmation_email
+    expect(Mailjet::Send).to receive(:create)
+  end
+
   def then_i_should_see_a_success_message
     expect(page).to have_content "Thank you for joining, #{@name}!"
   end
 
   def and_be_a_pending_subscriber
     expect(PendingNewsletterSubscription).to exist(:email => @email)
-  end
-
-  def and_receive_a_confirmation_email
-    pending "not yet implemented"
-    expect(true).to be false
   end
 
   # Visitor can confirm subscription ###########################################
