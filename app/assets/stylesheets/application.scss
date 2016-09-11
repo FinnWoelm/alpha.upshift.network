@@ -17,6 +17,14 @@
   display: none;
 }
 
+nav .brand-logo img {
+  height: 50px;
+  width: auto;
+  margin-top: 7px;
+  margin-right: 10px;
+  float: left;
+}
+
 // FORMS
 @each $color_name, $color in $colors {
   @each $color_type, $color_value in $color {

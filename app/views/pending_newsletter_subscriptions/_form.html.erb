@@ -1,5 +1,8 @@
 <div class="row">
-  <%= form_tag(create_subscription_path, id: 'create_subscription', class: 'col s12', remote: true) do %>
+  <%= form_for(
+        @pending_newsletter_subscription,
+        html: { id: 'create_subscription', class: 'col s12'}, remote: true
+      ) do |f| %>
 
     <div class="errors red-text">
     </div>
@@ -7,16 +10,16 @@
     <div class="row">
       <div class="input-field col s12 red">
         <i class="material-icons prefix">account_circle</i>
-        <%= text_field_tag :name %>
-        <%= label_tag :name %>
+        <%= f.text_field :name %>
+        <%= f.label :name %>
       </div>
     </div>
 
     <div class="row">
       <div class="input-field col s12 red">
         <i class="material-icons prefix">email</i>
-        <%= email_field_tag :email %>
-        <%= label_tag :email, "Email" %>
+        <%= f.email_field :email %>
+        <%= f.label :email, "Email" %>
       </div>
     </div>
 

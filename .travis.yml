@@ -9,6 +9,8 @@ services:
 before_script:
   - psql -c 'create database upshift_network_test;' -U postgres
 
+script: xvfb-run bundle exec rspec spec
+
 # whitelist
 branches:
   only:
