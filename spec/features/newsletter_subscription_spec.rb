@@ -7,7 +7,18 @@ feature 'Newsletter Subscription' do
     when_i_click_join
     and_i_submit_my_information
     then_i_should_see_a_success_message
+    and_be_a_pending_subscriber
+    and_receive_a_confirmation_email
   end
+
+  scenario 'Visitor can confirm subscription' do
+    given_i_am_a_pending_subscriber
+    when_i_visit_the_confirmation_url
+    then_i_should_be_added_to_the_list_of_subscribers
+    and_no_longer_be_a_pending_subscriber
+  end
+
+  # Visitor can subscribe ######################################################
 
   def given_i_visit_the_home_page
     visit root_path
@@ -20,13 +31,28 @@ feature 'Newsletter Subscription' do
   def and_i_submit_my_information
     @name = Faker::Name.name
     @email = Faker::Internet.email
-    fill_in 'name',   with: @name
-    fill_in 'email',  with: @email
+    fill_in 'Name',   with: @name
+    fill_in 'Email',  with: @email
     click_on 'Join Our Newsletter'
   end
 
   def then_i_should_see_a_success_message
     expect(page).to have_content "Thank you for joining, #{@name}!"
+  end
+
+  def and_be_a_pending_subscriber
+    expect(PendingNewsletterSubscription).to exist(:email => @email)
+  end
+
+  def and_receive_a_confirmation_email
+    pending "not yet implemented"
+    expect(true).to be false
+  end
+
+  # Visitor can confirm subscription ###########################################
+
+  def given_i_am_a_pending_subscriber
+    pending "not yet implemented"
   end
 
 end

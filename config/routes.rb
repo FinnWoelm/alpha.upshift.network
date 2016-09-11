@@ -9,7 +9,7 @@ end
 Rails.application.routes.draw do
 
   # External
-  post 'subscribe_to_newsletter' => 'newsletter_subcriptions#create', as: :create_subscription
+  resources :pending_newsletter_subscriptions, only: :create
 
   # Sessions
   get '/login' => 'sessions#new'
