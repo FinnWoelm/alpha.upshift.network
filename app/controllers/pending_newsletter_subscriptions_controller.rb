@@ -15,6 +15,21 @@ class PendingNewsletterSubscriptionsController < ApplicationController
     end
   end
 
+  def confirm
+    @pending_newsletter_subscription =
+      PendingNewsletterSubscription.find_by(
+        :email => params[:email],
+        :confirmation_token => params[:confirmation_token]
+      )
+
+    if @pending_newsletter_subscription
+      @pending_newsletter_subscription.destroy
+      render :confirm
+    else
+      render :error
+    end
+  end
+
   private
 
     # Never trust parameters from the scary internet, only allow the white list through.

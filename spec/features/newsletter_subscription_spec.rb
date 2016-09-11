@@ -52,7 +52,24 @@ feature 'Newsletter Subscription' do
   # Visitor can confirm subscription ###########################################
 
   def given_i_am_a_pending_subscriber
-    pending "not yet implemented"
+    @pending_newsletter_subscription =
+      create(:pending_newsletter_subscription)
+  end
+
+  def when_i_visit_the_confirmation_url
+    visit confirm_pending_newsletter_subscriptions_path(
+      :email => @pending_newsletter_subscription.email,
+      :confirmation_token => @pending_newsletter_subscription.confirmation_token
+      )
+  end
+
+  def then_i_should_be_added_to_the_list_of_subscribers
+
+  end
+
+  def and_no_longer_be_a_pending_subscriber
+    expect(PendingNewsletterSubscription).
+      not_to exist(:email => @pending_newsletter_subscription.email)
   end
 
 end

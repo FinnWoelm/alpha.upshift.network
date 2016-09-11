@@ -9,7 +9,9 @@ end
 Rails.application.routes.draw do
 
   # External
-  resources :pending_newsletter_subscriptions, only: :create
+  resources :pending_newsletter_subscriptions, only: :create do
+    get 'confirm', on: :collection
+  end
 
   # Sessions
   get '/login' => 'sessions#new'
