@@ -1,6 +1,8 @@
+$background_image: "<%= asset_path 'dawn.jpg' %>";
+
 #static_home {
 
-  // wrap everything for exact pusitioniny
+  // wrap everything for exact positioning
   position: absolute;
   top:0px;
   width:100%;
@@ -8,7 +10,7 @@
   // the central call to action that is the first thing the user sees
   #call_to_action {
     background:
-      url('<%= asset_path 'dawn.jpg' %>')
+      url($background_image)
       center
       center
       no-repeat;
@@ -31,4 +33,14 @@
     }
   }
 
+}
+
+body#layout_static_info_message {
+  background:
+    url($background_image)
+    center
+    center
+    no-repeat
+    fixed;
+  background-size: cover;
 }

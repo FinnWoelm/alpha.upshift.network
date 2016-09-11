@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>UpshiftNetwork</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body id="layout_static_info_message">
+    <nav class="red">
+      <div class="container">
+        <div class="nav-wrapper">
+          <%= link_to root_path, class: 'brand-logo' do %>
+            <%= image_tag "logo_bold_100p" %> Upshift Network
+          <% end %>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="section"></div>
+
+      <div class="row white z-depth-1">
+        <div class="col s12">
+
+          <%= yield %>
+
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
