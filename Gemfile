@@ -38,6 +38,9 @@ gem 'materialize-sass'
 # Material Icons (https://design.google.com/icons/)
 gem 'material_icons'
 
+# New Relic for performance analysis
+gem 'newrelic_rpm', '~> 3.16'
+
 group :development, :test do
   # We will use pry rails as our console
   gem 'pry-rails'

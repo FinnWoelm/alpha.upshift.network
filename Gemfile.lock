@@ -153,6 +153,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (3.2.0)
     netrc (0.11.0)
+    newrelic_rpm (3.16.2.321)
     nio4r (1.2.1)
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
@@ -305,6 +306,7 @@ DEPENDENCIES
   mailjet (~> 1.4)
   material_icons
   materialize-sass
+  newrelic_rpm (~> 3.16)
   pg (~> 0.15)
   pry-byebug
   pry-rails
