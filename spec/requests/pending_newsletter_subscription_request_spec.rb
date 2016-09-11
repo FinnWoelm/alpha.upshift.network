@@ -208,12 +208,14 @@ RSpec.describe "Pending Newsletter Subscription", type: :request do
         let(:result) { pending_newsletter_subscription }
 
         it { is_expected.to render_template :confirm }
+        it { is_expected.to render_template :layout => "static_info_message" }
       end
 
       context "when PendingNewsletterSubscription is not found" do
         let(:result) { nil }
 
         it { is_expected.to render_template :error }
+        it { is_expected.to render_template :layout => "static_info_message" }
       end
     end
 

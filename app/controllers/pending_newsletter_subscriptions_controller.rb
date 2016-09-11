@@ -1,5 +1,7 @@
 class PendingNewsletterSubscriptionsController < ApplicationController
 
+  layout "static_info_message", except: [:create]
+
   def create
     @pending_newsletter_subscription =
       PendingNewsletterSubscription.find_by_email(pending_newsletter_subscription_params[:email]) ||
