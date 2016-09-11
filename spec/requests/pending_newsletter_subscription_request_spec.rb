@@ -28,6 +28,9 @@ RSpec.describe "Pending Newsletter Subscription", type: :request do
           :confirmation_token => pending_newsletter_subscription.confirmation_token
         }
     end
+    before do
+      allow(Mailjet::Contactslist_managecontact).to receive(:create)
+    end
 
     it "finds the pending newsletter subscription" do
       perform_request
@@ -39,12 +42,21 @@ RSpec.describe "Pending Newsletter Subscription", type: :request do
       before do
         allow(PendingNewsletterSubscription).
           to receive(:find_by) { pending_newsletter_subscription }
+      end
+
+      context "template" do
+        before { perform_request }
+        it { is_expected.to render_template :confirm }
+      end
+
+      it "adds the subscription to Mailjet" do
+        expect(Mailjet::Contactslist_managecontact).
+          to receive(:create)
         perform_request
       end
 
-      it { is_expected.to render_template :confirm }
-
       it "destroys the pending newsletter subscription" do
+        perform_request
         expect(PendingNewsletterSubscription).
           not_to exist(pending_newsletter_subscription.id)
       end
