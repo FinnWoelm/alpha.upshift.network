@@ -1,6 +1,6 @@
 require 'rails_helper.rb'
 
-feature 'Newsletter Subscription' do
+feature 'Pending Newsletter Subscription' do
 
   before do
     allow(Mailjet::Send).to receive(:create)

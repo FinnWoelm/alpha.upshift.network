@@ -12,26 +12,7 @@ class PendingNewsletterSubscriptionsController < ApplicationController
     @pending_newsletter_subscription.regenerate_confirmation_token
 
     if @pending_newsletter_subscription.save
-      Mailjet::Send.create(
-        "FromEmail": "hello@upshift.network",
-        "FromName": "Upshift Network",
-        "Subject": "Please Confirm Your Subscription",
-        "Mj-TemplateID": "49351",
-        "Mj-TemplateLanguage": "true",
-        "Mj-trackclick": "1",
-        recipients: [{
-          'Email' => @pending_newsletter_subscription.email,
-          'Name' => @pending_newsletter_subscription.name
-          }],
-        vars: {
-          "NAME" => @pending_newsletter_subscription.name,
-          "CONFIRMATION_PATH" =>
-            confirm_pending_newsletter_subscriptions_path(
-              :email => @pending_newsletter_subscription.email,
-              :confirmation_token => @pending_newsletter_subscription.confirmation_token
-            )
-        }
-      )
+      @pending_newsletter_subscription.send_confirmation_email
       render :create
     else
       render :new
@@ -45,24 +26,11 @@ class PendingNewsletterSubscriptionsController < ApplicationController
         :confirmation_token => params[:confirmation_token]
       )
 
-    begin
-      raise error unless @pending_newsletter_subscription
-      Mailjet::Contactslist_managecontact.create(
-        id: 1663798,
-        action: "addnoforce",
-        email: @pending_newsletter_subscription.email,
-        name: @pending_newsletter_subscription.name,
-        properties: {
-          "ip_address": @pending_newsletter_subscription.ip_address,
-          "signup_url": @pending_newsletter_subscription.signup_url,
-          "signup_datetime": @pending_newsletter_subscription.updated_at.strftime("%Y-%m-%dT%l:%M:%S%z"),
-          "confirmation_datetime": Time.zone.now.strftime("%Y-%m-%dT%l:%M:%S%z"),
-          "double_opt_in?": true
-        }
-      )
+    if @pending_newsletter_subscription
+      @pending_newsletter_subscription.add_newsletter_subscription
       @pending_newsletter_subscription.destroy
       render :confirm
-    rescue
+    else
       render :error
     end
 
