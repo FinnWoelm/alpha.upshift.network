@@ -69,13 +69,6 @@ RSpec.describe "Pending Newsletter Subscription", type: :request do
         perform_request
         expect(pending_newsletter_subscription.signup_url).to eq "http://upshift.network/"
       end
-
-      it "sets a confirmation token" do
-        expect_any_instance_of(PendingNewsletterSubscription).
-          to receive(:regenerate_confirmation_token)
-        perform_request
-      end
-
     end
 
     describe "actions" do
@@ -114,21 +107,31 @@ RSpec.describe "Pending Newsletter Subscription", type: :request do
 
     describe "templates" do
       before do
-        allow_any_instance_of(PendingNewsletterSubscription).
-          to receive(:save).and_return( result )
         perform_request
       end
 
-      context "when PendingNewsletterSubscription is persisted" do
-        let(:result) { true }
-
-        it { is_expected.to render_template :create }
+      context "when email is nil" do
+        let(:email) { nil }
+        let(:name) { Faker::Name.name }
+        it { is_expected.to render_template :new }
       end
 
-      context "when PendingNewsletterSubscription is not persisted" do
-        let(:result) { false }
-
+      context "when name is nil" do
+        let(:name) { nil }
+        let(:email) { Faker::Internet.email }
         it { is_expected.to render_template :new }
+      end
+
+      context "when name and email are nil" do
+        let(:name) { nil }
+        let(:email) { nil }
+        it { is_expected.to render_template :new }
+      end
+
+      context "when name and email are set" do
+        let(:email) { Faker::Internet.email }
+        let(:name) { Faker::Name.name }
+        it { is_expected.to render_template :create }
       end
     end
 

@@ -11,7 +11,6 @@ class PendingNewsletterSubscription < ApplicationRecord
   validates :name, presence: true
   validates :ip_address, presence: true
   validates :signup_url, presence: true
-  validates :confirmation_token, presence: true
 
   # sends an email confirmation prompting the subscriber to confirm their
   # subscription
