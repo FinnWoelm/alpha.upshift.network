@@ -16,7 +16,6 @@ RSpec.describe PendingNewsletterSubscription, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:ip_address) }
     it { is_expected.to validate_presence_of(:signup_url) }
-    it { is_expected.to validate_presence_of(:confirmation_token) }
   end
 
   describe "#send_confirmation_email" do

@@ -11,7 +11,6 @@ class PendingNewsletterSubscriptionsController < ApplicationController
       pending_newsletter_subscription_params[:name]
     @pending_newsletter_subscription.ip_address = request.remote_ip
     @pending_newsletter_subscription.signup_url = "http://upshift.network/"
-    @pending_newsletter_subscription.regenerate_confirmation_token
 
     if @pending_newsletter_subscription.save
       @pending_newsletter_subscription.send_confirmation_email
