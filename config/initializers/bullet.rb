@@ -33,6 +33,17 @@ if defined? Bullet
     :class_name => "PrivateConversation",
     :association => :messages
 
+  # We need to eager load participants for each conversation (to get the name).
+  # This will cause Bullet to raise alarm if the number of participants is
+  # zero or one.
+  Bullet.add_whitelist :type => :unused_eager_loading,
+    :class_name => "PrivateConversation",
+    :association => :participants
+  Bullet.add_whitelist :type => :unused_eager_loading,
+    :class_name => "ParticipantshipInPrivateConversation",
+    :association => :participant
+
+
   if Rails.env.development?
     Bullet.enable = true
     Bullet.bullet_logger = true

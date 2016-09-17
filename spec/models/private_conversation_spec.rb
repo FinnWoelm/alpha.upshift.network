@@ -114,15 +114,15 @@ RSpec.describe PrivateConversation, type: :model do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:sender).on(:create) }
-    it { is_expected.to validate_presence_of(:recipient).
-          with_message("does not exist or their profile is private").on(:create)
-    }
+    it { is_expected.to validate_presence_of(:recipient).on(:create) }
+    it { is_expected.to validate_presence_of(:messages).on(:create) }
     it { is_expected.to validate_length_of(:participantships).
           with_message("needs exactly two conversation participants")
     }
 
     context "custom validations" do
       after { private_conversation.valid? }
+      it { is_expected.to receive(:recipient_must_be_a_user) }
       it { is_expected.to receive(:uniqueness_for_participants) }
       it { is_expected.to receive(:recipient_can_be_messaged_by_sender) }
       it { is_expected.to receive(:recipient_and_sender_cannot_be_the_same_person) }
@@ -165,6 +165,11 @@ RSpec.describe PrivateConversation, type: :model do
         expect(private_conversation).
           to receive(:remove_participant).with(previous_recipient)
       end
+    end
+
+    it "casts variable to user" do
+      private_conversation # instantiate private conversation
+      expect(User).to receive(:to_user).with(recipient).and_return(recipient)
     end
 
     it "adds recipient as participant" do
@@ -276,12 +281,24 @@ RSpec.describe PrivateConversation, type: :model do
   end
 
   describe "#add_participant" do
-    let(:participant) { build_stubbed(:user) }
     after { private_conversation.send(:add_participant, participant) }
 
-    it "builds a participantship" do
-      expect(private_conversation.participantships).
-        to receive(:build).with(participant: participant)
+    context "when participant is not nil" do
+      let(:participant) { build_stubbed(:user) }
+
+      it "builds a participantship" do
+        expect(private_conversation.participantships).
+          to receive(:build).with(participant: participant)
+      end
+    end
+
+    context "when participant is nil" do
+      let(:participant) { nil }
+
+      it "does not build a participantship" do
+        expect(private_conversation.participantships).
+          not_to receive(:build).with(participant: participant)
+      end
     end
   end
 
@@ -308,6 +325,28 @@ RSpec.describe PrivateConversation, type: :model do
           from(true).to(false)
       end
 
+    end
+
+  end
+
+  describe "#recipient_must_be_a_user" do
+    after { private_conversation.send(:recipient_must_be_a_user) }
+
+    context "when recipient is a User" do
+      before { private_conversation.recipient = build_stubbed(:user) }
+
+      it "does not add an error message" do
+        expect(private_conversation.errors[:recipient]).not_to receive(:<<)
+      end
+    end
+
+    context "when recipient is a String" do
+      before { private_conversation.recipient = "some_string" }
+
+      it "adds an error message" do
+        expect(private_conversation.errors[:recipient]).to receive(:<<).
+          with("does not exist or their profile is private")
+      end
     end
 
   end

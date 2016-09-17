@@ -36,7 +36,12 @@ feature 'Private Conversation' do
   def and_i_have_some_private_conversations
     @other_users = []
     3.times { @other_users << create(:user)}
-    3.times { |i| PrivateConversation.create(:sender => @user, :recipient => @other_users[i]) }
+    3.times do |i|
+      create(:private_conversation,
+        :sender => @user,
+        :recipient => @other_users[i]
+      )
+    end
   end
 
   def when_i_go_to_my_private_conversations
@@ -57,7 +62,7 @@ feature 'Private Conversation' do
     click_on "Start a new Conversation"
     fill_in 'Recipient', with: @user_to_message.username
     fill_in 'Message',  with: Faker::Lorem.paragraph
-    click_on "Send"
+    click_on "Create Conversation"
   end
 
   def then_i_should_have_started_a_new_private_conversation_with_that_user

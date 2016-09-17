@@ -5,7 +5,8 @@ class PrivateMessage < ApplicationRecord
   belongs_to :conversation, :class_name => "PrivateConversation",
     :foreign_key => "private_conversation_id",
     :inverse_of => :messages,
-    :autosave => true
+    :autosave => true,
+    :validate => false
   # User
   belongs_to :sender, :class_name => "User",
     :inverse_of => :private_messages_sent

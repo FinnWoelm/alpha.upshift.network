@@ -30,9 +30,9 @@ feature 'Private Message' do
   def and_i_have_some_private_conversations_with_messages
     @other_users = []
     3.times { @other_users << create(:user)}
-    3.times { |i| PrivateConversation.create(:sender => @user, :recipient => @other_users[i]) }
+    3.times { |i| create(:private_conversation, :sender => @user, :recipient => @other_users[i]) }
     @user.private_conversations.find_each do |conversation|
-      3.times { |i| PrivateMessage.create(:sender => @user, :conversation => conversation, :content => "My message #{i}") }
+       3.times { |i| PrivateMessage.create(:sender => @user, :conversation => conversation, :content => "My message #{i}") }
     end
   end
 
@@ -52,9 +52,9 @@ feature 'Private Message' do
   end
 
   def and_i_send_a_new_message
-    @my_message_text =
-    fill_in 'Message',  with: Faker::Lorem.paragraph
-    click_on "Send"
+    @my_message_text = Faker::Lorem.paragraph
+    fill_in 'Message', with: @my_message_text
+    click_on "Send Message"
   end
 
   def then_i_should_see_my_new_message_in_the_private_conversation

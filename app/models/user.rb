@@ -113,6 +113,21 @@ class User < ApplicationRecord
     friendship_requests_sent.exists?(recipient_id: user.id)
   end
 
+  # when printing the record to the screen
+  def to_s
+    username
+  end
+
+  # # Class Methods
+
+  # converts the input to User
+  def self.to_user input
+    return nil unless input
+    return input if input.is_a?(User)
+    return User.find_by_username(input) if input.is_a?(String)
+    raise ArgumentError.new("User.to_user only supports types User and String")
+  end
+
   # protected
   # def create_profile_if_not_exists
   #   self.profile ||= Profile.new(:visibility => "is_network_only")
