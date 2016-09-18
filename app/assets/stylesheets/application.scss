@@ -17,12 +17,29 @@
   display: none;
 }
 
+// NAVIGATION
+
+// NAVIGATION: Brand logo fits height
 nav .brand-logo img {
   height: 50px;
   width: auto;
   margin-top: 7px;
   margin-right: 10px;
   float: left;
+}
+
+// NAVIGATION: Badges on icons
+nav li a i+span.badge {
+  display: block;
+  float: right
+  ;position: relative;
+  top: -55px;
+  left: 10px;
+  line-height: 1;
+  padding: 3px 5px;
+  min-width: unset;
+  margin-bottom: -55px;
+  border-radius: 2px;
 }
 
 // FORMS
