@@ -1,3 +1,13 @@
+sudo: required
+dist: trusty
+addons:
+  apt:
+    sources:
+      - ubuntu-sdk-team
+    packages:
+      - libqt5webkit5-dev
+      - qtdeclarative5-dev
+
 language: ruby
 rvm:
   - 2.3.1
@@ -9,16 +19,7 @@ services:
 before_script:
   - psql -c 'create database upshift_network_test;' -U postgres
 
-sudo: required
-dist: trusty
-addons:
-  apt:
-    sources:
-      - ubuntu-sdk-team
-    packages:
-      - libqt5webkit5-dev
-      - qtdeclarative5-dev
-script: xvfb-run bundle exec rake
+script: xvfb-run bundle exec rspec spec
 
 # whitelist
 branches:
