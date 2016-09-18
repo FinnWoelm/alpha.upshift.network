@@ -42,34 +42,36 @@ class PrivateConversation < ApplicationRecord
     }
 
   # # Accessors
-  attr_reader(:sender, :recipient)
+  attr_accessor(:sender, :recipient)
+  attr_accessor(:initial_message)
 
   # # Validations
   validates :sender, presence: true, on: :create
-  validates :recipient, presence: { message: "does not exist or their profile is private" }, on: :create
+  validates :recipient, presence: true, on: :create
+  validates :messages, presence: true, on: :create
   validates :participantships,
     length: {
       is: 2,
-      message: "needs exactly two conversation participants"}
+      message: "needs exactly two conversation participants"},
+    if: "recipient.is_a?(User)", on: :create
+  validate :recipient_must_be_a_user, on: :create,
+    if: "recipient.present?"
   validate :uniqueness_for_participants, on: :create,
-    if: "participantships.present?"
+    if: "participantships.present? and recipient.is_a?(User)"
   validate :recipient_can_be_messaged_by_sender, on: :create,
-    if: "sender.present? and recipient.present?"
+    if: "sender.present? and recipient.present? and recipient.is_a?(User)"
   validate :recipient_and_sender_cannot_be_the_same_person, on: :create,
-    if: "sender.present? and recipient.present?"
+    if: "sender.present? and recipient.present? and recipient.is_a?(User)"
+
+  # # Callbacks
+  after_initialize :cast_recipient_to_user, if: :new_record?
+  after_initialize :add_sender_and_recipient_as_participants, if: :new_record?
 
   # # Methods
 
-  def sender=(user)
-    remove_participant @sender if @sender
-    add_participant user
-    @sender = user
-  end
-
-  def recipient=(user)
-    remove_participant @recipient if @recipient
-    add_participant user
-    @recipient = user
+  # adds a participant to the conversation
+  def add_participant participant
+    self.participantships.build(:participant => participant) if participant
   end
 
   # returns a list of participants that exclude the participant (object or ID)
@@ -108,15 +110,30 @@ class PrivateConversation < ApplicationRecord
   end
 
   private
-    # adds a participant to the conversation
-    def add_participant participant
-      self.participantships.build(:participant => participant)
+
+    # Callback: converts recipient from String to User
+    def cast_recipient_to_user
+      return if recipient.is_a?(User)
+      @recipient = User.to_user(@recipient) || @recipient
+    end
+
+    # Callback: adds sender and recipient as participants of the conversation
+    def add_sender_and_recipient_as_participants
+      add_participant sender
+      add_participant recipient
     end
 
     # removes a participant from the conversation
     def remove_participant participant
       self.participantships.each do |p|
         p.mark_for_destruction if p.participant_id == participant.id
+      end
+    end
+
+    # validates that recipient is of type user
+    def recipient_must_be_a_user
+      unless recipient.is_a?(User)
+        errors.add :recipient, "does not exist or their profile is private"
       end
     end
 

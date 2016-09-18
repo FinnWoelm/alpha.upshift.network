@@ -1,0 +1,36 @@
+<div style="width: 100%; background-color:lightgray;">
+  <%= form_for(private_conversation) do |f| %>
+    <% if private_conversation.errors.any? %>
+      <%#o filter_errors private_conversation %>
+      <div id="error_explanation">
+        <h2><%= pluralize(private_conversation.errors.count, "error") %> prohibited this message from being sent:</h2>
+
+        <ul>
+        <% private_conversation.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <% if private_conversation.new_record? %>
+      <div class="field">
+        <%= f.label :recipient, "Recipient" %>
+        <%= f.text_field :recipient %>
+      </div>
+    <% else %>
+      <%= f.hidden_field :recipient %>
+    <% end %>
+
+    <%= f.fields_for :messages, private_message do |message| %>
+      <div class="field">
+        <%= message.label :content, "Message" %>
+        <%= message.text_area :content %>
+      </div>
+    <% end %>
+
+    <div class="actions">
+      <%= f.submit(private_conversation.new_record? ? "Create Conversation" : "Send Message") %>
+    </div>
+  <% end %>
+</div>
