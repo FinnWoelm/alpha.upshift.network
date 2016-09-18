@@ -11,11 +11,7 @@ RSpec.describe "private_conversations/show", type: :view do
     5.times { @most_recent_messages.unshift create(:private_message, :conversation => @conversation) }
 
     @private_conversation = @current_user.private_conversations.with_associations.find_by id: @conversation.id
-    @private_message =
-      PrivateMessage.new(
-        :sender => @current_user,
-        :recipient => @private_conversation.participants_other_than(@current_user).first,
-        :conversation => @private_conversation)
+    @private_message = @private_conversation.messages.build(:sender => @current_user)
 
     render
 

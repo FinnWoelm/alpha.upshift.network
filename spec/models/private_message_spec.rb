@@ -61,15 +61,6 @@ RSpec.describe PrivateMessage, type: :model do
 
   describe "callbacks" do
 
-    context "after initialize" do
-      subject(:private_message) { PrivateMessage.allocate }
-      after {
-        private_message.send(:initialize, :sender => build_stubbed(:user))
-      }
-
-      it { is_expected.to receive(:set_recipient_username) }
-    end
-
     context "after create" do
       subject(:private_message) { build(:private_message) }
       after { private_message.save }
@@ -114,10 +105,6 @@ RSpec.describe PrivateMessage, type: :model do
       end
     end
 
-  end
-
-  describe "#set_recipient_username" do
-    xit "will be deleted"
   end
 
   describe "#touch_conversation" do
