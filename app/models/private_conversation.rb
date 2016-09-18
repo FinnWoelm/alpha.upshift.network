@@ -42,9 +42,8 @@ class PrivateConversation < ApplicationRecord
     }
 
   # # Accessors
-  attr_reader(:sender, :recipient)
+  attr_accessor(:sender, :recipient)
   attr_accessor(:initial_message)
-  accepts_nested_attributes_for :messages, limit: 1
 
   # # Validations
   validates :sender, presence: true, on: :create
@@ -64,19 +63,15 @@ class PrivateConversation < ApplicationRecord
   validate :recipient_and_sender_cannot_be_the_same_person, on: :create,
     if: "sender.present? and recipient.present? and recipient.is_a?(User)"
 
+  # # Callbacks
+  after_initialize :cast_recipient_to_user, if: :new_record?
+  after_initialize :add_sender_and_recipient_as_participants, if: :new_record?
+
   # # Methods
 
-  def sender=(user)
-    remove_participant @sender if @sender
-    add_participant user
-    @sender = user
-  end
-
-  def recipient=(input)
-    user = User.to_user(input)
-    remove_participant @recipient if @recipient
-    add_participant user
-    @recipient = user || input
+  # adds a participant to the conversation
+  def add_participant participant
+    self.participantships.build(:participant => participant) if participant
   end
 
   # returns a list of participants that exclude the participant (object or ID)
@@ -115,9 +110,17 @@ class PrivateConversation < ApplicationRecord
   end
 
   private
-    # adds a participant to the conversation
-    def add_participant participant
-      self.participantships.build(:participant => participant) if participant
+
+    # Callback: converts recipient from String to User
+    def cast_recipient_to_user
+      return if recipient.is_a?(User)
+      @recipient = User.to_user(@recipient) || @recipient
+    end
+
+    # Callback: adds sender and recipient as participants of the conversation
+    def add_sender_and_recipient_as_participants
+      add_participant sender
+      add_participant recipient
     end
 
     # removes a participant from the conversation

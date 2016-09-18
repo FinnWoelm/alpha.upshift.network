@@ -4,6 +4,9 @@ FactoryGirl.define do
     recipient { create(:user) }
 
     after(:build, :stub) do |conversation|
+      conversation.add_participant conversation.sender
+      conversation.add_participant conversation.recipient
+      
       conversation.messages.build(
         attributes_for(:private_message, sender: conversation.sender)
       )

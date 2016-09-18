@@ -129,56 +129,36 @@ RSpec.describe PrivateConversation, type: :model do
     end
   end
 
-  describe "#sender=" do
-    let(:sender) { build_stubbed(:user) }
-    after { private_conversation.sender = sender }
+  describe "callbacks" do
 
-    context "when sender is already set" do
-      let(:previous_sender) { build_stubbed(:user) }
-      before { private_conversation.sender = previous_sender }
+    context "after initialize" do
+      let!(:private_conversation) { PrivateConversation.allocate }
+      after { private_conversation.send(:initialize) }
 
-      it "removes the existing sender" do
-        expect(private_conversation).
-          to receive(:remove_participant).with(previous_sender)
-      end
-    end
-
-    it "adds sender as participant" do
-      expect(private_conversation).to receive(:add_participant).with(sender)
-    end
-
-    it "sets the sender" do
-      private_conversation.sender = sender
-      expect(private_conversation.sender).to eq(sender)
+      it { is_expected.to receive(:cast_recipient_to_user) }
+      it { is_expected.to receive(:add_sender_and_recipient_as_participants) }
     end
   end
 
-  describe "#recipient=" do
-    let(:recipient) { build_stubbed(:user) }
-    after { private_conversation.recipient = recipient }
+  describe "#add_participant" do
+    after { private_conversation.add_participant participant }
 
-    context "when recipient is already set" do
-      let(:previous_recipient) { build_stubbed(:user) }
-      before { private_conversation.recipient = previous_recipient }
+    context "when participant is not nil" do
+      let(:participant) { build_stubbed(:user) }
 
-      it "removes the existing recipient" do
-        expect(private_conversation).
-          to receive(:remove_participant).with(previous_recipient)
+      it "builds a participantship" do
+        expect(private_conversation.participantships).
+          to receive(:build).with(participant: participant)
       end
     end
 
-    it "casts variable to user" do
-      private_conversation # instantiate private conversation
-      expect(User).to receive(:to_user).with(recipient).and_return(recipient)
-    end
+    context "when participant is nil" do
+      let(:participant) { nil }
 
-    it "adds recipient as participant" do
-      expect(private_conversation).to receive(:add_participant).with(recipient)
-    end
-
-    it "sets the recipient" do
-      private_conversation.recipient = recipient
-      expect(private_conversation.recipient).to eq(recipient)
+      it "does not build a participantship" do
+        expect(private_conversation.participantships).
+          not_to receive(:build).with(participant: participant)
+      end
     end
   end
 
@@ -280,25 +260,47 @@ RSpec.describe PrivateConversation, type: :model do
     end
   end
 
-  describe "#add_participant" do
-    after { private_conversation.send(:add_participant, participant) }
+  describe "#cast_recipient_to_user" do
+    before do
+      private_conversation.recipient = recipient_username
+      private_conversation.send(:cast_recipient_to_user)
+    end
 
-    context "when participant is not nil" do
-      let(:participant) { build_stubbed(:user) }
+    context "when recipient is a string" do
 
-      it "builds a participantship" do
-        expect(private_conversation.participantships).
-          to receive(:build).with(participant: participant)
+      context "when a user exists" do
+        let(:recipient_username) { recipient.username}
+
+        it "casts recipient to user" do
+          expect(private_conversation.recipient).to be_a(User)
+        end
+      end
+
+      context "when no user exists" do
+        let(:recipient_username) { recipient.username + "abcd"}
+
+        it "retains the original recipient" do
+          expect(private_conversation.recipient).to eq(recipient_username)
+        end
       end
     end
 
-    context "when participant is nil" do
-      let(:participant) { nil }
+  end
 
-      it "does not build a participantship" do
-        expect(private_conversation.participantships).
-          not_to receive(:build).with(participant: participant)
-      end
+  describe "#add_sender_and_recipient_as_participants" do
+    before do
+      private_conversation.participantships = []
+      private_conversation.send(:add_sender_and_recipient_as_participants)
+    end
+
+    it "adds participant: sender" do
+      expect(private_conversation.participantships.map{|p| p.participant_id}).
+        to include(sender.id)
+    end
+
+    it "adds participant: recipient" do
+      expect(private_conversation.participantships.map{|p| p.participant_id}).
+        to include(recipient.id)
     end
   end
 

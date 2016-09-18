@@ -19,7 +19,7 @@ RSpec.describe PrivateConversationsController, type: :controller do
       post :create, params: {
         :private_conversation => {
           recipient: recipient.username,
-          :messages_attributes => {:"0" => {content: message} }
+          :messages => {content: message}
     }}}
 
     context "when conversation between participants does not exist" do
@@ -102,7 +102,7 @@ RSpec.describe PrivateConversationsController, type: :controller do
         id: private_conversation.id,
         :private_conversation => {
           recipient: recipient.username,
-          messages_attributes: { :"0" => {content: message} }
+          messages: {content: message}
     }}}
 
     context "when conversation between participants does exist" do

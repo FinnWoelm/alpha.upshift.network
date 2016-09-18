@@ -61,7 +61,7 @@ class PrivateConversationsController < ApplicationController
     @private_conversation ||= PrivateConversation.new(private_conversation_params)
 
     # try to find an existing conversation
-    if @private_conversation.recipient.is_a?(User)
+    if @private_conversation.new_record? and @private_conversation.recipient.is_a?(User)
       @private_conversation =
         PrivateConversation.find_conversations_between([
           @private_conversation.sender, @private_conversation.recipient
@@ -87,9 +87,8 @@ class PrivateConversationsController < ApplicationController
     # creates a new conversation
     def create_conversation
 
-      @private_message = PrivateMessage.new(private_message_params)
-      @private_message.sender = @current_user
-      @private_conversation.messages << @private_message
+      @private_message =
+        @private_conversation.messages.build(private_message_params)
 
       if @private_conversation.save
         redirect_to @private_conversation
@@ -100,27 +99,18 @@ class PrivateConversationsController < ApplicationController
 
     # adds a message to an existing conversation
     def add_message_to_conversation
+      @private_message =
+        @private_conversation.messages.build(private_message_params)
 
-        # @private_message = PrivateMessage.new(
-        #   :sender => @current_user,
-        #   :recipient => @existing_conversation.participants_other_than(@current_user).first,
-        #   :conversation => @existing_conversation,
-        #   :content => @private_conversation.messages.first.content
-        # )
-
-        @private_message = PrivateMessage.new(private_message_params)
-        @private_message.sender = @current_user
-        @private_conversation.messages << @private_message
-
-        if @private_conversation.save
-          redirect_to @private_conversation
-        else
-          ActiveRecord::Associations::Preloader.new.preload(
-            @private_conversation, :messages)
-          ActiveRecord::Associations::Preloader.new.preload(
-            @private_conversation, :participants)
-          render :show
-        end
+      if @private_conversation.save
+        redirect_to @private_conversation
+      else
+        ActiveRecord::Associations::Preloader.new.preload(
+          @private_conversation, :messages)
+        ActiveRecord::Associations::Preloader.new.preload(
+          @private_conversation, :participants)
+        render :show
+      end
     end
 
     # Use callbacks to share common setup or constraints between actions.
@@ -134,6 +124,12 @@ class PrivateConversationsController < ApplicationController
         set_conversation_by_recipient_username
       else
         set_conversation_by_id
+      end
+
+      # set recipient
+      if @private_conversation
+        @private_conversation.recipient =
+          @private_conversation.participants_other_than(@current_user).first
       end
 
     end
@@ -152,22 +148,15 @@ class PrivateConversationsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def private_conversation_params
       params.require(:private_conversation).
-      #  permit(:recipient, messages_attributes: [:content]).
         permit(:recipient).
         merge(:sender => @current_user)
     end
 
     def private_message_params
       params.require(:private_conversation).
-        permit(messages_attributes: [:content]).
-        fetch(:messages_attributes).fetch(:"0")
-    end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def private_conversation_message_only_params
-      params.require(:private_conversation).
-        permit(messages_attributes: [:content]).
-        to_h.deep_merge(messages_attributes: {:"0" => {:sender => @current_user}})
+        permit(messages: [:content]).
+        fetch(:messages).
+        merge(:sender => @current_user)
     end
 
 end
