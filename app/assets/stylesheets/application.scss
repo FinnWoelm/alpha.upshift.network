@@ -3,18 +3,39 @@
 // modify colors here
 // $primary-color: color("blue", "lighten-2") !default;
 // ...
+$primary-color: color("red", "base");
+$secondary-color: $primary-color;
 @import 'materialize';
 @import "materialize/extras/nouislider";
 
 // Material Icons
 @import "material_icons";
 
-// Styles for static pages
+// App Stylesheets
 @import "static";
+@import "post_and_comment";
+@import "like";
 
 // GENERAL
+
+// GENERAL: start off hidden
 .init-hidden {
   display: none;
+}
+
+// GENERAL: removes bottom spacing
+.no_margin_bottom {
+  margin-bottom: 0px !important;
+}
+
+// GENERAL: removes all margins
+.no_margin {
+  margin: 0px !important;
+}
+
+// COLOR: applies highlight color (secondary color)
+.highlight-text {
+  color: $secondary-color;
 }
 
 // NAVIGATION
@@ -42,7 +63,25 @@ nav li a i+span.badge {
   border-radius: 2px;
 }
 
+// BUTTONS
+
+// BUTTONS: Hover effect on flat buttons
+button.btn-flat.waves-effect:hover,
+a.btn-flat.waves-effect:hover {
+  background-color: color("grey", "lighten-3");
+}
+
+div.fake_button {
+  height: 36px;
+  line-height: 36px;
+  outline: 0;
+  padding: 0 2rem;
+  text-transform: uppercase;
+}
+
 // FORMS
+
+// FORMS: allow coloring of forms
 @each $color_name, $color in $colors {
   @each $color_type, $color_value in $color {
     @if $color_type == "base" {
@@ -51,7 +90,8 @@ nav li a i+span.badge {
 
         background-color: inherit !important;
 
-        input:focus {
+        input:focus,
+        textarea:focus {
           border-bottom: 1px solid $color_value;
           box-shadow: 0 1px 0 0 $color_value;
 
@@ -71,7 +111,8 @@ nav li a i+span.badge {
 
         background-color: inherit !important;
 
-        input:focus {
+        input:focus,
+        textarea:focus {
           border-bottom: 1px solid $color_value;
           box-shadow: 0 1px 0 0 $color_value;
 

@@ -1,30 +1,57 @@
-<div style="width: 100%; background-color: lightgray;">
+<div class="comment">
 
-<p>
-  <strong>
-    <%= comment.author.name %>
-    wrote on
-    <%= render_timestamp(comment.created_at) %>
-  </strong>
-</p>
+  <%# PROFILE PICTURE %>
+  <div class="author_image">
+    <%= image_tag profile_picture comment.author.username %>
+  </div>
 
-<p>
-  <%= simple_format h(comment.content) %>
-</p>
+  <div class="content">
 
-<p>
-  Likes: <%= comment.likes_count %>
-</p>
+    <%# DELETE ACTION %>
+    <% if comment.deletable_by?(@current_user) %>
+      <div class="administrative-actions right">
+        <!-- Dropdown Trigger -->
+        <%= link_to '#',
+              class: "dropdown-button btn-flat tooltipped",
+              data: {
+                activates: "dropdown-#{comment.id}",
+                position: 'left', delay: '50', tooltip: 'Show Options'
+              } do %>
+          <%= material_icon.settings %>
+        <% end %>
 
-<% if comment.likable_by?(@current_user) %>
-  <%= like_action comment %>
-<% elsif comment.unlikable_by?(@current_user) %>
-  <%= unlike_action comment %>
-<% end %>
+        <!-- Dropdown Structure -->
+        <ul id='dropdown-<%= comment.id %>' class='dropdown-content'>
+          <li>
+            <%= link_to 'Delete Comment', post_comment_path(post_id: comment.post_id, id: comment.id), method: :delete, data: { confirm: 'Are you sure?' } %>
+          </li>
+        </ul>
+      </div>
+    <% end %>
 
+    <%# TIMESTAMP %>
+    <div class="timestamp right">
+      <%= render_timestamp(comment.created_at) %>
+    </div>
 
-<% if comment.deletable_by?(@current_user) %>
-  <%= link_to 'Delete Comment', post_comment_path(post_id: comment.post_id, id: comment.id), method: :delete, data: { confirm: 'Are you sure?' } %>
-<% end %>
+    <%# AUTHOR NAME %>
+    <span><strong>
+      <%= comment.author.name %>
+    </strong></span>
+
+    <%# CONTENT %>
+    <%= simple_format h(comment.content) %>
+  </div>
+
+  <%# LIKE & UNLIKE %>
+  <div class="actions row no_margin_bottom">
+    <div class="col s12 m6">
+    <% if comment.likable_by?(@current_user) %>
+      <%= like_action comment %>
+    <% elsif comment.unlikable_by?(@current_user) %>
+      <%= unlike_action comment %>
+    <% end %>
+    </div>
+  </div>
 
 </div>

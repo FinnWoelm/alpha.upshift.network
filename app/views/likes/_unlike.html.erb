@@ -1,8 +1,14 @@
-<%=
-  link_to(
-    "Unlike #{object.model_name.to_s}",
-    unlike_path(:likable_id => object.id, :likable_type => object.model_name.to_s),
-    method: :delete,
-    data: { confirm: 'Are you sure?' }
-  )
-%>
+<div class="unlike_button">
+  <%=
+    link_to unlike_path(:likable_id => object.id, :likable_type => object.model_name.to_s),
+      method: :delete,
+      class: 'btn-flat waves-effect waves-red' do %>
+    <span class="highlight-text">
+      <%= material_icon.thumb_up.css_class('left') %>
+      <%= object.likes_count || 0 %>
+    </span>
+    <span>
+      UNLIKE
+    </span>
+  <% end %>
+</div>
