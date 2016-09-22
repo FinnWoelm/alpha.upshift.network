@@ -67,7 +67,9 @@ nav li a i+span.badge {
 
 // BUTTONS: Hover effect on flat buttons
 button.btn-flat.waves-effect:hover,
-a.btn-flat.waves-effect:hover {
+a.btn-flat.waves-effect:hover,
+button.btn-flat.waves-effect:focus,
+a.btn-flat.waves-effect:focus {
   background-color: color("grey", "lighten-3");
 }
 

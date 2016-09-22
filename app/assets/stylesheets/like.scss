@@ -4,7 +4,12 @@ div.unlike_button a span {
   transition: transform .3s ease-in-out;
 }
 
-form.like_button button:hover span,
-div.unlike_button a:hover span{
-  transform: translateY(-36px);
+form.like_button button,
+div.unlike_button a {
+  &:hover, &:focus {
+    span {
+      transform: translateY(-36px);
+
+    }
+  }
 }
