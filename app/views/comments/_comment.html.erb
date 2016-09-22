@@ -2,9 +2,11 @@
 
   <div class="meta">
     <%# PROFILE PICTURE %>
-    <div class="author_image">
-      <%= image_tag profile_picture comment.author.username %>
-    </div>
+    <%= link_to profile_path comment.author do %>
+      <div class="author_image z-depth-1">
+        <%= image_tag profile_picture comment.author.username %>
+      </div>
+    <% end %>
 
   </div>
 
@@ -40,9 +42,11 @@
       </div>
 
       <%# AUTHOR NAME %>
-      <span><strong>
+      <%= link_to profile_path comment.author do %>
+        <strong>
         <%= comment.author.name %>
-      </strong></span>
+        </strong>
+      <% end %>
 
       <%# CONTENT %>
       <%= simple_format h(comment.content) %>
