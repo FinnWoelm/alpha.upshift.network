@@ -49,9 +49,9 @@
         <%# LIKE & UNLIKE %>
         <div class="col s12 m6">
         <% if post.likable_by?(@current_user) %>
-          <%= like_action post %>
+          <%= like_action post, "sliding" %>
         <% elsif post.unlikable_by?(@current_user) %>
-          <%= unlike_action post %>
+          <%= unlike_action post, "sliding" %>
         <% end %>
         </div>
 

@@ -6,13 +6,13 @@ module ApplicationHelper
   end
 
   # renders the like action
-  def like_action object
-    render :partial => 'likes/like', locals: {object: object}
+  def like_action object, style
+    render :partial => "likes/like_#{style}", locals: {object: object}
   end
 
   # renders the unlike action
-  def unlike_action object
-    render :partial => 'likes/unlike', locals: {object: object}
+  def unlike_action object, style
+    render :partial => "likes/unlike_#{style}", locals: {object: object}
   end
 
   # renders a user's profile picture

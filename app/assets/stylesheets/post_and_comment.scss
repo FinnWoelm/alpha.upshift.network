@@ -54,20 +54,33 @@ div.comments-wrapper {
   position: relative;
 
   & > div.comment {
-
-    padding: 10px 20px 10px 80px;
-    border-bottom: 1px solid color("grey", "lighten-2");
-    min-height: 60px;
     position: relative;
+    border-bottom: 1px solid color("grey", "lighten-2");
+    @extend .grey, .lighten-3;
 
-    div.author_image {
+    div.meta {
       position: absolute;
-      top: 10px;
-      left: 20px;
+      top: 0px;
+      left: 0px;
+    }
+
+    div.meta > div.author_image {
+      margin: 10px;
       height: 40px;
       width: 40px;
       background-color: gray;
       border-radius: 3px;
+    }
+
+    div.content {
+      margin-left: 60px;
+      border-left: 1px solid color("grey", "lighten-2");
+      @extend .white;
+    }
+
+    div.content > div.with_padding {
+      padding:10px;
+      padding-bottom: 0px;
     }
 
     div.content p {
@@ -79,22 +92,20 @@ div.comments-wrapper {
       padding-left: 10px;
     }
 
-    div.actions form.like_button button,
-    div.actions div.unlike_button a {
-      padding: 0px;
-    }
-
     div.administrative-actions .dropdown-button {
       margin-top: -10px;
       margin-left: 10px;
       padding: 0px;
-      margin-right: -10px;
     }
 
     div.timestamp {
       line-height: 36px;
       vertical-align: middle;
       margin-top: -10px;
+    }
+
+    div.new_comment_form {
+      padding-bottom: 20px;
     }
   }
 }

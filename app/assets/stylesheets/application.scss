@@ -73,12 +73,19 @@ a.btn-flat.waves-effect:focus {
   background-color: color("grey", "lighten-3");
 }
 
+// BUTTONS: Creates a fake, non-clickable button
 div.fake_button {
   height: 36px;
   line-height: 36px;
   outline: 0;
   padding: 0 2rem;
   text-transform: uppercase;
+}
+
+// BUTTONS: Small button
+button.btn-small,
+a.btn-small {
+  padding: 0 1rem;
 }
 
 // FORMS
