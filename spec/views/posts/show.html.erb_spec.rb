@@ -15,7 +15,7 @@ RSpec.describe "posts/show", type: :view do
   it "shows new comment form if user is signed in" do
     @current_user = create(:user)
     render
-    expect(rendered).to have_text("New Comment")
+    expect(rendered).to have_selector("form", text: "Comment")
   end
 
   it "does not show new comment form if user is not signed in" do

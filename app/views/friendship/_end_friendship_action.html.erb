@@ -1,3 +1,8 @@
-<p>
-  <%= link_to 'Unfriend', end_friendship_path(friend), method: :delete, data: { confirm: 'Are you sure?' } %>
-</p>
+<%= link_to end_friendship_path(friend), class: 'waves-effect waves-light btn sliding', method: :delete, data: { confirm: 'Are you sure?' } do %>
+  <span>
+    <%= material_icon.check.css_class('left') %> Friends
+  </span>
+  <span>
+    <%= material_icon.cancel.css_class('left') %> Unfriend
+  </span>
+<% end %>

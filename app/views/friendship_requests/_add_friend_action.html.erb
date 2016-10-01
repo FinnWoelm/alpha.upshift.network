@@ -1,5 +1,6 @@
 <%= form_tag(add_friend_path(new_friend), method: "post") do %>
-  <p>
-    <%= submit_tag "Add Friend" %>
-  </p>
+  <button class="btn waves-effect waves-light" type="submit" name="action">
+    <%= material_icon.add_circle.css_class('left') %>
+    Send Friend Request
+  </button>
 <% end %>

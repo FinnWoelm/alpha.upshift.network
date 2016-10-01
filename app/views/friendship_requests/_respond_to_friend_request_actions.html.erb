@@ -1,7 +1,16 @@
-<p><%= sender.name %> has requested to be your friend</p>
-
-<%= render partial: "friendship_requests/accept_friendship_request_button", locals: { user: sender } %>
-
-<p>
-  <%= link_to 'Reject', reject_friendship_request_path(sender), method: :delete, data: { confirm: 'Are you sure?' } %>
-</p>
+<div class="row">
+  <div class="col s12 m12">
+    <div class="card red darken-3">
+      <div class="card-content white-text">
+        <span class="card-title">Friendship Request</span>
+        <p><%= sender.name %> has requested to be your friend.</p>
+      </div>
+      <div class="card-action white-text light_border">
+          <%= render partial: "friendship_requests/accept_friendship_request_button", locals: { user: sender } %>
+          <%= link_to reject_friendship_request_path(sender), class: 'with_icon', method: :delete, data: { confirm: 'Are you sure?' } do %>
+            <%= material_icon.cancel %> Reject
+          <% end %>
+      </div>
+    </div>
+  </div>
+</div>

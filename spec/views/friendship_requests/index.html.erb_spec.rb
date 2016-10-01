@@ -14,7 +14,8 @@ RSpec.describe "friendship_requests/index", type: :view do
     expect(rendered).to have_text(@requests.first.sender.name)
     expect(rendered).to have_text(@requests.first.sender.name)
 
-    assert_select "input[type=submit][value='Accept']", :count => @requests.size
+    expect(rendered).to have_selector("button", text: "Accept", count: @requests.size)
+
     assert_select "tr>td", :text => "Reject", :count => @requests.size
 
   end
