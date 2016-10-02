@@ -2,4 +2,6 @@
 
 <h1>New Conversation</h1>
 
-<%= render partial: 'private_messages/form', locals: {private_message: @private_message} %>
+<%= render partial: 'form', locals: {
+  private_conversation: @private_conversation,
+  private_message: @private_message} %>

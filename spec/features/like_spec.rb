@@ -46,25 +46,29 @@ feature 'Like' do
   end
 
   def when_i_like_the_post
-    click_on "Like Post"
+    within(".post") do
+      click_on "LIKE"
+    end
   end
 
   def then_the_post_should_have_my_like
     @post.reload
     expect(@post.likes.size).to eq(1)
     expect(@user.likes.size).to eq(1)
-    expect(page).to have_content("Likes: 1")
+    expect(page).to have_content("thumb_up 1")
   end
 
   def and_i_unlike_the_post
-    click_on "Unlike Post"
+    within(".post") do
+      click_on "UNLIKE"
+    end
   end
 
   def then_the_post_should_not_have_my_like
     @post.reload
     expect(@post.likes.size).to eq(0)
     expect(@user.likes.size).to eq(0)
-    expect(page).to have_content("Likes: 0")
+    expect(page).to have_content("thumb_up 0")
   end
 
   def and_i_view_a_post_with_a_comment
@@ -73,25 +77,29 @@ feature 'Like' do
   end
 
   def when_i_like_the_comment
-    click_on "Like Comment"
+    within(".comment", match: :first) do
+      click_on "thumb_up"
+    end
   end
 
   def then_the_comment_should_have_my_like
     @comment.reload
     expect(@comment.likes.size).to eq(1)
     expect(@user.likes.size).to eq(1)
-    expect(page).to have_content("Likes: 1")
+    expect(page).to have_content("thumb_up 1")
   end
 
   def and_i_unlike_the_comment
-    click_on "Unlike Comment"
+    within(".comment", match: :first) do
+      click_on "thumb_up"
+    end
   end
 
   def then_the_comment_should_not_have_my_like
     @comment.reload
     expect(@comment.likes.size).to eq(0)
     expect(@user.likes.size).to eq(0)
-    expect(page).to have_content("Likes: 0")
+    expect(page).to have_content("thumb_up 0")
   end
 
 end

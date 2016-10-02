@@ -3,20 +3,63 @@
 // modify colors here
 // $primary-color: color("blue", "lighten-2") !default;
 // ...
+$primary-color: color("red", "base");
+$secondary-color: $primary-color;
 @import 'materialize';
 @import "materialize/extras/nouislider";
 
 // Material Icons
 @import "material_icons";
 
-// Styles for static pages
+// App Stylesheets
 @import "static";
+@import "post_and_comment";
+@import "like";
+@import "profile";
+
 
 // GENERAL
+
+// GENERAL: start off hidden
 .init-hidden {
   display: none;
 }
 
+// GENERAL: removes bottom spacing
+.no_margin_bottom {
+  margin-bottom: 0px !important;
+}
+
+// GENERAL: removes all margins
+.no_margin {
+  margin: 0px !important;
+}
+
+// GENERAL: removes all padding
+.no_padding {
+  padding: 0px !important;
+}
+
+// GENERAL: limit parallax height to 300px
+.parallax-container {
+  height: 300px;
+}
+
+// GENERAL: limit parallax height to 300px
+.parallax-container {
+  height: 300px;
+}
+
+// COLOR
+
+// COLOR: applies highlight color (secondary color)
+.highlight-text {
+  color: $secondary-color;
+}
+
+// NAVIGATION
+
+// NAVIGATION: Brand logo fits height
 nav .brand-logo img {
   height: 50px;
   width: auto;
@@ -25,7 +68,109 @@ nav .brand-logo img {
   float: left;
 }
 
+// NAVIGATION: Badges on icons
+nav li a i+span.badge {
+  display: block;
+  float: right
+  ;position: relative;
+  top: -55px;
+  left: 10px;
+  line-height: 1;
+  padding: 3px 5px;
+  min-width: unset;
+  margin-bottom: -55px;
+  border-radius: 2px;
+}
+
+// NAVIGATION: max 64px tall
+nav li {
+  height: 64px;
+}
+
+// ANCHORS & LINKS
+
+// ANCHOR: position button correctly
+a.with_icon > i.material-icons,
+button.as_link.with_icon > i.material-icons {
+  position: relative;
+  top: 5px;
+  margin-top: -7px;
+}
+
+// BUTTONS
+
+// Buttons: Button with sliding effect
+a.btn.sliding,
+button.btn.sliding {
+  span {
+    display: block;
+    transition: transform .3s ease-in-out;
+  }
+
+  &:hover, &:focus {
+    span {
+      transform: translateY(-36px);
+    }
+  }
+
+}
+
+// BUTTONS: Hover effect on flat buttons
+button.btn-flat.waves-effect:hover,
+a.btn-flat.waves-effect:hover,
+button.btn-flat.waves-effect:focus,
+a.btn-flat.waves-effect:focus {
+  background-color: color("grey", "lighten-3");
+}
+
+// BUTTONS: Creates a fake, non-clickable button
+div.fake_button {
+  height: 36px;
+  line-height: 36px;
+  outline: 0;
+  padding: 0 2rem;
+  text-transform: uppercase;
+}
+
+// BUTTONS: Creates a button that looks like a link
+button.as_link {
+  background: none;
+  border: none;
+}
+
+// BUTTONS: Small button
+button.btn-small,
+a.btn-small {
+  padding: 0 1rem;
+}
+
+// CARDS
+
+// CARDS: render forms as links
+.card .card-action > form {
+
+  display: inline-block;
+  margin-right: 20px;
+
+  & > button {
+    color: #ffab40;
+    transition: color .3s ease;
+    text-transform: uppercase;
+
+    &:hover {
+      color: #ffd8a6;
+    }
+  }
+}
+
+// CARDS: light border
+.card .card-action.light_border {
+  border-color: transparentize(color("grey", "lighten-5"), .5);
+}
+
 // FORMS
+
+// FORMS: allow coloring of forms
 @each $color_name, $color in $colors {
   @each $color_type, $color_value in $color {
     @if $color_type == "base" {
@@ -34,7 +179,8 @@ nav .brand-logo img {
 
         background-color: inherit !important;
 
-        input:focus {
+        input:focus,
+        textarea:focus {
           border-bottom: 1px solid $color_value;
           box-shadow: 0 1px 0 0 $color_value;
 
@@ -54,7 +200,8 @@ nav .brand-logo img {
 
         background-color: inherit !important;
 
-        input:focus {
+        input:focus,
+        textarea:focus {
           border-bottom: 1px solid $color_value;
           box-shadow: 0 1px 0 0 $color_value;
 
@@ -70,4 +217,11 @@ nav .brand-logo img {
       }
     }
   }
+}
+
+// FIXES
+
+// FIXES: parallax has a white space on the left
+.parallax-container .parallax {
+  left: -1px;
 }

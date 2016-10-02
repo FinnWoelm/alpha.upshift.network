@@ -9,22 +9,19 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
-  <body id="layout_static_info_message">
+  <body>
 
-    <%= render "shared/navigation" %>
+  <div class="container-fluid">
+    <%= yield %>
+  </div>
 
-    <div class="container">
+  <script type="text/javascript">
 
-      <div class="section"></div>
+    $(document).ready(function() {
+      Materialize.toast("<%= notice %>", 5000);
+    });
 
-      <div class="row white z-depth-1">
-        <div class="col s12">
-
-          <%= yield %>
-
-        </div>
-      </div>
-    </div>
+  </script>
 
   </body>
 </html>

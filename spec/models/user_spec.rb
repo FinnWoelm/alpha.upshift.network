@@ -196,46 +196,36 @@ RSpec.describe User, type: :model do
 
   end
 
-  # it "can get unread private conversations" do
-  #
-  #   @current_user = create(:user)
-  #
-  #   @my_conversations = []
-  #   5.times do
-  #     @my_conversations << build(:private_conversation, :sender => @current_user)
-  #   end
-  #
-  #   @unread_conversations = []
-  #   20.times do
-  #     conversation = @my_conversations[rand(0..@my_conversations.size-1)]
-  #     sender = conversation.participantships[rand(0..1)].participant
-  #     create(:private_message, :conversation => conversation, :sender => sender)
-  #
-  #     # remove conversation in any case (we'll add it to front of queue again
-  #     # in a second as long as the sender wasn't @current_user)
-  #     @unread_conversations -= [conversation]
-  #
-  #     # track conversation if it was not sent by current user
-  #     if sender.id != @current_user.id
-  #       @unread_conversations.unshift conversation
-  #     end
-  #   end
-  #
-  #   @unread_conversations_to_test = @current_user.unread_private_conversations
-  #
-  #   expect(@unread_conversations.size).to eq(@unread_conversations_to_test.size)
-  #
-  #   # check each element
-  #   @unread_conversations.each_with_index do |conversation, i|
-  #     expect(conversation.id).to eq(@unread_conversations_to_test[i].id)
-  #   end
-  #
-  #   # check each element
-  #   @unread_conversations_to_test.each_with_index do |conversation, i|
-  #     expect(conversation.id).to eq(@unread_conversations[i].id)
-  #   end
-  #
-  # end
+  describe ".to_user" do
 
+    context "when input is a string" do
+      let(:user) { create(:user) }
+
+      it "returns the user" do
+        expect(User.to_user(user.username)).to eq(user)
+      end
+    end
+
+    context "when input is a User" do
+      let(:user) { create(:user) }
+
+      it "returns the user" do
+        expect(User.to_user(user)).to eq(user)
+      end
+    end
+
+    context "when input is a number" do
+      it "raises an error" do
+        expect{ User.to_user(1) }.to raise_error(ArgumentError)
+      end
+    end
+
+    context "when input is nil" do
+      it "returns nil" do
+        expect(User.to_user(nil)).to be_nil
+      end
+    end
+
+  end
 
 end

@@ -1,23 +1,29 @@
-<p id="notice"><%= notice %></p>
-
-<div id="banner" style="width:100%; height:300px; background-color:gray;">
 </div>
 
-<h1><%= @profile.user.name %></h1>
+<div id="profile_banner" class="container-fluid">
 
-<p>
-  <strong>Email:</strong>
-  <%= @profile.user.email %>
-</p>
+  <div class="parallax-container">
+    <div class="parallax">
+      <%= image_tag "dawn.jpg" %>
+    </div>
+  </div>
 
-<p>
-  <strong>Username:</strong>
-  <%= @profile.user.username %>
-</p>
+  <div class="user_meta container">
+    <div class="profile_picture">
+      <%= image_tag profile_picture @profile.user.username %>
+    </div>
+
+    <div class="user_name z-depth-3 indigo white-text center-align">
+      <h4 class="hide-on-small-only"><%= @profile.user.name %></h4>
+      <h6 class="hide-on-med-and-up"><%= @profile.user.name %></h6>
+    </div>
+  </div>
+
+</div>
+
+<div class="container">
 
 <%= friendship_actions %>
-
-<h1>Posts</h1>
 
 <%= write_post_action %>
 

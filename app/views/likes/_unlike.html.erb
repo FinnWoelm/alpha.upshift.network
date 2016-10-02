@@ -1,8 +1,0 @@
-<%=
-  link_to(
-    "Unlike #{object.model_name.to_s}",
-    unlike_path(:likable_id => object.id, :likable_type => object.model_name.to_s),
-    method: :delete,
-    data: { confirm: 'Are you sure?' }
-  )
-%>

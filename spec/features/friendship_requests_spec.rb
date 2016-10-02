@@ -52,7 +52,7 @@ feature 'Friendship Request' do
   end
 
   def and_i_send_a_friend_request
-    click_button 'Add Friend'
+    click_button 'Send Friend Request'
   end
 
   def then_another_user_should_have_received_a_friend_request
@@ -106,7 +106,7 @@ feature 'Friendship Request' do
   end
 
   def and_revoke_the_friend_request
-    click_link "Revoke request"
+    click_link "Revoke Request"
   end
 
 end

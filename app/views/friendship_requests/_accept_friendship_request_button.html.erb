@@ -1,3 +1,5 @@
 <%= form_tag(accept_friendship_request_path(user), method: "post") do %>
-  <%= submit_tag "Accept" %>
+  <button class="as_link with_icon" type="submit" name="action">
+    <%= material_icon.add_circle %> Accept
+  </button>
 <% end %>

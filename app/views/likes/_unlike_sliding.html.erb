@@ -1,0 +1,14 @@
+<div class="unlike_button sliding">
+  <%=
+    link_to unlike_path(:likable_id => object.id, :likable_type => object.model_name.to_s),
+      method: :delete,
+      class: 'btn-flat waves-effect waves-light red white-text' do %>
+    <span>
+      <%= material_icon.thumb_up.css_class('left') %>
+      <%= object.likes_count || 0 %>
+    </span>
+    <span>
+      UNLIKE
+    </span>
+  <% end %>
+</div>

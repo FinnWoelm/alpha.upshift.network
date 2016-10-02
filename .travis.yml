@@ -1,3 +1,13 @@
+sudo: required
+dist: trusty
+addons:
+  apt:
+    sources:
+      - ubuntu-sdk-team
+    packages:
+      - libqt5webkit5-dev
+      - qtdeclarative5-dev
+
 language: ruby
 rvm:
   - 2.3.1
@@ -5,6 +15,9 @@ rvm:
 # Use PostgreSQL as database
 services:
   - postgresql
+
+before_install:
+  - export QMAKE=/usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 
 before_script:
   - psql -c 'create database upshift_network_test;' -U postgres
@@ -19,5 +32,5 @@ branches:
 
 env:
   global:
-  - secure: mj976gUwX1xWaKTcWO3iDfkKdRX0uW15cRkEaT8wKzJOzSfYq48R7KjIrpm+khkd+eyOopz4isbH8/IB69ACJi00orVBA4w2Y7aFr0VshZGcNhRlj2JkmQ3Dv8NJW+ctKFPd7rA+g/gtTUw0JHgaLSQEZzJNVBw2Q1UkYdQNbayU8mp0ebm4N9+WwCsoRzJrYr31nGNtJqvMBz6+ntNfTMySLRQH+nk5ptVfVl6EE87b8Q3Y0l1mqITljlVjrNUONg3X5Bz9Wr2yR7Auwkk5oq8riT4XWkMbVtAKIVI/8jIM3hufq99A9RrEG24+MgbzAGrgBLhsx/j7aZL52DFpbGxqsbURDYnEykFjelKj4hm1YLmXBM2l5+8omux8KPIjg0WXSHEeElBSWCYSKU80b47CiCiESm6PIidsMJMqmJMcePZRYg9Wa5J12HsVuuZCm693aUpgJABwQfNji69vbHUdI5L/VWlbh9VXafBBuM8LL01FcblQQsWJZMwv9ekNijx8zGfCG7sXswLhbYPTZXUlBP4mG/mjZdfYDlVwizqK2VG7sJWPjQ9CxA4uunTnLbVjwADrILM2IBkpSIKbnTx4c1UINSnwCjbogyoOZkKCN7XZ3sSv5bIY7617ZGRHnrqD3S1Wv/Y1p+XRaOL+55zTC9OOwaQd65R8JyQgFDY=
-  - secure: K79Af2CKk8wRXp7XymVHtbsnwnsX/cytMykEufOtZJOEsX7ublVYAzVU0141iQ0AGkBS8Co7uHgy/HQDNkfBHg2HcA7FlNQcJJ3PQs0U72oHSRZUfGdSLCXhJErsSWSwlAAiy7Tx5/MuJ+IEG1Wi32Vgs27Gj5rBXNAKI4IIlbS50m2S2/7S8lrMq+H94Ft136sDMURJA+RvWFcX/xhLJJ0xs4X0jJ7OxARgbiK0Bu9sDcyjbASmQdcnRH3gPN9sTsAYAo+DtUCQ3kdaHydga/K+WTM2kMk0x4YNlvFsPKChoaQTD8USTxTfT5IBA65XCrelSctBNRmWI6aJBsz4Lei/G62Bchll/Xl3MNgNeQCCWd3ECgAtAN5dxsz5P8SBV2XwDJ3gdbym8uS+rptFvaHCPZao75dXQsLYKthSKVdGGN0Hxy36JFpeeTnX333nxXsoFTB9/bcT5XowWS/r+lNLvCKkvmfVsn9KzkhtrSxVcJisTHoKHmLjnmUjGgFRdxHlEFuT2S8dRfiZBWuRBrcZP9/bnNpSrbVi177hLV96MjoR4R5+v4bGrZP611BSVOxgTImhMJ2SgLv5d9axGXLuoXeYL8qeebLNzohP+pbUaKlqhWMpDc76IPmc78QC11i8XC3viFAdbiFJFAuwbyxGfR+TY6VUcaYIPNrODd8=
+    - MAILJET_API_KEY: spoof # we do not need the actual API key for testing
+    - MAILJET_SECRET_KEY: spoof # we do not need the actual secret for testing
