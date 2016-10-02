@@ -20,7 +20,7 @@ before_install:
   - export QMAKE=/usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 
 before_script:
-  - psql -c 'create database upshift_network_test;' -U postgres
+  - psql -c 'create database community_democracy_test;' -U postgres
 
 script: xvfb-run bundle exec rspec spec
 
