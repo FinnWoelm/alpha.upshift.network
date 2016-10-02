@@ -1,4 +1,8 @@
-<p>
-  You have sent a friend request to <%= recipient.name %>.
-  <%= link_to 'Revoke request', reject_friendship_request_path(recipient), method: :delete, data: { confirm: 'Are you sure?' } %>
-</p>
+<%= link_to reject_friendship_request_path(recipient), class: 'waves-effect waves-light btn sliding', method: :delete, data: { confirm: 'Are you sure?' } do %>
+  <span>
+    <%= material_icon.call_made.css_class('left') %> Friend Request Sent
+  </span>
+  <span>
+    <%= material_icon.cancel.css_class('left') %> Revoke Request
+  </span>
+<% end %>

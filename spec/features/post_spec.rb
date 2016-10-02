@@ -33,7 +33,7 @@ feature 'Post' do
   def when_i_write_a_post
     visit profile_path(@user)
     @my_post_content = Faker::Lorem.paragraph
-    fill_in 'Content', with: @my_post_content
+    fill_in 'post_content', with: @my_post_content
     click_button "Post"
   end
 
@@ -52,7 +52,7 @@ feature 'Post' do
   end
 
   def and_click_on_the_post_timestamp
-    click_link "Show post on a separate page"
+    click_link "ago"
   end
 
   def then_i_should_see_the_post_on_a_separate_page

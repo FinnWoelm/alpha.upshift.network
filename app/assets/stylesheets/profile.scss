@@ -1,0 +1,63 @@
+div#profile_banner {
+
+  $profile_picture_size: ($small-and-down: 80px, $medium-and-up: 150px);
+
+  display: block;
+
+  div.user_meta {
+    position: relative;
+    height: 100px;
+
+    @each $media_query, $picture_size in $profile_picture_size {
+      @media #{$media_query} {
+        top: - $picture_size / 2;
+      }
+    }
+  }
+
+  div.user_meta img {
+    border-radius: 8px;
+    @extend .z-depth-2;
+    @extend .responsive-img;
+
+    @each $media_query, $picture_size in $profile_picture_size {
+      @media #{$media_query} {
+        width: $picture_size;
+      }
+    }
+  }
+
+  div.profile_picture {
+    display: inline-block;
+    position: absolute;
+    z-index: 99;
+  }
+
+  div.user_name {
+    z-index: 0;
+    position: absolute;
+    display: inline-block;
+    padding: 0px 10px;
+    border-radius: 5px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+
+    @each $media_query, $picture_size in $profile_picture_size {
+      @media #{$media_query} {
+        left: $picture_size;
+        top: $picture_size / 3;
+      }
+    }
+
+    // @media #{$small-and-down} {
+    //   $line_height: 15px;
+    //   left: 80px;
+    //   top: $profile_picture_size.map-get('small') / 2;// - $profile_name_line_height.map-get('small');
+    // }
+    // @media #{$medium-and-up} {
+    //   left: 150px;
+    //   top: $profile_picture_size.map-get('large') / 2;// - $profile_name_line_height.map-get('large')
+    // }
+  }
+
+}

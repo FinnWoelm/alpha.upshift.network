@@ -11,17 +11,35 @@
   </head>
   <body>
 
-  <% if @current_user %>
-    <div id="header" style="width: 100%; background-color: salmon;">
-      <p>
-        <%= link_to private_conversations_home_path do %>
-          Unread conversations: <%= @current_user.unread_private_conversations.size %>
-        <% end %>
-      </p>
-    </div>
-  <% end %>
+  <%= render "shared/navigation" %>
 
-  <%= yield %>
+  <div class="container">
+    <%= yield %>
+  </div>
+
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+      Materialize.toast("<%= notice %>", 5000);
+      $('.tooltipped').tooltip({delay: 50});
+
+      $('.dropdown-button').dropdown({
+          inDuration: 300,
+          outDuration: 225,
+          constrain_width: false, // Does not change width of dropdown to that of the activator
+          hover: false, // Activate on hover
+          gutter: 0, // Spacing from edge
+          belowOrigin: true, // Displays dropdown below the button
+          alignment: 'right' // Displays dropdown with edge aligned to the left of button
+        }
+      );
+
+      $(document).ready(function(){
+        $('.parallax').parallax();
+      });
+    });
+
+  </script>
 
   </body>
 </html>
