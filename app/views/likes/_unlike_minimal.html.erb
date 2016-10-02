@@ -1,0 +1,9 @@
+<div class="unlike_button minimal">
+  <%=
+    link_to unlike_path(:likable_id => object.id, :likable_type => object.model_name.to_s),
+      method: :delete,
+      class: 'btn-flat btn-small waves-effect waves-light highlight-text' do %>
+      <%= material_icon.thumb_up.css_class('left') %>
+      <%= object.likes_count || 0 %>
+  <% end %>
+</div>

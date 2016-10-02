@@ -8,10 +8,8 @@ RSpec.describe "profiles/show", type: :view do
     @posts = []
   end
 
-  it "renders attributes in <p>" do
+  it "renders user's name" do
     render
-    expect(rendered).to have_text("Email")
-    expect(rendered).to have_text("Username")
     expect(rendered).to have_text(@profile.user.name)
   end
 
@@ -32,7 +30,7 @@ RSpec.describe "profiles/show", type: :view do
   context "No friendship request has been sent" do
     it "has an add friend button" do
       render
-      assert_select "input[type=submit][value='Add Friend']", :count => 1
+      expect(rendered).to have_selector("button", text: "Send Friend Request", count: 1)
     end
   end
 
@@ -40,7 +38,7 @@ RSpec.describe "profiles/show", type: :view do
     it "has a revoke friend request button" do
       create(:friendship_request, :recipient => @profile.user, :sender => @current_user)
       render
-      assert_select "a", :text => "Revoke request", :count => 1
+      expect(rendered).to have_selector("a", text: "Revoke Request", count: 1)
     end
   end
 
@@ -52,11 +50,11 @@ RSpec.describe "profiles/show", type: :view do
 
     it "has an accept friend request button" do
       render
-      assert_select "input[type=submit][value='Accept']", :count => 1
+      expect(rendered).to have_selector("button", text: "Accept", count: 1)
     end
     it "has a reject friend request button" do
       render
-      assert_select "a", :text => "Reject", :count => 1
+      expect(rendered).to have_selector("a", text: "Reject", count: 1)
     end
   end
 
@@ -64,7 +62,7 @@ RSpec.describe "profiles/show", type: :view do
     it "has an unfriend button" do
       create(:friendship, :initiator => @profile.user, :acceptor => @current_user)
       render
-      assert_select "a", :text => "Unfriend", :count => 1
+      expect(rendered).to have_selector("a", text: "Unfriend", count: 1)      
     end
   end
 

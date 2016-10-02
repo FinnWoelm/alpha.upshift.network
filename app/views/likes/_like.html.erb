@@ -1,5 +1,0 @@
-<%= form_tag(like_path(:likable_id => object.id, :likable_type => object.model_name.to_s), method: "post") do %>
-  <p>
-    <%= submit_tag "Like " + object.model_name.to_s %>
-  </p>
-<% end %>

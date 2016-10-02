@@ -1,29 +1,64 @@
-<div style="width: 100%; background-color:lightgray;">
-  <b>New Comment</b>
-  <%= form_for([comment.post, comment]) do |f| %>
-    <% if comment.errors.any? %>
-      <div id="error_explanation">
-        <h2><%= pluralize(comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+<div class="comment">
+  <div class="meta">
+    <%# PROFILE PICTURE %>
+    <div class="author_image z-depth-1">
+      <%= image_tag profile_picture @current_user.username %>
+    </div>
 
-        <ul>
-        <% comment.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-        </ul>
+  </div>
+
+  <div class="content">
+
+    <div class="with_padding">
+
+      <div class="right">
+        now
       </div>
-    <% end %>
+      <span><strong>
+        <%= @current_user.name %>
+      </strong></span>
 
-    <div class="field">
-      <%= f.hidden_field :post_id %>
+      <div class="row new_comment_form no_margin_bottom">
+        <%= form_for [comment.post, comment], class: "col s12" do |f| %>
+          <div class="row no_margin_bottom">
+            <% if comment.errors.any? %>
+              <div id="error_explanation">
+                <h2><%= pluralize(comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+
+                <ul>
+                <% comment.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+                </ul>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="input-field col s12 hide">
+            <%= f.hidden_field :post_id %>
+          </div>
+
+          <div class="row no_margin_bottom">
+            <div class="input-field col s12 grey darken-4">
+              <%= f.text_area :content, class: "materialize-textarea" %>
+              <%= f.label :content, "What do you think?" %>
+            </div>
+          </div>
+
+
+          <div class="row no_margin_bottom">
+            <div class="col s12">
+              <button class="btn waves-effect waves-light" type="submit" name="action">
+                Comment <i class="material-icons right">send</i>
+              </button>
+            </div>
+          </div>
+
+        <% end %>
+      </div>
+
     </div>
 
-    <div class="field">
-      <%= f.label :content %>
-      <%= f.text_area :content %>
-    </div>
+  </div>
 
-    <div class="actions">
-      <%= f.submit "Add Comment" %>
-    </div>
-  <% end %>
 </div>

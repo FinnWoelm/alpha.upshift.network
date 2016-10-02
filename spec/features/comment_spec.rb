@@ -37,8 +37,8 @@ feature 'Comment' do
 
   def and_write_a_comment
     @my_comment_content = Faker::Lorem.paragraph
-    fill_in "Content", with: @my_comment_content
-    click_on "Add Comment"
+    fill_in "comment_content", with: @my_comment_content
+    click_on "Comment"
   end
 
   def then_the_post_should_have_my_comment

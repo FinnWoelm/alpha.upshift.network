@@ -1,0 +1,111 @@
+div.post, div.comment {
+  div.author_image img {
+    width: 100%;
+    border-radius: inherit;
+  }
+}
+
+div.post-wrapper {
+
+  margin-top: 60px;
+  margin-bottom: 60px;
+
+    div.post {
+      position: relative;
+      z-index: 20;
+
+    div.author_image {
+      position: absolute;
+      top: -15px;
+      left: -30px;
+      height: 60px;
+      width: 60px;
+      border-radius: 5px;
+      z-index: 5;
+    }
+
+    div.author_name {
+      position: absolute;
+      top: -10px;
+      left: 30px;
+      display: inline-block;
+      padding: 0px 10px;
+      border-radius: 5px;
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+    }
+
+    div.content {
+      padding: 35px 30px 20px 50px;
+      background-color: white;
+      border-bottom: 1px solid color("grey", "lighten-3");
+    }
+
+    div.administrative-actions .dropdown-button {
+      padding: 0px;
+      margin-right: 10px;
+    }
+  }
+}
+
+div.comments-wrapper {
+  margin-left: 30px;
+  z-index: 0;
+  position: relative;
+
+  & > div.comment {
+    position: relative;
+    border-bottom: 1px solid color("grey", "lighten-2");
+    @extend .grey, .lighten-3;
+
+    div.meta {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+    }
+
+    div.author_image {
+      margin: 10px;
+      height: 40px;
+      width: 40px;
+      background-color: gray;
+      border-radius: 3px;
+    }
+
+    div.content {
+      margin-left: 60px;
+      border-left: 1px solid color("grey", "lighten-2");
+      @extend .white;
+    }
+
+    div.content > div.with_padding {
+      padding:10px;
+      padding-bottom: 0px;
+    }
+
+    div.content p {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
+    div.new_comment_form {
+      padding-left: 10px;
+    }
+
+    div.administrative-actions .dropdown-button {
+      margin-top: -10px;
+      margin-left: 10px;
+      padding: 0px;
+    }
+
+    div.timestamp {
+      line-height: 36px;
+      vertical-align: middle;
+      margin-top: -10px;
+    }
+
+    div.new_comment_form {
+      padding-bottom: 20px;
+    }
+  }
+}

@@ -1,0 +1,38 @@
+<nav class="red">
+  <div class="container">
+    <div class="nav-wrapper">
+      <%= link_to root_path, class: 'brand-logo' do %>
+        <%= image_tag "logo_bold_100p.png" %> Upshift
+      <% end %>
+
+      <% if @current_user %>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+
+          <li>
+            <%= link_to profile_path(@current_user), class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'My Profile'} do %>
+              <%= material_icon.account_circle %>
+            <% end %>
+          </li>
+
+          <li>
+            <%= link_to private_conversations_home_path, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'Conversations'} do %>
+              <%= material_icon.chat_bubble %>
+              <% if @current_user.unread_private_conversations.size > 0 %>
+                <span class="white red-text z-depth-1 badge">
+                  <%= @current_user.unread_private_conversations.size %>
+                </span>
+              <% end %>
+            <% end %>
+          </li>
+
+          <li>
+            <%= link_to logout_path, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'Logout'} do %>
+              <%= material_icon.power_settings_new %>
+            <% end %>
+          </li>
+
+        </ul>
+      <% end %>
+    </div>
+  </div>
+</nav>

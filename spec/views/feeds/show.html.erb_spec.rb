@@ -4,6 +4,7 @@ RSpec.describe "feeds/show.html.erb", type: :view do
 
   before do
     assign(:post, Post.new)
+    assign(:current_user, build_stubbed(:user))
   end
 
   it "has a header: Feed" do
@@ -17,11 +18,11 @@ RSpec.describe "feeds/show.html.erb", type: :view do
    assign(:posts, Post.none)
    render
 
-   expect(rendered).to have_selector("form", text: "Content")
+   expect(rendered).to have_selector("form", text: "Post")
   end
 
   context "when there are posts to show" do
-    let(:posts) { build_stubbed_list(:post, 10) }
+    let(:posts) { create_list(:post, 10) }
 
     it "shows posts" do
      assign(:posts, posts)

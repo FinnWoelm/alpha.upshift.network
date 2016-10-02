@@ -1,35 +1,75 @@
-<div style="display:block; background-color: lightgray; padding: 10px 30px; margin-top:30px;">
+<div class="row post-wrapper">
+  <div class="col s12">
 
-<p>
-  <strong>
-    <%= post.author.name %>
-    wrote on
-    <%= link_to render_timestamp(post.created_at), post, :title => "Show post on a separate page" %>
-  </strong>
-</p>
+    <div class="post z-depth-1">
 
-<p>
-  <%= simple_format h(post.content) %>
-</p>
+      <%# DELETE POST %>
+      <% if post.deletable_by?(@current_user) %>
+        <div class="administrative-actions right">
+          <!-- Dropdown Trigger -->
+          <%= link_to '#',
+                class: "dropdown-button btn-flat tooltipped",
+                data: {
+                  activates: "dropdown-#{post.id}",
+                  position: 'left', delay: '50', tooltip: 'Show Options'
+                } do %>
+            <%= material_icon.settings %>
+          <% end %>
 
-<p>
-  Likes: <%= post.likes_count %>
-</p>
+          <!-- Dropdown Structure -->
+          <ul id='dropdown-<%= post.id %>' class='dropdown-content'>
+            <li>
+              <%= link_to 'Delete Post', post, method: :delete, data: { confirm: 'Are you sure?' } %>
+            </li>
+          </ul>
+        </div>
+      <% end %>
 
-<% if post.likable_by?(@current_user) %>
-  <%= like_action post %>
-<% elsif post.unlikable_by?(@current_user) %>
-  <%= unlike_action post %>
-<% end %>
+      <%# PROFILE PICTURE %>
+      <%= link_to profile_path post.author do %>
+        <div class="author_image z-depth-1 grey">
+          <%= image_tag profile_picture post.author.username %>
+        </div>
+      <% end %>
 
+      <%# AUTHOR NAME %>
+      <%= link_to profile_path post.author do %>
+        <div class="author_name z-depth-1 indigo white-text">
+          <%= post.author.name %>
+        </div>
+      <% end %>
 
-<% if post.deletable_by?(@current_user) %>
-  <%= link_to 'Delete Post', post, method: :delete, data: { confirm: 'Are you sure?' } %>
-<% end %>
+      <%# CONTENT %>
+      <div class="content">
+        <%= simple_format h(post.content) %>
+      </div>
 
-<hr/>
+      <div class="actions row no_margin_bottom">
 
-  <%= render post.comments %>
-  <%= write_comment_for_post_action post %>
+        <%# LIKE & UNLIKE %>
+        <div class="col s12 m6">
+        <% if post.likable_by?(@current_user) %>
+          <%= like_action post, "sliding" %>
+        <% elsif post.unlikable_by?(@current_user) %>
+          <%= unlike_action post, "sliding" %>
+        <% end %>
+        </div>
 
+        <%# TIMESTAMP %>
+        <div class="col s12 m6 right-align">
+          <%= link_to render_timestamp(post.created_at), post, class: "btn-flat waves-effect waves-red tooltipped", data: {position: 'bottom', delay: '50', tooltip: "Show post on a separate page"} %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comments -->
+    <div class="comments-wrapper white z-depth-1">
+
+      <%= render post.comments %>
+
+      <%= write_comment_for_post_action post %>
+
+    </div>
+
+  </div>
 </div>
