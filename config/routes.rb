@@ -13,6 +13,11 @@ Rails.application.routes.draw do
     get 'confirm', on: :collection
   end
 
+  # Registrations
+  resources :registrations, only: [:new, :create] do
+    get 'confirm', on: :collection
+  end
+
   # Sessions
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'

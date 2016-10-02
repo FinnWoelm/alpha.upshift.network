@@ -56,6 +56,9 @@ class User < ApplicationRecord
   # # Validations
   validates :profile, presence: true
 
+  # name
+  validates :name, presence: true
+
   # Username
   validates :username,
     format: {
@@ -77,6 +80,20 @@ class User < ApplicationRecord
     length: { in: 3..26 }
   validates :username,
     uniqueness: { :case_sensitive => false }
+
+  # Email
+  validates :email, presence: true
+  validates :email, format: {
+    with: /\A\S+@\S+\.\S+\z/,
+    message: "seems invalid"
+  }
+  validates :email,
+    uniqueness: { :case_sensitive => false }
+
+  # Password
+  validates :password, confirmation: true
+  validates :password,
+    length: { in: 8..50 }
 
 
   # before_validation :create_profile_if_not_exists, on: :create

@@ -41,6 +41,9 @@ gem 'material_icons'
 # New Relic for performance analysis
 gem 'newrelic_rpm', '~> 3.16'
 
+# Nokogiri for parsing fields with errors
+gem "nokogiri", '~> 1.6'
+
 group :development, :test do
   # We will use pry rails as our console
   gem 'pry-rails'
