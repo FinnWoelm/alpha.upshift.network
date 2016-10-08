@@ -1,5 +1,8 @@
 class User < ApplicationRecord
   has_secure_password
+  has_secure_token :registration_token
+
+  include Rails.application.routes.url_helpers
 
   # # Associations
   # ## Profile
@@ -56,6 +59,9 @@ class User < ApplicationRecord
   # # Validations
   validates :profile, presence: true
 
+  # name
+  validates :name, presence: true
+
   # Username
   validates :username,
     format: {
@@ -77,6 +83,20 @@ class User < ApplicationRecord
     length: { in: 3..26 }
   validates :username,
     uniqueness: { :case_sensitive => false }
+
+  # Email
+  validates :email, presence: true
+  validates :email, format: {
+    with: /\A\S+@\S+\.\S+\z/,
+    message: "seems invalid"
+  }
+  validates :email,
+    uniqueness: { :case_sensitive => false }
+
+  # Password
+  validates :password, confirmation: true
+  validates :password,
+    length: { in: 8..50 }, unless: "password.nil?"
 
 
   # before_validation :create_profile_if_not_exists, on: :create
@@ -118,6 +138,26 @@ class User < ApplicationRecord
     username
   end
 
+  # send the registration email
+  def send_registration_email
+    Mailjet::Send.create(
+      "FromEmail": "hello@upshift.network",
+      "FromName": "Upshift Network",
+      "Subject": "Please Confirm Your Registration",
+      "Mj-TemplateID": ENV['USER_REGISTRATION_EMAIL_TEMPLATE_ID'],
+      "Mj-TemplateLanguage": "true",
+      "Mj-trackclick": "1",
+      recipients: [{
+        'Email' => email,
+        'Name' => name
+        }],
+      vars: {
+        "NAME" => name,
+        "CONFIRMATION_PATH" => registration_confirmation_path
+      }
+    )
+  end
+
   # # Class Methods
 
   # converts the input to User
@@ -127,6 +167,15 @@ class User < ApplicationRecord
     return User.find_by_username(input) if input.is_a?(String)
     raise ArgumentError.new("User.to_user only supports types User and String")
   end
+
+  private
+    # return the path for confirming the pending newsletter subscription
+    def registration_confirmation_path
+      confirm_registrations_path(
+        :email => email,
+        :registration_token => registration_token
+      )
+    end
 
   # protected
   # def create_profile_if_not_exists
