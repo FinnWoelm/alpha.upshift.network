@@ -34,3 +34,4 @@ env:
   global:
     - MAILJET_API_KEY: spoof # we do not need the actual API key for testing
     - MAILJET_SECRET_KEY: spoof # we do not need the actual secret for testing
+    - USER_REGISTRATION_EMAIL_TEMPLATE_ID: spoof
