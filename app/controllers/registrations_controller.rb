@@ -8,6 +8,7 @@ class RegistrationsController < ApplicationController
     @user.build_profile
 
     if @user.save
+      @user.send_registration_email
       render :create
     else
       render :new

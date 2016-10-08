@@ -252,4 +252,49 @@ RSpec.describe User, type: :model do
 
   end
 
+  describe "#send_registration_email" do
+    before { allow(Mailjet::Send).to receive(:create) }
+    after { user.send_registration_email }
+
+    it "calls registration confirmation path" do
+      expect(user).to receive(:registration_confirmation_path)
+    end
+
+    it "sends an email" do
+      registration_confirmation_path = instance_double(String)
+      allow(user).
+        to receive(:registration_confirmation_path).
+        and_return( registration_confirmation_path )
+      expect(Mailjet::Send).to receive(:create).with(
+        "FromEmail": "hello@upshift.network",
+        "FromName": "Upshift Network",
+        "Subject": "Please Confirm Your Registration",
+        "Mj-TemplateID": ENV['USER_REGISTRATION_EMAIL_TEMPLATE_ID'],
+        "Mj-TemplateLanguage": "true",
+        "Mj-trackclick": "1",
+        recipients: [{
+          'Email' => user.email,
+          'Name' => user.name}],
+        vars: {
+          "NAME" => user.name,
+          "CONFIRMATION_PATH" => registration_confirmation_path
+        }
+      )
+    end
+  end
+
+  describe "#registration_confirmation_path" do
+
+    it "returns the url path for confirming the user registration" do
+      expect(user.send(:registration_confirmation_path)).
+        to eq (
+          Rails.application.routes.url_helpers.
+            confirm_registrations_path(
+              :email => user.email,
+              :registration_token => user.registration_token
+            )
+        )
+    end
+  end
+
 end

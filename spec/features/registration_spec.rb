@@ -2,6 +2,10 @@ require 'rails_helper.rb'
 
 feature 'Login' do
 
+  before do
+    allow(Mailjet::Send).to receive(:create)
+  end
+
   scenario 'User can register' do
     given_i_am_a_visitor
     when_i_go_to_the_registration_page
@@ -10,10 +14,10 @@ feature 'Login' do
   end
 
   scenario 'User receives confirmation email' do
-    pending
     given_i_am_a_visitor
-    when_i_register
-    then_i_should_receive_a_confirmation_email
+    when_i_expect_to_receive_a_confirmation_email
+    and_i_register
+    then_i_should_see_a_success_message
   end
 
   scenario 'User can confirm registration' do
@@ -47,13 +51,21 @@ feature 'Login' do
     expect(User.find_by_email(@user.email)).not_to be_confirmed_registration
   end
 
-  def when_i_register
+  def when_i_expect_to_receive_a_confirmation_email
+    expect(Mailjet::Send).to receive(:create)
+  end
+
+  def and_i_register
     when_i_go_to_the_registration_page
     and_i_submit_my_information
   end
 
-  def then_i_should_receive_a_confirmation_email
-    expect(Mailjet::Send).to receive(:create)
+  def when_i_register
+    and_i_register
+  end
+
+  def then_i_should_see_a_success_message
+    expect(page).to have_content("To get started, please check your inbox and confirm your registration")
   end
 
   def then_i_should_be_logged_in
@@ -65,7 +77,7 @@ feature 'Login' do
   end
 
   def then_i_should_be_a_registered_user_with_confirmed_registration
-    User.find_by_email(@user.email).to have_confirmed_registration
+    expect(User.find_by_email(@user.email)).to be_confirmed_registration
   end
 
   def and_i_should_be_able_to_log_in
