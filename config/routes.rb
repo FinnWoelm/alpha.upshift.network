@@ -16,12 +16,14 @@ Rails.application.routes.draw do
   # Registrations
   resources :registrations, only: [:new, :create] do
     get 'confirm', on: :collection
+    post 'resend_confirmation', on: :collection, :constraints => { :format => 'js' }
   end
 
   # Sessions
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
   get '/logout' => 'sessions#destroy'
+  get '/confirm_your_registration' => 'registrations#confirmation_reminder', as: :confirm_registration_reminder
 
   # FriendshipRequests
   get 'friend-requests' => 'friendship_requests#index', as: :friendship_requests_received

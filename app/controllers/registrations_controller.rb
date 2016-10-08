@@ -33,6 +33,15 @@ class RegistrationsController < ApplicationController
     end
   end
 
+  # Show a reminder to the user to confirm their email address
+  def confirmation_reminder
+  end
+
+  # Resend registration confirmation to user
+  def resend_confirmation
+    current_user.send_registration_email
+  end
+
   private
 
     # Never trust parameters from the scary internet, only allow the white list through.

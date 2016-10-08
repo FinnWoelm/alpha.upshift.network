@@ -9,19 +9,22 @@ feature 'Login' do
   end
 
   context 'User has not confirmed registration' do
-    scenario 'User tries to log in' do
-      given_i_am_a_user
-      and_i_have_not_confirmed_my_registration
-      when_i_log_in
-      pending
-      then_i_should_see_a_reminder_to_confirm_registration
+
+    before do
+      allow(Mailjet::Send).to receive(:create)
     end
 
     scenario 'User tries to log in' do
       given_i_am_a_user
       and_i_have_not_confirmed_my_registration
       when_i_log_in
-      pending
+      then_i_should_see_a_reminder_to_confirm_registration
+    end
+
+    scenario 'User tries to log in', :js => true do
+      given_i_am_a_user
+      and_i_have_not_confirmed_my_registration
+      when_i_log_in
       and_expect_to_receive_a_new_confirmation_email
       and_request_a_new_confirmation_token
       then_i_should_see_a_success_message
@@ -48,7 +51,19 @@ feature 'Login' do
   end
 
   def then_i_should_see_a_reminder_to_confirm_registration
-    expect(page).to have_content("Your account has not yet been confirmed")
+    expect(page).to have_content("You have not yet confirmed your registration")
+  end
+
+  def and_expect_to_receive_a_new_confirmation_email
+    expect(Mailjet::Send).to receive(:create)
+  end
+
+  def and_request_a_new_confirmation_token
+    click_on 'Re-send Confirmation Email'
+  end
+
+  def then_i_should_see_a_success_message
+    expect(page).to have_content("Confirmation email has been resent".upcase)
   end
 
 end
