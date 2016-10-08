@@ -96,7 +96,7 @@ class User < ApplicationRecord
   # Password
   validates :password, confirmation: true
   validates :password,
-    length: { in: 8..50 }
+    length: { in: 8..50 }, unless: "password.nil?"
 
 
   # before_validation :create_profile_if_not_exists, on: :create

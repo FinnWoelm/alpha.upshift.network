@@ -1,4 +1,7 @@
 class RegistrationsController < ApplicationController
+
+  layout "static_info_message", only: [:confirm]
+
   def new
     @user = User.new
   end
@@ -16,6 +19,18 @@ class RegistrationsController < ApplicationController
   end
 
   def confirm
+    @user =
+      User.find_by(
+        :email => params[:email],
+        :registration_token => params[:registration_token]
+      )
+
+    if @user
+      @user.update_attributes(confirmed_registration: true)
+      render :confirm
+    else
+      render :error
+    end
   end
 
   private

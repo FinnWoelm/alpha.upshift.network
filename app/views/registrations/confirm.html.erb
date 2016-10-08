@@ -1,2 +1,11 @@
-<h1>Registrations#confirm</h1>
-<p>Find me in app/views/registrations/confirm.html.erb</p>
+<h1>Thank you, <%= @user.name %>!</h1>
+<p>
+  Your email address <%= @user.email %> has been confirmed.
+  <%= link_to "You may now log in", login_path %>.
+</p>
+
+<p>
+  If you have any questions, comments, or concerns, please contact us at
+  <%= link_to "hello@upshift.network", "mailto:hello@upshift.network" %>.
+  We would love to hear from you!
+</p>
