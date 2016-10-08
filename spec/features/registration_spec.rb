@@ -44,6 +44,7 @@ feature 'Login' do
 
   def then_i_should_be_a_registered_user
     expect(User.find_by_email(@user.email)).to be_present
+    expect(User.find_by_email(@user.email)).not_to be_confirmed_registration
   end
 
   def when_i_register
