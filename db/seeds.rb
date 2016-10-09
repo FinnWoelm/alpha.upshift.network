@@ -69,3 +69,8 @@ end
 100.times do |i|
   Post.create(:author => User.order("RANDOM()").first, :content => "Post #{i}\nLorem Ipsum Dolorem")
 end
+
+### Democracy
+
+# Create a Community
+Democracy::Community.create(name: 'Test Community')

@@ -50,6 +50,11 @@ Rails.application.routes.draw do
   # Feed (merged into root path)
   # get 'feed', to: 'feeds#show', as: :feed
 
+  ### Democracy
+  scope module: 'democracy' do
+    resources :communities, only: [:index, :show]
+  end
+
   # Profiles -- this must be last
   get '/:username', to: 'profiles#show', as: :profile
 
