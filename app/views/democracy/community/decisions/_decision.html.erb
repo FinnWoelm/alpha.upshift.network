@@ -1,0 +1,70 @@
+<div class="row community_decision_wrapper">
+  <div class="col s12">
+
+    <div class="community_decision preview z-depth-2">
+
+      <%# PROFILE PICTURE %>
+      <%= link_to profile_path decision.author do %>
+        <div class="author_image z-depth-1 grey">
+          <%= image_tag profile_picture decision.author.username %>
+        </div>
+      <% end %>
+
+      <%# AUTHOR NAME %>
+      <%= link_to profile_path decision.author do %>
+        <div class="author_name z-depth-1 indigo white-text">
+          <%= decision.author.name %>
+        </div>
+      <% end %>
+
+      <div class="row">
+        <%# CONTENT %>
+        <div class="col s9">
+          <%= link_to decision_path(decision), :class => "open_decision" do %>
+          <div class="content">
+
+            <p class="time right grey-text no_margin_bottom">
+              <i class="material-icons tiny">schedule</i>
+              <%= time_ago_in_words(decision.ends_at) %> left<br/>
+            </p>
+
+            <div class="clearfix"></div>
+
+            <h3 class="no_margin_top"><%= decision.title %></h3>
+            <%= strip_tags(decision.description).truncate_words(50) %>
+          </div>
+          <% end %>
+        </div>
+
+        <%# ACTIONS %>
+        <div class="col s3">
+          <div class="actions">
+            <div class="row">
+
+              <div class="col s12 left-align">
+                <p class="green-text no_margin_bottom">
+                  <button data-target="d<%= decision.id %>_modal_upvote" class="waves-effect waves-light btn-floating btn-large
+                    green modal-trigger">
+                    <i class="material-icons">thumb_up</i>
+                  </button>
+                  <span class="votes">0<%#= decision.upvotes %></span>
+                </p>
+              </div>
+              <div class="col s12 left-align">
+                <p class="red-text no_margin_bottom">
+                  <button data-target="d<%= decision.id %>_modal_downvote" class="waves-effect waves-light btn-floating btn-large
+                    red modal-trigger">
+                    <i class="material-icons">thumb_down</i>
+                  </button>
+                  <span class="votes">0<%#= decision.downvotes %></span>
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

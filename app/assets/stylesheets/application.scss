@@ -16,6 +16,7 @@ $secondary-color: $primary-color;
 @import "post_and_comment";
 @import "like";
 @import "profile";
+@import "democracy/community/decision";
 
 
 // GENERAL
@@ -29,6 +30,12 @@ $secondary-color: $primary-color;
 .no_margin_bottom {
   margin-bottom: 0px !important;
 }
+
+// GENERAL: removes top spacing
+.no_margin_top {
+  margin-top: 0px !important;
+}
+
 
 // GENERAL: removes all margins
 .no_margin {

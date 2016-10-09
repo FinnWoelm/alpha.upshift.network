@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161008232921) do
+ActiveRecord::Schema.define(version: 20161009003127) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,19 @@ ActiveRecord::Schema.define(version: 20161008232921) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_at"], name: "index_democracy_communities_on_created_at", using: :btree
+  end
+
+  create_table "democracy_community_decisions", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.uuid     "community_id"
+    t.integer  "author_id"
+    t.string   "title"
+    t.text     "description"
+    t.datetime "ends_at"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["author_id"], name: "index_democracy_community_decisions_on_author_id", using: :btree
+    t.index ["community_id"], name: "index_democracy_community_decisions_on_community_id", using: :btree
+    t.index ["created_at"], name: "index_democracy_community_decisions_on_created_at", using: :btree
   end
 
   create_table "friendship_requests", force: :cascade do |t|
@@ -137,6 +150,8 @@ ActiveRecord::Schema.define(version: 20161008232921) do
 
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users", column: "author_id"
+  add_foreign_key "democracy_community_decisions", "democracy_communities", column: "community_id"
+  add_foreign_key "democracy_community_decisions", "users", column: "author_id"
   add_foreign_key "friendship_requests", "users", column: "recipient_id"
   add_foreign_key "friendship_requests", "users", column: "sender_id"
   add_foreign_key "friendships", "users", column: "acceptor_id"

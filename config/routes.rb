@@ -52,7 +52,9 @@ Rails.application.routes.draw do
 
   ### Democracy
   scope module: 'democracy' do
-    resources :communities, only: [:index, :show]
+    resources :communities, only: [:index, :show], module: 'community', shallow: true do
+      resources :decisions, only: [:index, :show, :new, :create]
+    end
   end
 
   # Profiles -- this must be last
