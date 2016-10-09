@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def authorize
-    redirect_to '/login' unless current_user
+    redirect_to '/login' and return unless current_user
     redirect_to confirm_registration_reminder_path unless current_user.confirmed_registration
   end
 
