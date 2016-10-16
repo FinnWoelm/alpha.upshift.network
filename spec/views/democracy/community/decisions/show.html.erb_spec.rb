@@ -24,4 +24,18 @@ RSpec.describe "democracy/community/decisions/show.html.erb", type: :view do
    expect(rendered).to have_selector("div.decision_comment", count: 3)
   end
 
+  it "shows number of upvotes" do
+    decision.votes_count[:upvotes] = 6
+    render
+
+    expect(rendered).to have_selector("span.upvotes_count", text: 6)
+  end
+
+  it "shows number of downvotes" do
+    decision.votes_count[:downvotes] = 99
+    render
+
+    expect(rendered).to have_selector("span.downvotes_count", text: 99)
+  end
+
 end

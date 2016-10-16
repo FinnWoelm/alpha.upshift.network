@@ -2,6 +2,7 @@ class Democracy::Community::DecisionsController < ApplicationController
   before_action :authorize
   before_action :set_community, only: [:index, :new, :create]
   before_action :set_decision, only: :show
+  before_action :set_vote_of_user, only: :show
 
   # GET /communities/ID/decisions
   def index
@@ -40,6 +41,10 @@ class Democracy::Community::DecisionsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_decision
       @decision = Democracy::Community::Decision.find(params[:id])
+    end
+
+    def set_vote_of_user
+      @vote_of_user = @decision.votes.find_by_voter_id(@current_user.id)
     end
 
     def decision_params

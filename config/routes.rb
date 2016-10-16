@@ -49,6 +49,9 @@ Rails.application.routes.draw do
   post '/:commentable_type/:commentable_id/comment', to: 'comments#create', as: :comment
   delete '/comments/:id', to: 'comments#destroy', as: :delete_comment
 
+  # Votes Path
+  resources :votes, only: [:create, :update, :destroy], :path => "vote"
+
   # Feed (merged into root path)
   # get 'feed', to: 'feeds#show', as: :feed
 

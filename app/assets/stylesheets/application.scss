@@ -47,6 +47,16 @@ $secondary-color: $primary-color;
   padding: 0px !important;
 }
 
+// GENERAL: removes left padding
+.no_padding_left {
+  padding-left: 0px !important;
+}
+
+// GENERAL: removes right padding
+.no_padding_right {
+  padding-right: 0px !important;
+}
+
 // GENERAL: limit parallax height to 300px
 .parallax-container {
   height: 300px;
