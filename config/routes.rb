@@ -36,7 +36,7 @@ Rails.application.routes.draw do
 
   # Posts
   resources :posts, only: [:new, :create, :show, :destroy], :path => "post" do
-    resources :comments, only: [:create, :destroy], :path => "comment"
+    resources :comments, only: [:create, :destroy], shallow: true
   end
 
   # Private Conversations & Messages
