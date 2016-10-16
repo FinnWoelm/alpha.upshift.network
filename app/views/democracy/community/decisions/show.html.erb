@@ -69,6 +69,11 @@
     <div class="section"></div>
     <div class="divider"></div>
     <h4>Discussion</h4>
+    <%= render partial: 'democracy/community/decision/comments/form',
+      locals: {comment: @comment} %>
+
+    <%= render partial: "democracy/community/decision/comments/comment",
+      collection: @comments %>
 
   </div>
 </div>

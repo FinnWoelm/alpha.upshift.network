@@ -1,7 +1,7 @@
 class Comment < ApplicationRecord
 
   def self.commentable_types
-    ['Post']
+    ["Post", "Democracy::Community::Decision"]
   end
 
   include Likable

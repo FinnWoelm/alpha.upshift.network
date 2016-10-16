@@ -35,9 +35,7 @@ Rails.application.routes.draw do
   delete 'friendship/:username' => 'friendships#destroy', as: :end_friendship
 
   # Posts
-  resources :posts, only: [:new, :create, :show, :destroy], :path => "post" do
-    resources :comments, only: [:create, :destroy], shallow: true
-  end
+  resources :posts, only: [:new, :create, :show, :destroy], :path => "post"
 
   # Private Conversations & Messages
   resources :private_conversations, only: [:new, :create, :show, :update, :destroy], :path => "conversation"
@@ -47,12 +45,16 @@ Rails.application.routes.draw do
   post '/:likable_type/:likable_id/like', to: 'likes#create', as: :like
   delete '/:likable_type/likable_id/like', to: 'likes#destroy', as: :unlike
 
+  # Comment Path
+  post '/:commentable_type/:commentable_id/comment', to: 'comments#create', as: :comment
+  delete '/comments/:id', to: 'comments#destroy', as: :delete_comment
+
   # Feed (merged into root path)
   # get 'feed', to: 'feeds#show', as: :feed
 
   ### Democracy
-  scope module: 'democracy' do
-    resources :communities, only: [:index, :show], module: 'community', shallow: true do
+  scope module: 'democracy', shallow: true do
+    resources :communities, only: [:index, :show], module: 'community' do
       resources :decisions, only: [:index, :show, :new, :create]
     end
   end

@@ -22,7 +22,7 @@ class LikesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_likable_object
-      object_class = params[:likable_type].capitalize.constantize
+      object_class = params[:likable_type].constantize
       @object = object_class.find params[:likable_id]
     end
 

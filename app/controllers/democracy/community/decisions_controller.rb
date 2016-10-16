@@ -10,6 +10,8 @@ class Democracy::Community::DecisionsController < ApplicationController
 
   # GET /decisions/ID
   def show
+    @comments = @decision.comments
+    @comment = Democracy::Community::Decision::Comment.new(:commentable => @decision)
   end
 
   # GET /communities/ID/decisions/ID

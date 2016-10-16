@@ -1,20 +1,9 @@
-<div class="comment">
+<div class="row post-wrapper">
+  <div class="col s12">
 
-  <div class="meta">
-    <%# PROFILE PICTURE %>
-    <%= link_to profile_path comment.author do %>
-      <div class="author_image z-depth-1">
-        <%= image_tag profile_picture comment.author.username %>
-      </div>
-    <% end %>
+    <div class="post z-depth-1 decision_comment">
 
-  </div>
-
-  <div class="content">
-
-    <div class="with_padding">
-
-      <%# DELETE ACTION %>
+      <%# DELETE COMMENT %>
       <% if comment.deletable_by?(@current_user) %>
         <div class="administrative-actions right">
           <!-- Dropdown Trigger -->
@@ -41,24 +30,37 @@
         <%= render_timestamp(comment.created_at) %>
       </div>
 
+      <%# PROFILE PICTURE %>
+      <%= link_to profile_path comment.author do %>
+        <div class="author_image z-depth-1 grey">
+          <%= image_tag profile_picture comment.author.username %>
+        </div>
+      <% end %>
+
       <%# AUTHOR NAME %>
       <%= link_to profile_path comment.author do %>
-        <strong>
-        <%= comment.author.name %>
-        </strong>
+        <div class="author_name z-depth-1 indigo white-text">
+          <%= comment.author.name %>
+        </div>
       <% end %>
 
       <%# CONTENT %>
-      <%= simple_format h(comment.content) %>
+      <div class="content">
+        <%= simple_format h(comment.content) %>
+      </div>
+
+      <div class="actions row no_margin_bottom">
+
+        <%# LIKE & UNLIKE %>
+        <div class="col s12 m6">
+        <% if comment.likable_by?(@current_user) %>
+          <%= like_action comment, "sliding" %>
+        <% elsif comment.unlikable_by?(@current_user) %>
+          <%= unlike_action comment, "sliding" %>
+        <% end %>
+        </div>
+      </div>
     </div>
 
-
-    <%# LIKE & UNLIKE %>
-    <% if comment.likable_by?(@current_user) %>
-      <%= like_action comment, "minimal" %>
-    <% elsif comment.unlikable_by?(@current_user) %>
-      <%= unlike_action comment, "minimal" %>
-    <% end %>
   </div>
-
 </div>
