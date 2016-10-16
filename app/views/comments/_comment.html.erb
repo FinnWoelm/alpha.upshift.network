@@ -30,7 +30,7 @@
           <!-- Dropdown Structure -->
           <ul id='dropdown-<%= comment.id %>' class='dropdown-content'>
             <li>
-              <%= link_to 'Delete Comment', post_comment_path(post_id: comment.post_id, id: comment.id), method: :delete, data: { confirm: 'Are you sure?' } %>
+              <%= link_to 'Delete Comment', post_comment_path(post_id: comment.commentable_id, id: comment.id), method: :delete, data: { confirm: 'Are you sure?' } %>
             </li>
           </ul>
         </div>
