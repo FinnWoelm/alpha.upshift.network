@@ -1,6 +1,7 @@
 class Democracy::Community::Decision < ApplicationRecord
 
   include Commentable
+  include Votable
 
   belongs_to :community, :class_name => "Democracy::Community"
   belongs_to :author, :class_name => "User"

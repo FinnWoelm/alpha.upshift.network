@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161016182502) do
+ActiveRecord::Schema.define(version: 20161016184819) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,8 +44,9 @@ ActiveRecord::Schema.define(version: 20161016182502) do
     t.string   "title"
     t.text     "description"
     t.datetime "ends_at"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",                                                            null: false
+    t.datetime "updated_at",                                                            null: false
+    t.text     "votes_count",  default: "---\n:total: 0\n:upvotes: 0\n:downvotes: 0\n"
     t.index ["author_id"], name: "index_democracy_community_decisions_on_author_id", using: :btree
     t.index ["community_id"], name: "index_democracy_community_decisions_on_community_id", using: :btree
     t.index ["created_at"], name: "index_democracy_community_decisions_on_created_at", using: :btree

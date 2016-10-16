@@ -10,7 +10,7 @@ RSpec.describe Vote, type: :model do
 
   describe "associations" do
     it { is_expected.to belong_to(:voter).dependent(false).class_name('User') }
-    it { is_expected.to belong_to(:votable).dependent(false).counter_cache }
+    it { is_expected.to belong_to(:votable).dependent(false) }
   end
 
   describe "accessors" do
@@ -29,7 +29,42 @@ RSpec.describe Vote, type: :model do
 
     context "custom validations" do
       after { vote.valid? }
-      it { is_expected.to receive(:vote_must_be_unique_for_user_and_content) }
+
+      context "on create" do
+        subject(:vote) { build(:vote) }
+        it { is_expected.to receive(:vote_must_be_unique_for_user_and_content) }
+      end
+
+      context "on update" do
+        subject(:vote) { create(:vote) }
+        it { is_expected.to receive(:voter_must_not_change) }
+        it { is_expected.to receive(:votable_must_not_change) }
+      end
+
+    end
+  end
+
+  describe "callbacks" do
+
+    context "after create" do
+      subject(:vote) { build(:vote) }
+      after { vote.save }
+
+      it { expect(vote.votable).to receive(:increase_votes_count).with(vote.vote) }
+    end
+
+    context "after update" do
+      subject(:vote) { create(:vote, :vote => "upvote") }
+      after { vote.update_attributes(:vote => "downvote") }
+
+      it { expect(vote.votable).to receive(:modify_votes_count).with("downvote", "upvote") }
+    end
+
+    context "after destroy" do
+      subject(:vote) { create(:vote) }
+      after { vote.destroy }
+
+      it { expect(vote.votable).to receive(:decrease_votes_count).with(vote.vote) }
     end
   end
 
@@ -63,6 +98,23 @@ RSpec.describe Vote, type: :model do
         expect(vote.errors[:base]).not_to receive(:<<)
       end
 
+    end
+  end
+
+  describe "#voter_must_not_change" do
+    let(:vote) { create(:vote) }
+    after { vote.send(:voter_must_not_change) }
+
+    context "when voter is modified" do
+      before do
+        vote.voter = create(:user)
+      end
+
+      it "adds an error message" do
+        expect(vote.errors[:voter]).to receive(:<<).
+          with("cannot be modified for an existing vote")
+
+      end
     end
   end
 

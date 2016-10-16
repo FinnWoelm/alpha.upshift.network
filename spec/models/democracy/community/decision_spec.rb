@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'models/shared_examples/examples_for_commentable.rb'
+require 'models/shared_examples/examples_for_votable.rb'
 
 RSpec.describe Democracy::Community::Decision, type: :model do
 
@@ -11,6 +12,10 @@ RSpec.describe Democracy::Community::Decision, type: :model do
 
   it_behaves_like "a commentable object" do
     subject(:commentable) { decision }
+  end
+
+  it_behaves_like "a votable object" do
+    subject(:votable) { build(:democracy_community_decision) }
   end
 
   describe "associations" do

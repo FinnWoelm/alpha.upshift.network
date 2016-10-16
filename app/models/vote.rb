@@ -6,7 +6,7 @@ class Vote < ApplicationRecord
 
   # # Associations
   belongs_to :voter, :class_name => "User"
-  belongs_to :votable, polymorphic: true, counter_cache: true
+  belongs_to :votable, polymorphic: true
 
   # # Accessors
   enum vote: [ :upvote, :downvote ]
@@ -19,7 +19,16 @@ class Vote < ApplicationRecord
     message: "%{value} is not a valid likable type" }
 
   validate :vote_must_be_unique_for_user_and_content,
-    if: "voter.present? and votable_id.present? and votable_type.present?"
+    if: "voter.present? and votable_id.present? and votable_type.present?",
+      on: :create
+  validate :voter_must_not_change, on: :update
+  validate :votable_must_not_change, on: :update
+
+  # # Callbacks
+  # Keep vote counts on votable accurate
+  after_create { votable.increase_votes_count(vote) }
+  after_update { votable.modify_votes_count(vote, vote_was) }
+  after_destroy { votable.decrease_votes_count(vote) }
 
   private
 
@@ -31,6 +40,20 @@ class Vote < ApplicationRecord
           voter: self.voter )
         errors[:base] << "You have already voted on this #{self.votable_type.downcase}"
       end
-  end
+    end
+
+    # Validation: Voter must remain when updating
+    def voter_must_not_change
+      if self.changed.include?("voter_id")
+        errors[:voter] << "cannot be modified for an existing vote"
+      end
+    end
+
+    # Validation: Votable must remain when updating
+    def votable_must_not_change
+      if self.changed.include?("votable_type") or self.changed.include?("votable_id")
+        errors[:votable] << "cannot be modified for an existing vote"
+      end
+    end
 
 end
