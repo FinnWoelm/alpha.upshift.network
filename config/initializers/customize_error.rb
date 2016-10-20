@@ -3,9 +3,10 @@ ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
 
   html = %(#{html_tag}).html_safe
 
-  elements = Nokogiri::HTML::DocumentFragment.parse(html_tag).css "label, input"
+  elements = Nokogiri::HTML::DocumentFragment.parse(html_tag).css "label, input, textarea"
   elements.each do |e|
-    e['class'] = "invalid"
+    e['class'] ||= ""
+    e['class'] += " invalid"
     html = %(#{e}).html_safe
   end
 

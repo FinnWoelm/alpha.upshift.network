@@ -1,0 +1,52 @@
+<div class="row">
+  <%= form_for decision, url: community_decisions_path, class: 'col s12' do |f| %>
+
+    <% if decision.errors.any? %>
+      <div class="row no_margin_bottom">
+        <div class="col s12">
+          <div id="error_explanation">
+            <h2><%= pluralize(decision.errors.count, "error") %> prohibited this decision from being saved:</h2>
+
+            <ul>
+            <% decision.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+
+    <div class="row">
+      <div class="input-field col s12">
+        <%= f.text_field :title %>
+        <%= f.label :title %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-field col s12">
+        <%= f.text_area :description, class: 'materialize-textarea' %>
+        <%= f.label :description %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-field col s12">
+        <%= f.label :ends_at, "Deadline for Participation" %>
+        <%= f.text_field :ends_at, class: 'datepicker', placeholder: 'Click to choose a date' %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col s12">
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+          <i class="material-icons left">add</i>
+          Publish
+        </button>
+      </div>
+    </div>
+
+  <% end %>
+</div>

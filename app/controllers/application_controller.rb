@@ -22,4 +22,10 @@ class ApplicationController < ActionController::Base
       end
   end
 
+  # Returns a shallow path for a given object, such as decision_path for
+  # Democracy::Community::Decision
+  def shallow_path_to object
+    Rails.application.routes.url_helpers.send("#{object.class.to_s.split("::").last.downcase}_path", object)
+  end
+
 end

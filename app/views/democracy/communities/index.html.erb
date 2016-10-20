@@ -1,0 +1,6 @@
+<h1>Communities</h1>
+<div class="collection">
+  <% @communities.each do |community| %>
+    <%= link_to community.name, community_path(community), class: 'collection-item' %>
+  <% end %>
+</div>

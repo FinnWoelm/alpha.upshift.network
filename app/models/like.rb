@@ -19,7 +19,7 @@ class Like < ApplicationRecord
     if: "liker.present? and likable_id.present? and likable_type.present?"
 
   private
-  
+
     # validates that there is no existing like for this content by this user
     def like_must_be_unique_for_user_and_content
       if Like.exists?(

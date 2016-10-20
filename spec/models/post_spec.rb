@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'models/shared_examples/examples_for_likable.rb'
+require 'models/shared_examples/examples_for_commentable.rb'
 
 RSpec.describe Post, type: :model do
 
@@ -11,6 +12,10 @@ RSpec.describe Post, type: :model do
 
   it_behaves_like "a likable object" do
     subject(:likable) { post }
+  end
+
+  it_behaves_like "a commentable object" do
+    subject(:commentable) { post }
   end
 
   describe "associations" do

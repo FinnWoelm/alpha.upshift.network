@@ -1,4 +1,5 @@
 div.post, div.comment {
+
   div.author_image img {
     width: 100%;
     border-radius: inherit;
@@ -10,9 +11,11 @@ div.post-wrapper {
   margin-top: 60px;
   margin-bottom: 60px;
 
-    div.post {
-      position: relative;
-      z-index: 20;
+  div.post {
+    position: relative;
+    z-index: 20;
+    // fix positioning b/c of author image
+    margin-left: 30px;
 
     div.author_image {
       position: absolute;
@@ -44,6 +47,12 @@ div.post-wrapper {
     div.administrative-actions .dropdown-button {
       padding: 0px;
       margin-right: 10px;
+      margin-left: 10px;
+    }
+
+    div.timestamp {
+      line-height: 36px;
+      vertical-align: middle;
     }
   }
 }

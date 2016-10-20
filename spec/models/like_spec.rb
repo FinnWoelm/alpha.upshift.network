@@ -18,16 +18,12 @@ RSpec.describe Like, type: :model do
     it { is_expected.to validate_presence_of(:likable_id) }
     it { is_expected.to validate_presence_of(:likable_type) }
     it { is_expected.to validate_inclusion_of(:likable_type).
-          in_array(Like.likable_types) }
+          in_array(["Post", "Comment"]) }
 
     context "custom validations" do
       after { like.valid? }
       it { is_expected.to receive(:like_must_be_unique_for_user_and_content) }
     end
-  end
-
-  describe ".likable_types" do
-    it { expect(Like.likable_types).to match_array( ["Post", "Comment"] ) }
   end
 
   describe "#like_must_be_unique_for_user_and_content" do
