@@ -16,7 +16,7 @@ div#side_navigation {
       background-color: rgba(0,0,0,0.8);
     }
 
-    img {
+    a.back + img {
       position: relative;
       top: -36px;
       margin-bottom: -36px;

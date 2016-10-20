@@ -1,22 +1,10 @@
-<div class="head">
-  <%= link_to communities_path, class: 'back waves-light waves-effect' do %>
-    <%= material_icon.arrow_back %> Back
-  <% end %>
-
-  <%= image_tag "dawn.jpg", class: 'responsive-img' %>
-
-  <%= link_to community_path(@community), class: 'title waves-light waves-effect' do %>
-    <%= @community.name %>
-  <% end %>
-
-</div>
-
-<div class="content">
-
-  <%= nav_link "Decisions", community_decisions_path(@community), "democracy/community/decisions" %>
-
-</div>
-
+<%=
+  if @community
+    render "shared/side_navigation/community"
+  else
+    render "shared/side_navigation/user"
+  end
+%>
 
 <script type="text/javascript">
 
