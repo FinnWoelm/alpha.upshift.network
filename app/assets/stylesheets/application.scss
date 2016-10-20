@@ -3,7 +3,7 @@
 // modify colors here
 // $primary-color: color("blue", "lighten-2") !default;
 // ...
-$primary-color: color("red", "base");
+$primary-color: #785A86;
 $secondary-color: $primary-color;
 @import 'materialize';
 @import "materialize/extras/nouislider";
@@ -84,6 +84,15 @@ nav .brand-logo img {
   margin-top: 7px;
   margin-right: 10px;
   float: left;
+}
+
+// NAVIGATION: Image in navigation
+nav li a img {
+  height: 40px;
+  width: 40px;
+  margin: 12px 10px 12px 0px;
+  border: 1px solid white;
+  box-shadow: 0px 0px 3px white;
 }
 
 // NAVIGATION: Badges on icons

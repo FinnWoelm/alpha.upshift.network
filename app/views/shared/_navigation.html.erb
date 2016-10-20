@@ -8,7 +8,7 @@
     <div class="nav-wrapper row">
       <div class="col s12">
         <%= link_to root_path, class: 'brand-logo' do %>
-          <%= image_tag "logo_bold_100p.png" %> Upshift
+          Naropa University
         <% end %>
 
         <% if @current_user %>
@@ -16,18 +16,7 @@
 
             <li>
               <%= link_to profile_path(@current_user), class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'My Profile'} do %>
-                <%= material_icon.account_circle %>
-              <% end %>
-            </li>
-
-            <li>
-              <%= link_to private_conversations_home_path, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'Conversations'} do %>
-                <%= material_icon.chat_bubble %>
-                <% if @current_user.unread_private_conversations.size > 0 %>
-                  <span class="white red-text z-depth-1 badge">
-                    <%= @current_user.unread_private_conversations.size %>
-                  </span>
-                <% end %>
+                <%= image_tag "fwoelm.jpg", class: 'responsive-img circle left' %> Hi, <%= @current_user.name %>!
               <% end %>
             </li>
 
