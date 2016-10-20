@@ -19,7 +19,12 @@
       </strong></span>
 
       <div class="row new_comment_form no_margin_bottom">
-        <%= form_for [comment.post, comment], class: "col s12" do |f| %>
+        <%= form_for comment,
+          url: comment_path(
+            :commentable_type => comment.commentable_type,
+            :commentable_id => comment.commentable_id),
+          as: :comment,
+          class: "col s12" do |f| %>
           <div class="row no_margin_bottom">
             <% if comment.errors.any? %>
               <div id="error_explanation">
@@ -32,10 +37,6 @@
                 </ul>
               </div>
             <% end %>
-          </div>
-
-          <div class="input-field col s12 hide">
-            <%= f.hidden_field :post_id %>
           </div>
 
           <div class="row no_margin_bottom">

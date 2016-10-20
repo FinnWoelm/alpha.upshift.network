@@ -1,0 +1,51 @@
+<%=
+  if @community
+    render "shared/side_navigation/community"
+  else
+    render "shared/side_navigation/user"
+  end
+%>
+
+<script type="text/javascript">
+
+    // make side nav full height
+
+  $(document).ready(function() {
+    // # resize_side_nav_to_full_heigh()
+    // Resizes the top-most div (home) that holds all the contain the user
+    // first sees when visiting the website. It is made full_heigh unless the
+    // height of the home div is already greater than the height of the
+    // viewport
+    function resize_side_nav_to_full_heigh() {
+
+      // reset height of side_nav
+      $("#side_navigation").css("height", "unset");
+
+      // get the html height
+      var heigh_of_html = $(document).height();
+
+      // get the viewport height
+      var height_of_viewport = $(window).height();
+
+      // get the height of top navigation
+      var height_of_main_navigation = $("#main_navigation").height();
+
+      // set side nav to whichever height is greater
+      $("#side_navigation").height(
+        Math.max(heigh_of_html, height_of_viewport) - height_of_main_navigation
+       );
+
+    }
+
+    // resize home div when the DOM is loaded
+    resize_side_nav_to_full_heigh();
+
+    // and whenever we resize the window
+    $( window ).resize(function() {
+      resize_side_nav_to_full_heigh();
+    });
+
+
+  });
+
+</script>

@@ -3,7 +3,7 @@ require 'models/shared_examples/examples_for_likable.rb'
 
 RSpec.describe Comment, type: :model do
 
-  subject(:comment) { build_stubbed(:comment) }
+  subject(:comment) { build(:comment) }
 
   it "has a valid factory" do
     is_expected.to be_valid
@@ -15,17 +15,22 @@ RSpec.describe Comment, type: :model do
 
   describe "associations" do
     it { is_expected.to belong_to(:author).dependent(false).class_name('User') }
-    it { is_expected.to belong_to(:post).dependent(false) }
+    it { is_expected.to belong_to(:commentable).dependent(false) }
   end
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:author) }
-    it { is_expected.to validate_presence_of(:post) }
+    it { is_expected.to validate_presence_of(:commentable_type) }
+    it { is_expected.to validate_presence_of(:commentable_id) }
+    # gives error: wrong constant name shoulda-matchers test string
+    # it { is_expected.to validate_inclusion_of(:commentable_type).
+    #      in_array(['Post', 'Democracy::Community::Decision']) }
+
     it { is_expected.to validate_presence_of(:content) }
     it { is_expected.to validate_length_of(:content).is_at_most(1000) }
 
     it "validates that #author_must_be_able_to_see_post" do
-      expect(comment).to receive(:author_must_be_able_to_see_post)
+      expect(comment).to receive(:author_must_be_able_to_see_commentable)
       comment.valid?
     end
   end
@@ -58,9 +63,9 @@ RSpec.describe Comment, type: :model do
 
   end
 
-  describe "#author_must_be_able_to_see_post" do
-    let(:post) { comment.post }
-    after { comment.send(:author_must_be_able_to_see_post) }
+  describe "#author_must_be_able_to_see_commentable" do
+    let(:post) { comment.commentable }
+    after { comment.send(:author_must_be_able_to_see_commentable) }
 
     it "checks whether the post is readable by the comment author" do
       expect(post).to receive(:readable_by?).with(comment.author)
@@ -73,7 +78,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.errors[:base]).to receive(:<<).
           with("An error occurred. " +
           "Either the post never existed, it does not exist anymore, " +
-          "or the author's profile privacy settings have changed.")
+          "or you do not have permission to view it.")
       end
 
     end
@@ -85,7 +90,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.errors[:base]).not_to receive(:<<).
           with("An error occurred. " +
           "Either the post never existed, it does not exist anymore, " +
-          "or the author's profile privacy settings have changed.")
+          "or you do not have permission to view it.")
       end
 
     end

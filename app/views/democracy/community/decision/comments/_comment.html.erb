@@ -1,0 +1,66 @@
+<div class="row post-wrapper">
+  <div class="col s12">
+
+    <div class="post z-depth-1 decision_comment">
+
+      <%# DELETE COMMENT %>
+      <% if comment.deletable_by?(@current_user) %>
+        <div class="administrative-actions right">
+          <!-- Dropdown Trigger -->
+          <%= link_to '#',
+                class: "dropdown-button btn-flat tooltipped",
+                data: {
+                  activates: "dropdown-#{comment.id}",
+                  position: 'left', delay: '50', tooltip: 'Show Options'
+                } do %>
+            <%= material_icon.settings %>
+          <% end %>
+
+          <!-- Dropdown Structure -->
+          <ul id='dropdown-<%= comment.id %>' class='dropdown-content'>
+            <li>
+              <%= link_to 'Delete Comment', delete_comment_path(comment), method: :delete, data: { confirm: 'Are you sure?' } %>
+            </li>
+          </ul>
+        </div>
+      <% end %>
+
+      <%# TIMESTAMP %>
+      <div class="timestamp right">
+        <%= render_timestamp(comment.created_at) %>
+      </div>
+
+      <%# PROFILE PICTURE %>
+      <%= link_to profile_path comment.author do %>
+        <div class="author_image z-depth-1 grey">
+          <%= image_tag profile_picture comment.author.username %>
+        </div>
+      <% end %>
+
+      <%# AUTHOR NAME %>
+      <%= link_to profile_path comment.author do %>
+        <div class="author_name z-depth-1 indigo white-text">
+          <%= comment.author.name %>
+        </div>
+      <% end %>
+
+      <%# CONTENT %>
+      <div class="content">
+        <%= simple_format h(comment.content) %>
+      </div>
+
+      <div class="actions row no_margin_bottom">
+
+        <%# LIKE & UNLIKE %>
+        <div class="col s12 m6">
+        <% if comment.likable_by?(@current_user) %>
+          <%= like_action comment, "sliding" %>
+        <% elsif comment.unlikable_by?(@current_user) %>
+          <%= unlike_action comment, "sliding" %>
+        <% end %>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

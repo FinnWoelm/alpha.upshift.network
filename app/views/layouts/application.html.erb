@@ -23,6 +23,12 @@
       Materialize.toast("<%= notice %>", 5000);
       $('.tooltipped').tooltip({delay: 50});
 
+
+      $('.datepicker').pickadate({
+        selectMonths: true, // Creates a dropdown to control month
+        selectYears: 2 // Creates a dropdown of 15 years to control year
+      });
+
       $('.dropdown-button').dropdown({
           inDuration: 300,
           outDuration: 225,

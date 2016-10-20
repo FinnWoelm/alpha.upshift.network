@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>UpshiftNetwork</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+
+  <%= render partial: "shared/navigation", locals: {fluid: true} %>
+
+  <div class="container-fluid">
+    <div class="row no_margin_bottom">
+      <div id="side_navigation" class="col l2 m3 hide-on-small-only no_padding z-depth-1">
+        <%= render "shared/side_navigation" %>
+      </div>
+      <div class="col l8 push-l1 m9 s12">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+      Materialize.toast("<%= notice %>", 5000);
+      $('.tooltipped').tooltip({delay: 50});
+
+
+      $('.datepicker').pickadate({
+        selectMonths: true, // Creates a dropdown to control month
+        selectYears: 2 // Creates a dropdown of 15 years to control year
+      });
+
+      $('.dropdown-button').dropdown({
+          inDuration: 300,
+          outDuration: 225,
+          constrain_width: false, // Does not change width of dropdown to that of the activator
+          hover: false, // Activate on hover
+          gutter: 0, // Spacing from edge
+          belowOrigin: true, // Displays dropdown below the button
+          alignment: 'right' // Displays dropdown with edge aligned to the left of button
+        }
+      );
+
+      $(document).ready(function(){
+        $('.parallax').parallax();
+      });
+    });
+
+  </script>
+
+  </body>
+</html>

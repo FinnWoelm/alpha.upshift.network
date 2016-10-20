@@ -1,0 +1,8 @@
+<%= form_for vote do |f| %>
+  <%= f.hidden_field :votable_type %>
+  <%= f.hidden_field :votable_id %>
+  <%= f.hidden_field :vote, :value => "upvote" %>
+  <button id="upvote_decision" class="waves-effect waves-light btn-floating btn-large green lighten-3" type="submit" name="action">
+    <%= material_icon.thumb_up %>
+  </button>
+<% end %>

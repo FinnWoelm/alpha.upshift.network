@@ -22,4 +22,14 @@ module ApplicationHelper
     "https://www.gravatar.com/avatar/#{hash}?d=identicon"
   end
 
+  # creates a link with text for a given path, highlighting nav element if active
+  def nav_link link_text, link_path, link_controller = nil
+    if link_controller
+      is_active = (controller.controller_path == link_controller)
+    else
+      is_active = current_page?(link_path)
+    end
+    link_to link_text, link_path, class: "waves-effect " + (is_active ? 'active' : '')
+  end
+
 end

@@ -23,6 +23,9 @@ if defined? Bullet
   Bullet.add_whitelist :type => :unused_eager_loading,
     :class_name => "Comment",
     :association => :likes
+    Bullet.add_whitelist :type => :unused_eager_loading,
+      :class_name => "Democracy::Community::Decision::Comment",
+      :association => :likes
 
   # We need to eager load messages for each conversation. This will cause Bullet
   # to raise alarm if the number of messages is zero or one. The only way to
