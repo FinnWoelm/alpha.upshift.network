@@ -2,6 +2,8 @@ class Democracy::CommunitiesController < ApplicationController
   before_action :authorize
   before_action :set_community, only: :show
 
+  layout "fluid_with_side_nav", only: :show
+
   # GET /communities
   def index
     @communities = Democracy::Community.all
