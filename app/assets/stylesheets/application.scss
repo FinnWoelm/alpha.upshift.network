@@ -12,10 +12,12 @@ $secondary-color: $primary-color;
 @import "material_icons";
 
 // App Stylesheets
+@import "side_navigation";
 @import "static";
 @import "post_and_comment";
 @import "like";
 @import "profile";
+@import "democracy/community/decision";
 
 
 // GENERAL
@@ -30,6 +32,12 @@ $secondary-color: $primary-color;
   margin-bottom: 0px !important;
 }
 
+// GENERAL: removes top spacing
+.no_margin_top {
+  margin-top: 0px !important;
+}
+
+
 // GENERAL: removes all margins
 .no_margin {
   margin: 0px !important;
@@ -38,6 +46,16 @@ $secondary-color: $primary-color;
 // GENERAL: removes all padding
 .no_padding {
   padding: 0px !important;
+}
+
+// GENERAL: removes left padding
+.no_padding_left {
+  padding-left: 0px !important;
+}
+
+// GENERAL: removes right padding
+.no_padding_right {
+  padding-right: 0px !important;
 }
 
 // GENERAL: limit parallax height to 300px

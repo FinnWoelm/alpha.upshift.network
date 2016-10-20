@@ -9,7 +9,8 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def authorize
-    redirect_to '/login' unless current_user
+    redirect_to '/login' and return unless current_user
+    redirect_to confirm_registration_reminder_path unless current_user.confirmed_registration
   end
 
   # renders the standard 404 error page in public/404.html
@@ -19,6 +20,12 @@ class ApplicationController < ActionController::Base
         format.xml  { head :not_found }
         format.any  { head :not_found }
       end
+  end
+
+  # Returns a shallow path for a given object, such as decision_path for
+  # Democracy::Community::Decision
+  def shallow_path_to object
+    Rails.application.routes.url_helpers.send("#{object.class.to_s.split("::").last.downcase}_path", object)
   end
 
 end

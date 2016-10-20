@@ -1,0 +1,15 @@
+<div class="head">
+
+  <%= image_tag "dawn.jpg", class: 'responsive-img' %>
+
+  <%= link_to profile_path(@current_user), class: 'title waves-light waves-effect' do %>
+    <%= @current_user.name %>
+  <% end %>
+
+</div>
+
+<div class="content">
+
+  <%= nav_link "Communities", communities_path %>
+
+</div>

@@ -5,7 +5,7 @@ module PostsHelper
     return unless @current_user
 
     render partial: 'comments/form',
-      locals: {comment: @comment || Comment.new(:post => post)}
+      locals: {comment: @comment || Comment.new(:commentable => post)}
   end
 
 end

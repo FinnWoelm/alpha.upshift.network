@@ -1,0 +1,89 @@
+<div class="row community_decision_wrapper">
+  <div class="col s12">
+
+    <div class="community_decision z-depth-2">
+
+      <%# PROFILE PICTURE %>
+      <%= link_to profile_path @decision.author do %>
+        <div class="author_image z-depth-1 grey">
+          <%= image_tag profile_picture @decision.author.username %>
+        </div>
+      <% end %>
+
+      <%# AUTHOR NAME %>
+      <%= link_to profile_path @decision.author do %>
+        <div class="author_name z-depth-1 indigo white-text">
+          <%= @decision.author.name %>
+        </div>
+      <% end %>
+
+      <%# CONTENT %>
+      <div class="content">
+
+        <p class="time right grey-text no_margin_bottom">
+          <i class="material-icons tiny">schedule</i>
+          <%= time_ago_in_words(@decision.ends_at) %> left<br/>
+        </p>
+
+        <div class="clearfix"></div>
+
+        <h3 class="no_margin_top"><%= @decision.title %></h3>
+        <%= simple_format h(@decision.description) %>
+      </div>
+
+      <%# ACTIONS %>
+      <div class="actions grey lighten-4">
+        <div class="row">
+
+          <div class="col s6 center-align">
+            <div class="green-text action_wrapper">
+              <%= vote_action "upvote", @decision, @vote_of_user %>
+              <span class="votes upvotes_count"><%= @decision.votes_count[:upvotes] %></span>
+            </div>
+          </div>
+          <div class="col s6 center-align">
+            <div class="red-text action_wrapper">
+              <%= vote_action "downvote", @decision, @vote_of_user %>
+              <span class="votes downvotes_count"><%= @decision.votes_count[:downvotes] %></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"></div>
+
+  <div class="row no_margin_bottom">
+    <div class="col s12">
+      <div class="divider"></div>
+      <h4 class="no_margin_bottom">What matters to our community?</h4>
+    </div>
+  </div>
+
+  <div class="section"></div>
+
+  <div class="row no_margin_bottom">
+    <div class="col s12">
+      <div class="divider"></div>
+      <h4 class="no_margin_bottom">Alternative Ideas</h4>
+    </div>
+  </div>
+
+  <div class="section"></div>
+
+  <div class="row no_margin_bottom">
+    <div class="col s12">
+      <div class="divider"></div>
+      <h4 class="no_margin_bottom">Discussion</h4>
+    </div>
+  </div>
+
+  <%= render partial: 'democracy/community/decision/comments/form',
+    locals: {comment: @comment} %>
+
+  <%= render partial: "democracy/community/decision/comments/comment",
+    collection: @comments %>
+
+</div>

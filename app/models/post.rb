@@ -1,9 +1,9 @@
 class Post < ApplicationRecord
 
   include Likable
+  include Commentable
 
   belongs_to :author, :class_name => "User"
-  has_many :comments, -> { includes(:author).includes(:likes) }, dependent: :destroy
 
   scope :most_recent_first,
     -> { order('posts.created_at DESC') }

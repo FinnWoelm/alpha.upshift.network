@@ -1,0 +1,8 @@
+<div class="section"></div>
+
+<%= link_to new_community_decision_path(@community), class: 'waves-effect waves-light btn btn-large' do %>
+  <i class="material-icons left">assignment_turned_in</i>
+  New Decision
+<% end %>
+
+<%= render(@decisions) || "There are no decisions to show. Why don't you create one to get started?" %>

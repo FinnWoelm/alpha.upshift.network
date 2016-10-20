@@ -73,7 +73,7 @@ feature 'Like' do
 
   def and_i_view_a_post_with_a_comment
     @comment = create(:comment)
-    visit post_path @comment.post
+    visit post_path @comment.commentable
   end
 
   def when_i_like_the_comment

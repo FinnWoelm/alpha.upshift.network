@@ -1,0 +1,76 @@
+div#side_navigation {
+
+  div.head {
+
+    a.title {
+      color: white;
+      position: relative;top: -55px;
+      background-color: rgba(0,0,0,.5);
+      color: white;
+      font-weight: bold;
+      margin-bottom: -55px;
+    }
+
+    a.title:hover, a.title:focus,
+    a.back:hover, a.back:focus {
+      background-color: rgba(0,0,0,0.8);
+    }
+
+    a.back + img {
+      position: relative;
+      top: -36px;
+      margin-bottom: -36px;
+    }
+
+    a.back {
+      position: relative;
+      background-color: #01000299;
+      color: white;
+      height: 36px;
+      padding: 0px 20px;
+      line-height: 36px;
+      z-index: 2;
+      display: inline-block;
+    }
+
+    a.back i {
+      position: relative;
+      top: 6px;
+      right: 10px;
+    }
+
+  }
+
+  div.content, div.head {
+
+    p {
+      color: rgba(0,0,0,0.54);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 48px;
+      padding: 0 32px;
+      margin: 0px;
+    }
+
+    a {
+      color: rgba(0,0,0,0.87);
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      height: 48px;
+      line-height: 48px;
+      padding: 0 32px;
+    }
+
+    a:hover, a:focus {
+      background-color: rgba(0,0,0,0.05);
+    }
+
+    a.active {
+      background: $primary-color;
+      color: white;
+    }
+
+  }
+
+}

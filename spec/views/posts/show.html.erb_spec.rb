@@ -26,7 +26,7 @@ RSpec.describe "posts/show", type: :view do
 
   it "renders oldest comments first" do
     @comments_to_check = []
-    5.times { @comments_to_check << create(:comment, :author => @post.author, :post => @post) }
+    5.times { @comments_to_check << create(:comment, :author => @post.author, :commentable => @post) }
 
     @post = Post.with_associations.find_by id: @post.id
 

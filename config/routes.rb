@@ -13,10 +13,17 @@ Rails.application.routes.draw do
     get 'confirm', on: :collection
   end
 
+  # Registrations
+  resources :registrations, only: [:new, :create] do
+    get 'confirm', on: :collection
+    post 'resend_confirmation', on: :collection, :constraints => { :format => 'js' }
+  end
+
   # Sessions
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
   get '/logout' => 'sessions#destroy'
+  get '/confirm_your_registration' => 'registrations#confirmation_reminder', as: :confirm_registration_reminder
 
   # FriendshipRequests
   get 'friend-requests' => 'friendship_requests#index', as: :friendship_requests_received
@@ -28,9 +35,7 @@ Rails.application.routes.draw do
   delete 'friendship/:username' => 'friendships#destroy', as: :end_friendship
 
   # Posts
-  resources :posts, only: [:new, :create, :show, :destroy], :path => "post" do
-    resources :comments, only: [:create, :destroy], :path => "comment"
-  end
+  resources :posts, only: [:new, :create, :show, :destroy], :path => "post"
 
   # Private Conversations & Messages
   resources :private_conversations, only: [:new, :create, :show, :update, :destroy], :path => "conversation"
@@ -40,8 +45,22 @@ Rails.application.routes.draw do
   post '/:likable_type/:likable_id/like', to: 'likes#create', as: :like
   delete '/:likable_type/likable_id/like', to: 'likes#destroy', as: :unlike
 
+  # Comment Path
+  post '/:commentable_type/:commentable_id/comment', to: 'comments#create', as: :comment
+  delete '/comments/:id', to: 'comments#destroy', as: :delete_comment
+
+  # Votes Path
+  resources :votes, only: [:create, :update, :destroy], :path => "vote"
+
   # Feed (merged into root path)
   # get 'feed', to: 'feeds#show', as: :feed
+
+  ### Democracy
+  scope module: 'democracy', shallow: true do
+    resources :communities, only: [:index, :show], module: 'community' do
+      resources :decisions, only: [:index, :show, :new, :create]
+    end
+  end
 
   # Profiles -- this must be last
   get '/:username', to: 'profiles#show', as: :profile
