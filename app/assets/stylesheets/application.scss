@@ -94,7 +94,14 @@ nav > div.container-fluid > .row > .col.s12 {
 
 // NAVIGATION: Brand logo fits height
 nav .brand-logo img {
-  height: 50px;
+
+  @media #{$small-and-down} {
+    height: 42px;
+  }
+  @media #{$medium-and-up} {
+    height: 50px;
+  }
+
   width: auto;
   margin-top: 7px;
   margin-right: 10px;
