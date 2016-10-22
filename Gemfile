@@ -34,7 +34,7 @@ gem 'mailjet', '~> 1.4'
 gem "figaro", '~> 1.1'
 
 # MaterializeCSS (http://materializecss.com/)
-gem 'materialize-sass'
+gem 'materialize-sass', '~> 0.97'
 # Material Icons (https://design.google.com/icons/)
 gem 'material_icons'
 

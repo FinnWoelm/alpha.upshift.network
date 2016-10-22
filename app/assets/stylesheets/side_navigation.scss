@@ -1,14 +1,16 @@
-div#side_navigation {
+div#desktop_side_navigation, ul#mobile_navigation {
 
   div.head {
 
+    $back_button_height: 36px;
+
     a.title {
       color: white;
-      position: relative;top: -55px;
+      position: relative;top: -48px;
       background-color: rgba(0,0,0,.5);
       color: white;
       font-weight: bold;
-      margin-bottom: -55px;
+      margin-bottom: -48px;
     }
 
     a.title:hover, a.title:focus,
@@ -18,25 +20,31 @@ div#side_navigation {
 
     a.back + img {
       position: relative;
-      top: -36px;
-      margin-bottom: -36px;
+      top: - $back_button_height;
+      margin-bottom: - $back_button_height;
     }
 
     a.back {
       position: relative;
       background-color: #01000299;
       color: white;
-      height: 36px;
-      padding: 0px 20px;
-      line-height: 36px;
+      height: $back_button_height;
+      padding: 0px 32px;
+      line-height: $back_button_height;
       z-index: 2;
-      display: inline-block;
+      display: block;
     }
 
     a.back i {
-      position: relative;
-      top: 6px;
-      right: 10px;
+      line-height: $back_button_height;
+      height: $back_button_height;
+      margin-right: 16px;
+      float: left;
+    }
+
+    // needs to be block, otherwise there is spacing on the bottom
+    img {
+      display: block;
     }
 
   }

@@ -70,6 +70,16 @@ $secondary-color: $primary-color;
 
 // COLOR
 
+// COLOR: applies primary color as background
+.primary_color {
+  background-color: $primary-color;
+}
+
+// COLOR: applies primary color as text
+.primary_color_text {
+  color: $primary-color;
+}
+
 // COLOR: applies highlight color (secondary color)
 .highlight-text {
   color: $secondary-color;
@@ -77,13 +87,37 @@ $secondary-color: $primary-color;
 
 // NAVIGATION
 
+// NAVIGATION: Fluid has spacing that matches side nav and FAB
+nav > div.container-fluid > .row > .col.s12 {
+  padding: 0px 32px;
+}
+
 // NAVIGATION: Brand logo fits height
 nav .brand-logo img {
-  height: 50px;
+
+  @media #{$small-and-down} {
+    height: 42px;
+  }
+  @media #{$medium-and-up} {
+    height: 50px;
+  }
+
   width: auto;
   margin-top: 7px;
   margin-right: 10px;
   float: left;
+}
+
+// NAVIGATION: force 48px high icons on side nav
+nav ul.side-nav li a i.material-icons {
+  line-height: 48px;
+  height: 48px;
+  margin: 0px 16px;
+}
+
+// NAVIGATION: 64px tall on desktop
+nav ul:not(.side-nav) li {
+  height: 64px;
 }
 
 // NAVIGATION: Badges on icons
@@ -98,11 +132,6 @@ nav li a i+span.badge {
   min-width: unset;
   margin-bottom: -55px;
   border-radius: 2px;
-}
-
-// NAVIGATION: max 64px tall
-nav li {
-  height: 64px;
 }
 
 // ANCHORS & LINKS

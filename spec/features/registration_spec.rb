@@ -72,7 +72,7 @@ feature 'Login' do
   end
 
   def and_i_confirm_the_registration
-    visit confirm_registrations_path(email: @user.email, registration_token: User.find_by_email(@user.email).registration_token)
+    visit confirm_registration_path(email: @user.email, registration_token: User.find_by_email(@user.email).registration_token)
   end
 
   def then_i_should_be_a_registered_user_with_confirmed_registration
