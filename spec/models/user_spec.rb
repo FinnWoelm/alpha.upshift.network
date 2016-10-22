@@ -289,7 +289,7 @@ RSpec.describe User, type: :model do
       expect(user.send(:registration_confirmation_path)).
         to eq (
           Rails.application.routes.url_helpers.
-            confirm_registrations_path(
+            confirm_registration_path(
               :email => user.email,
               :registration_token => user.registration_token
             )

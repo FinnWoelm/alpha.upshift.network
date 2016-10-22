@@ -171,7 +171,7 @@ class User < ApplicationRecord
   private
     # return the path for confirming the pending newsletter subscription
     def registration_confirmation_path
-      confirm_registrations_path(
+      confirm_registration_path(
         :email => email,
         :registration_token => registration_token
       )
