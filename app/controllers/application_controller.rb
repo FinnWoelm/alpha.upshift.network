@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
 
   def authorize
     redirect_to '/login' and return unless current_user
-    redirect_to confirm_registration_reminder_path unless current_user.confirmed_registration
+    redirect_to confirmation_reminder_registration_path unless current_user.confirmed_registration
   end
 
   # renders the standard 404 error page in public/404.html

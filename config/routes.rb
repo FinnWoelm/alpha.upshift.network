@@ -14,8 +14,9 @@ Rails.application.routes.draw do
   end
 
   # Registrations
-  resources :registrations, only: [:new, :create] do
+  resource :signup, controller: 'registrations', as: 'registration', only: [:new, :create], path_names: { new: '' } do
     get 'confirm', on: :collection
+    get 'confirmation_reminder', on: :collection
     post 'resend_confirmation', on: :collection, :constraints => { :format => 'js' }
   end
 
@@ -23,7 +24,6 @@ Rails.application.routes.draw do
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
   get '/logout' => 'sessions#destroy'
-  get '/confirm_your_registration' => 'registrations#confirmation_reminder', as: :confirm_registration_reminder
 
   # FriendshipRequests
   get 'friend-requests' => 'friendship_requests#index', as: :friendship_requests_received
