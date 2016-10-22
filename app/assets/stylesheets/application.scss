@@ -108,6 +108,18 @@ nav .brand-logo img {
   float: left;
 }
 
+// NAVIGATION: force 48px high icons on side nav
+nav ul.side-nav li a i.material-icons {
+  line-height: 48px;
+  height: 48px;
+  margin: 0px 16px;
+}
+
+// NAVIGATION: 64px tall on desktop
+nav ul:not(.side-nav) li {
+  height: 64px;
+}
+
 // NAVIGATION: Badges on icons
 nav li a i+span.badge {
   display: block;
@@ -120,11 +132,6 @@ nav li a i+span.badge {
   min-width: unset;
   margin-bottom: -55px;
   border-radius: 2px;
-}
-
-// NAVIGATION: max 64px tall
-nav li {
-  height: 64px;
 }
 
 // ANCHORS & LINKS

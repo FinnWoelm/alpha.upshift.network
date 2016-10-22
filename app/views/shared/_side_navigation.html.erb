@@ -19,7 +19,7 @@
     function resize_side_nav_to_full_heigh() {
 
       // reset height of side_nav
-      $("#side_navigation").css("height", "unset");
+      $("#desktop_side_navigation").css("height", "unset");
 
       // get the html height
       var heigh_of_html = $(document).height();
@@ -31,7 +31,7 @@
       var height_of_main_navigation = $("#main_navigation").height();
 
       // set side nav to whichever height is greater
-      $("#side_navigation").height(
+      $("#desktop_side_navigation").height(
         Math.max(heigh_of_html, height_of_viewport) - height_of_main_navigation
        );
 
