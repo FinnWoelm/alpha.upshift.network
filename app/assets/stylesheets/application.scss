@@ -87,6 +87,11 @@ $secondary-color: $primary-color;
 
 // NAVIGATION
 
+// NAVIGATION: Fluid has spacing that matches side nav and FAB
+nav > div.container-fluid > .row > .col.s12 {
+  padding: 0px 32px;
+}
+
 // NAVIGATION: Brand logo fits height
 nav .brand-logo img {
   height: 50px;

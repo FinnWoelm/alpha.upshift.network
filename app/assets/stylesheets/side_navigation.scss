@@ -27,7 +27,7 @@ div#side_navigation {
       background-color: #01000299;
       color: white;
       height: 36px;
-      padding: 0px 20px;
+      padding: 0px 32px;
       line-height: 36px;
       z-index: 2;
       display: inline-block;
@@ -36,7 +36,7 @@ div#side_navigation {
     a.back i {
       position: relative;
       top: 6px;
-      right: 10px;
+      margin-right: 5px;
     }
 
   }
