@@ -72,17 +72,17 @@ $secondary-color: $primary-color;
 
 // COLOR: applies primary color as background
 .primary_color {
-  background-color: $primary-color;
+  background-color: $primary-color !important;
 }
 
 // COLOR: applies primary color as text
 .primary_color_text {
-  color: $primary-color;
+  color: $primary-color !important;
 }
 
 // COLOR: applies highlight color (secondary color)
 .highlight-text {
-  color: $secondary-color;
+  color: $secondary-color !important;
 }
 
 // NAVIGATION
