@@ -1,5 +1,7 @@
 div#desktop_side_navigation, ul#mobile_navigation {
 
+  background-color: white;
+
   div.head {
 
     $back_button_height: 36px;
@@ -97,6 +99,12 @@ div#desktop_side_navigation, ul#mobile_navigation {
     overflow: hidden;
   }
 
+}
+
+// set z-index (so that page headings can work)
+div#desktop_side_navigation {
+  position: relative;
+  z-index: 10;
 }
 
 // fixed side nav for full screen views

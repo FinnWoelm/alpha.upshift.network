@@ -5,10 +5,16 @@ class PrivateConversationsController < ApplicationController
   before_action :initialize_or_find_conversation, only: [:create, :update], unless: '@private_conversation'
   before_action :build_private_message, only: [:create, :update]
 
+  layout Proc.new{
+    if ['show', 'new', 'update', 'create'].include?(action_name)
+      'fullscreen'
+    elsif ['index'].include?(action_name)
+      'fluid_with_side_nav'
+    end
+  }
+
   # GET /conversations
   def index
-    # Get the user's private conversations ordered by most recent,
-    # include the most recent message
     @private_conversations =
       @current_user.
       private_conversations.
@@ -21,6 +27,8 @@ class PrivateConversationsController < ApplicationController
   def new
     @private_conversation = PrivateConversation.new
     @private_message = @private_conversation.messages.build
+
+    get_recent_conversations
   end
 
   # POST /conversation/
@@ -34,7 +42,9 @@ class PrivateConversationsController < ApplicationController
 
   # GET /conversation/:username
   def show
-    render('error', :status => 404) and return unless @private_conversation
+    get_recent_conversations
+
+    render('error', status: 404, layout: 'fluid_with_side_nav') and return unless @private_conversation
 
     @private_conversation.mark_read_for @current_user
 
@@ -59,11 +69,23 @@ class PrivateConversationsController < ApplicationController
 
   protected
 
+    # Get the user's private conversations ordered by most recent,
+    # include the most recent message
+    def get_recent_conversations
+      @private_conversations_in_sidenav =
+          @current_user.
+          private_conversations.
+          most_recent_activity_first.
+          includes(:participants).
+          includes(:most_recent_message)
+    end
+
     # creates a new conversation
     def create_conversation
       if @private_conversation.save
         redirect_to @private_conversation
       else
+        get_recent_conversations
         render :new
       end
     end
@@ -77,6 +99,7 @@ class PrivateConversationsController < ApplicationController
           @private_conversation, :messages)
         ActiveRecord::Associations::Preloader.new.preload(
           @private_conversation, :participants)
+        get_recent_conversations
         render :show
       end
     end

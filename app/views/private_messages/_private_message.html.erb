@@ -1,6 +1,11 @@
-<div class="private_conversation" style="display:block; padding: 10px 30px; background-color:lightblue; margin-bottom: 20px;">
+<%
+  # Get the sender of the message
+  sender = private_message.conversation.participants.find{|p| p.id == private_message.sender_id}
+%>
 
-  <p>From <%= render_sender_profile private_message %></p>
-  <p><%= private_message.content %></p>
-
+<div class="message <%= sender.eql?(@current_user) ? 'sent' : 'received' %>">
+  <div class="dot <%= sender.color_scheme %>"></div>
+  <div class="content <%= sender.color_scheme_with_font_color %>">
+     <%= private_message.content %>
+  </div>
 </div>

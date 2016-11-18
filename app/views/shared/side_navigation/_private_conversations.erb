@@ -1,0 +1,19 @@
+<div class="head">
+
+  <%= image_tag "dawn.jpg", class: 'responsive-img' %>
+
+  <%= link_to private_conversations_home_path, class: 'title waves-light waves-effect' do %>
+    Conversations
+  <% end %>
+
+</div>
+
+<div class="content">
+
+  <% conversations.each do |conversation| %>
+
+    <%= nav_link_conversation_preview(conversation) %>
+
+  <% end %>
+
+</div>

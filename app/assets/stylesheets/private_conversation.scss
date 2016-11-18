@@ -1,0 +1,146 @@
+body.c-private_conversations {
+
+  // Formatting of conversation previews
+  &.a-index {
+    div.private_conversation_preview, div.new_conversation {
+
+      border-top: 1px solid rgba(0, 0, 0, .2);
+
+      &:last-of-type {
+        border-bottom: 1px solid rgba(0, 0, 0, .2);
+      }
+
+      // color the symbol for the dropdown menu white
+      &:hover > div.administrative-actions > a:not(:hover) {
+        @extend .white-text;
+      }
+
+      & > a.open_conversation {
+        padding: 10px 30px;
+        padding-right: 80px;
+        display: block;
+        outline: none !important;
+        @extend .grey-text, .text-darken-4;
+        transition: all .3s;
+
+        &:hover {
+          @extend .red;
+          @extend .white-text;
+          @extend .z-depth-2;
+        }
+
+        img {
+          display: block;
+          @extend .z-depth-1;
+          margin: auto;
+          border-radius: 10px;
+          width: 70px;
+          overflow: hidden;
+        }
+      }
+
+      div.administrative-actions {
+        margin-bottom: -36px;
+        z-index: 5;
+        position: relative;
+      }
+
+    }
+  }
+
+  // Formatting of messages in conversation
+  &.a-show, &.a-update {
+    div.private_conversation {
+      div.message {
+        position: relative;
+        margin-top: 5px;
+        margin-right: 5px;
+
+        div.dot {
+          position: absolute;
+          top: 10px;
+          width: 10px;
+          height: 10px;
+          background-color: inherit;
+          border-radius: 10px;
+        }
+
+        div.content {
+          background-color: inherit;
+          display: inline-block;
+          padding: 5px 10px;
+          border-radius: 3px;
+        }
+
+        &.sent {
+          text-align: right;
+
+          div.dot {
+            right: -5px;
+          }
+        }
+
+        &.received {
+          text-align: left;
+
+          div.dot {
+            left: -5px;
+          }
+        }
+      }
+    }
+  }
+
+  // Formatting of header and compose message form
+  &.a-show, &.a-update, &.a-new, &.a-create {
+    @media #{$large-and-up} {
+
+      div#compose_message {
+        position: fixed;
+        background: white;
+        left: 0px;
+        width: 100%;
+        z-index: 80;
+        padding-left: 25%;
+        padding-right: 8.33333%;
+      }
+
+      div#chat_body {
+        margin-top: 180px;
+        margin-bottom: 180px;
+      }
+
+      div#compose_message {
+        bottom: 0px;
+        padding-bottom: 50px;
+      }
+    }
+
+    @media #{$medium-and-down} {
+
+      div#compose_message {
+        position: absolute;
+        background: white;
+        left: 0px;
+        width: 100%;
+        z-index: 80;
+        padding: 0 0.75rem;
+        padding-bottom: 50px;
+      }
+    }
+  }
+
+  // Coloring for active/non-active side navigation elements
+  #mobile_navigation, #desktop_side_navigation {
+    a.preview_conversation {
+
+      &.active .content {
+        @extend .grey-text, .text-lighten-3;
+      }
+
+      &:not(.active) .content {
+        @extend .grey-text;
+      }
+    }
+  }
+}

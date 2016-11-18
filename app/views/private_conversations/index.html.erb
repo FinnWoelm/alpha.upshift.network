@@ -1,7 +1,30 @@
-<h1>Conversations</h1>
-
-<div class="new_private_conversation" style="display:block; padding: 10px 30px; background-color:lightgray; margin-bottom: 20px;">
-  <%= link_to "Start a new Conversation", new_private_conversation_path %>
+<div class="page_heading z-depth-1">
+  <h3>Conversations</h3>
 </div>
 
-<%= render(@private_conversations) || "You currently have no conversations." %>
+<div class="section"></div>
+
+<div class="conversation_preview_wrapper">
+  <div class="new_conversation">
+    <%= link_to new_private_conversation_path, class: 'open_conversation' do %>
+      <div class="row no_margin_bottom">
+        <div class="col s2 m2 l1 center-align">
+          <%= image_tag "community/add.png", class: 'responsive-img' %>
+        </div>
+        <div class="col s10 m10 l11">
+
+          <strong>
+            New conversation...
+          </strong>
+          <br/>
+          Start a conversation with a friend.
+
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%= render(@private_conversations) %>
+</div>
+
+<div class="section"></div>

@@ -71,7 +71,7 @@ class PrivateConversation < ApplicationRecord
 
   # adds a participant to the conversation
   def add_participant participant
-    self.participantships.build(:participant => participant) if participant
+    self.participantships.build(:participant => participant) if participant.is_a?(User)
   end
 
   # returns a list of participants that exclude the participant (object or ID)

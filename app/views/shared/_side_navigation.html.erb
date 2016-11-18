@@ -1,5 +1,7 @@
 <%=
-  if @community
+  if @private_conversations_in_sidenav
+    render partial: "shared/side_navigation/private_conversations", locals: {conversations: @private_conversations_in_sidenav}
+  elsif @community
     render "shared/side_navigation/community"
   else
     render "shared/side_navigation/user"

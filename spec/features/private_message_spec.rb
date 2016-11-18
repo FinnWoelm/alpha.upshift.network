@@ -54,11 +54,11 @@ feature 'Private Message' do
   end
 
   def and_i_click_on_one_of_the_private_conversations
-    click_on "Conversation with #{@other_users[0].name}"
+    click_on "#{@other_users[0].name}"
   end
 
   def then_i_should_see_the_messages_in_that_private_conversation
-    expect(page).to have_content("Conversation with #{@other_users[0].name}")
+    expect(page).to have_content("#{@other_users[0].name}")
     expect(page).to have_content("My message 0")
     expect(page).to have_content("My message 1")
     expect(page).to have_content("My message 2")

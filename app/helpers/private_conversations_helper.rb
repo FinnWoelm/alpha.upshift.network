@@ -39,12 +39,23 @@ module PrivateConversationsHelper
   end
 
   # shows a preview of the conversation by showing its first messages
-  def show_conversation_preview private_conversation
+  def show_conversation_preview private_conversation, length=30
     if private_conversation.most_recent_message
-      return truncate(private_conversation.most_recent_message.content)
+      return truncate(private_conversation.most_recent_message.content, length: length)
     else
       return "No messages yet."
     end
+  end
+
+  # renders a preview of conversation for the sidebar
+  def nav_link_conversation_preview conversation
+    nav_text =
+      render(
+        partial: 'private_conversation_in_sidenav',
+        locals: {private_conversation: conversation}
+      )
+
+    nav_link(nav_text, link_to_private_conversation(conversation), nil, "preview_conversation multiple_lines two")
   end
 
 end

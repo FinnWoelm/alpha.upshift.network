@@ -61,7 +61,7 @@ feature 'Private Conversation' do
 
   def then_i_should_see_my_private_conversations
     @other_users.each do |u|
-      expect(page).to have_content("Conversation with #{u.name}")
+      expect(page).to have_content("#{u.name}")
     end
   end
 
@@ -76,7 +76,7 @@ feature 'Private Conversation' do
   end
 
   def and_i_start_a_new_private_conversation_with_the_user_i_want_to_message
-    click_on "Start a new Conversation"
+    click_on "New conversation..."
     fill_in 'Recipient', with: @user_to_message.username
     fill_in 'Message',  with: Faker::Lorem.paragraph
     click_on "Create Conversation"
@@ -91,19 +91,17 @@ feature 'Private Conversation' do
   end
 
   def and_i_delete_one_of_the_private_conversations
-    click_on "Delete conversation with #{@other_users[0].name}"
+    click_on "Delete", match: :first
   end
 
   def then_i_should_no_longer_see_that_private_conversation
 
-    # not see the first conversation
-    [@other_users[0]].each do |u|
-      expect(page).not_to have_content("Conversation with #{u.name}")
-    end
+    # not see the most recent conversation
+    expect(page).not_to have_content("#{@other_users.last.name}")
 
     # still see the other conversations
-    (@other_users - [@other_users[0]]).each do |u|
-      expect(page).to have_content("Conversation with #{u.name}")
+    (@other_users - [@other_users.last]).each do |u|
+      expect(page).to have_content("#{u.name}")
     end
   end
 

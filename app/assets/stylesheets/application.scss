@@ -19,6 +19,7 @@ $input-focus-color: color("grey", "darken-4") !default;
 @import "post_and_comment";
 @import "like";
 @import "profile";
+@import "private_conversation";
 @import "democracy/community/decision";
 
 
@@ -68,6 +69,11 @@ $input-focus-color: color("grey", "darken-4") !default;
 // GENERAL: limit parallax height to 300px
 .parallax-container {
   height: 300px;
+}
+
+// GENERAL: main content z-index is lower than side nav
+div.col.main {
+  z-index: 5;
 }
 
 // COLOR
@@ -136,14 +142,75 @@ nav ul:not(.side-nav) li a i+span.badge {
   border-radius: 2px;
 }
 
-// NAVIGATION: Option for fixed, sticky nov
 @media #{$large-and-up} {
+
+  // NAVIGATION: Set high z-index (to be above page headings)
+  nav#main_navigation {
+    position: relative;
+    z-index: 100;
+  }
+
+  // NAVIGATION: Option for fixed, sticky nov
   nav#main_navigation.fixed {
     position: fixed;
     top: 0px;
     left: 0px;
     width: 100%;
     z-index: 100;
+  }
+}
+
+
+// ELEMENTS
+
+// PAGE HEADING: a page heading below the navigation
+div.page_heading {
+  @media #{$large-and-up} {
+    background: white;
+    left: 0px;
+    width: 150%;
+    z-index: 80;
+    width: 152.5%;
+    padding-left: 39%;
+    padding-right: 13.33333%;
+    margin-left: -39%;
+    position: relative;
+    h1, h2, h3, h4, h5, h6 {
+      display: inline-block;
+    }
+  }
+
+  @media #{$medium-and-down} {
+    position: relative;
+    padding: 0 0.75rem;
+    margin: 0 -0.75rem;
+    h1, h2, h3, h4, h5, h6 {
+      padding: 2.1rem 0 1.68rem 0;
+      margin: 0px;
+      text-align: center;
+    }
+  }
+}
+
+// when fullscreen
+body.fullscreen div.page_heading {
+  @media #{$large-and-up} {
+    position: fixed;
+    background: white;
+    left: 0px;
+    width: 100%;
+    z-index: 80;
+    padding-left: 25%;
+    padding-right: 8.33333%;
+    margin-left: 0px;
+    top: 64px;
+    max-height: 120px;
+    overflow-y: auto;
+
+    h1, h2, h3, h4, h5, h6 {
+      padding-left: .75rem;
+      padding-right: .75rem;
+    }
   }
 }
 

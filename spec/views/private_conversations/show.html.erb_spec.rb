@@ -13,14 +13,14 @@ RSpec.describe "private_conversations/show", type: :view do
     assign(:private_message, private_conversation.messages.build(:sender => current_user))
   end
 
-  it "renders most recent messages first" do
+  it "renders oldest messages first" do
 
     render
 
-    expect(most_recent_messages[0].content).to appear_before(most_recent_messages[1].content)
-    expect(most_recent_messages[1].content).to appear_before(most_recent_messages[2].content)
-    expect(most_recent_messages[2].content).to appear_before(most_recent_messages[3].content)
-    expect(most_recent_messages[3].content).to appear_before(most_recent_messages[4].content)
+    expect(most_recent_messages[4].content).to appear_before(most_recent_messages[3].content)
+    expect(most_recent_messages[3].content).to appear_before(most_recent_messages[2].content)
+    expect(most_recent_messages[2].content).to appear_before(most_recent_messages[1].content)
+    expect(most_recent_messages[1].content).to appear_before(most_recent_messages[0].content)
   end
 
 end

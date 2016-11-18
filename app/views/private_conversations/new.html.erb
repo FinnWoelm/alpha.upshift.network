@@ -1,5 +1,42 @@
-<h1>New Conversation</h1>
+<%= form_for(@private_conversation) do |f| %>
+  <div class="page_heading z-depth-1">
+    <h3>New Conversation</h3>
+    <div class="field">
+      <%= f.label :recipient, "Recipient" %>
+      <%= f.text_field :recipient %>
+    </div>
+  </div>
 
-<%= render partial: 'form', locals: {
-  private_conversation: @private_conversation,
-  private_message: @private_message} %>
+  <div id="chat_body">
+    <% if @private_conversation.errors.any? %>
+      <%#o filter_errors private_conversation %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@private_conversation.errors.count, "error") %> prohibited this message from being sent:</h2>
+
+        <ul>
+        <% @private_conversation.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+
+  <div id="compose_message" class="z-depth-1">
+    <div class="section"></div>
+
+    <div style="width: 100%; background-color:lightgray;">
+
+        <%= f.fields_for :messages, @private_message do |message| %>
+          <div class="field">
+            <%= message.label :content, "Message" %>
+            <%= message.text_area :content %>
+          </div>
+        <% end %>
+
+        <div class="actions">
+          <%= f.submit(@private_conversation.new_record? ? "Create Conversation" : "Send Message") %>
+        </div>
+    </div>
+  </div>
+<% end %>
