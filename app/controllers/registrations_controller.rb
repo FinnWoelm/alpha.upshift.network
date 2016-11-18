@@ -1,5 +1,7 @@
 class RegistrationsController < ApplicationController
 
+  before_action :current_user, only: [:confirm, :confirmation_reminder, :resend_confirmation]
+
   layout "static_info_message", only: [:confirm]
 
   def new
