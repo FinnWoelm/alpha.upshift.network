@@ -24,36 +24,9 @@
     </div>
   </div>
 
+  <!-- show flash message -->
   <script type="text/javascript">
-
-    $(document).ready(function() {
-      Materialize.toast("<%= notice %>", 5000);
-      $('.tooltipped').tooltip({delay: 50});
-
-
-      $('.datepicker').pickadate({
-        selectMonths: true, // Creates a dropdown to control month
-        selectYears: 2 // Creates a dropdown of 15 years to control year
-      });
-
-      $('.dropdown-button').dropdown({
-          inDuration: 300,
-          outDuration: 225,
-          constrain_width: false, // Does not change width of dropdown to that of the activator
-          hover: false, // Activate on hover
-          gutter: 0, // Spacing from edge
-          belowOrigin: true, // Displays dropdown below the button
-          alignment: 'right' // Displays dropdown with edge aligned to the left of button
-        }
-      );
-
-      $(document).ready(function(){
-        $('.parallax').parallax();
-      });
-
-      $("#toggle_mobile_navigation").sideNav();
-    });
-
+    show_notice("<%= notice %>", 5000);
   </script>
 
   </body>
