@@ -12,7 +12,7 @@
   <div class="col s10 message">
     <div class="dot <%= sender.color_scheme %>"></div>
     <div class="content <%= sender.color_scheme_with_font_color %> tooltipped" data-position="bottom" data-delay="50" data-tooltip="<%= private_message.created_at %>">
-       <%= private_message.content %>
+      <%= simple_format h((private_message.content).strip) %>
     </div>
   </div>
 

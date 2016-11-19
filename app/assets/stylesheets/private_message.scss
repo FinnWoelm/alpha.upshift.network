@@ -57,6 +57,14 @@ body.c-private_conversations, body.c-private_messages {
           display: inline-block;
           padding: 5px 10px;
           border-radius: 3px;
+
+          p:first-of-type {
+            margin-top: 0px;
+          }
+
+          p:last-of-type {
+            margin-bottom: 0px;
+          }
         }
       }
     }
