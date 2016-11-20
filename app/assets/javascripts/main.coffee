@@ -35,6 +35,12 @@ $(document).on 'turbolinks:load', ->
 
   $('textarea.with_counter').characterCounter()
 
+  # make sure labels do not overlap text
+  Materialize.updateTextFields();
+
+  # Autoresize textfields
+  $('.materialize-textarea').trigger('autoresize')
+
 
 ##############################################################
 ## BEFORE CACHE ##############################################
