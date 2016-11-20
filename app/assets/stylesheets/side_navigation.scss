@@ -98,6 +98,14 @@ div#desktop_side_navigation, ul#mobile_navigation {
         display: block;
         overflow: hidden;
         white-space: nowrap;
+
+        i.material-icons {
+          position: relative;
+          top: 2px;
+          line-height: unset;
+          height: unset;
+          display: inline-block
+        }
       }
     }
 

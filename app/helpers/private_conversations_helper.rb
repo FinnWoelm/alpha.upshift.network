@@ -41,7 +41,12 @@ module PrivateConversationsHelper
   # shows a preview of the conversation by showing its first messages
   def show_conversation_preview private_conversation, length=30
     if private_conversation.most_recent_message
-      return truncate(private_conversation.most_recent_message.content, length: length)
+      if private_conversation.most_recent_message.sender_id.eql?(@current_user.id)
+        icon = :call_made
+      else
+        icon = :call_received
+      end
+      return material_icon.send(icon).md_18.to_s + " " + truncate(private_conversation.most_recent_message.content, length: length)
     else
       return "No messages yet."
     end
