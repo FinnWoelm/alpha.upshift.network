@@ -35,6 +35,9 @@ $(document).on 'turbolinks:load', ->
 
   $('textarea.with_counter').characterCounter()
 
+  # Autoresize textfields
+  $('.materialize-textarea').trigger('autoresize')
+
 
 ##############################################################
 ## BEFORE CACHE ##############################################
