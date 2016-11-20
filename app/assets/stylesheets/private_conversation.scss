@@ -102,7 +102,7 @@ body.c-private_conversations {
 
   // Coloring for active/non-active side navigation elements
   #mobile_navigation, #desktop_side_navigation {
-    a.preview_conversation {
+    a.preview_conversation, a.new_conversation {
 
       &.active .content {
         @extend .grey-text, .text-lighten-3;

@@ -10,6 +10,23 @@
 
 <div class="content">
 
+  <%= nav_link(
+    ("<div class='participants left'>" +
+        image_tag("community/add.png", class: 'responsive-img') +
+      "</div>
+      <div>
+        <span class='line'>
+          New conversation...
+        </span>
+        <span class='line content'>
+          Start a conversation with a friend.
+        </span>
+      </div>").html_safe,
+      new_private_conversation_path,
+      nil,
+      "new_conversation multiple_lines two"
+    ) %>
+
   <% conversations.each do |conversation| %>
 
     <%= nav_link_conversation_preview(conversation) %>
