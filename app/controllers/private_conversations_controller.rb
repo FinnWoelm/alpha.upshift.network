@@ -1,4 +1,6 @@
 class PrivateConversationsController < ApplicationController
+  include PrivateConversationsHelper
+
   before_action :authorize
   before_action :set_conversation, only: :show
   before_action :get_recent_conversations_for_sidenav, only: [:show, :new]
@@ -36,11 +38,11 @@ class PrivateConversationsController < ApplicationController
         PrivateConversation.find_conversations_between([
           @private_conversation.sender, @private_conversation.recipient
         ]).first
-      redirect_to @existing_conversation and return if @existing_conversation
+      redirect_to link_to_private_conversation @existing_conversation and return if @existing_conversation
     end
 
     if @private_conversation.save
-      redirect_to @private_conversation
+      redirect_to link_to_private_conversation @private_conversation
     else
       get_recent_conversations_for_sidenav
       render :new

@@ -1,7 +1,8 @@
 class PrivateMessagesController < ApplicationController
+  include PrivateConversationsHelper
+
   before_action :authorize
   before_action :set_conversation_by_id
-
 
   # POST /conversation/:id/message/
   def create
@@ -10,7 +11,7 @@ class PrivateMessagesController < ApplicationController
     @private_message = @private_conversation.messages.build(private_message_params)
 
     if @private_message.save
-      redirect_to @private_conversation
+      redirect_to link_to_private_conversation @private_conversation
     else
       get_recent_conversations_for_sidenav
       @private_conversation.mark_read_for @current_user

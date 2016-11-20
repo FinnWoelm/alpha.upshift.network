@@ -25,7 +25,7 @@ module PrivateConversationsHelper
   # - uses ID if multiple recipients
   def link_to_private_conversation private_conversation
 
-    # do not display current user on participant list
+    # get the other participants
     participants_without_current_user =
       get_participants_without_current_user private_conversation.participants
 
