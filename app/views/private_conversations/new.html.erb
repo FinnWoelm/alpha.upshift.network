@@ -1,9 +1,11 @@
 <%= form_for(@private_conversation) do |f| %>
   <div class="page_heading z-depth-1">
     <h3>New Conversation</h3>
-    <div class="field">
-      <%= f.label :recipient, "Recipient" %>
-      <%= f.text_field :recipient %>
+    <div class="row no_margin_bottom">
+      <div class="input-field col s12">
+        <%= f.label :recipient, "Recipient" %>
+        <%= f.text_field :recipient %>
+      </div>
     </div>
   </div>
 
@@ -25,18 +27,22 @@
   <div id="compose_message" class="z-depth-1">
     <div class="section"></div>
 
-    <div style="width: 100%; background-color:lightgray;">
-
-        <%= f.fields_for :messages, @private_message do |message| %>
-          <div class="field">
-            <%= message.label :content, "Message" %>
-            <%= message.text_area :content %>
-          </div>
-        <% end %>
-
-        <div class="actions">
-          <%= f.submit(@private_conversation.new_record? ? "Create Conversation" : "Send Message") %>
+    <%= f.fields_for :messages, @private_message do |message| %>
+      <div class="row no_margin_bottom">
+        <div class="input-field col s12">
+          <%= message.text_area :content, class: "materialize-textarea" %>
+          <%= message.label :content, "Message" %>
         </div>
+      </div>
+    <% end %>
+
+    <div class="row no_margin_bottom">
+      <div class="col s12">
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+          Create Conversation<i class="material-icons right">send</i>
+        </button>
+      </div>
     </div>
+
   </div>
 <% end %>

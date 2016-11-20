@@ -1,24 +1,33 @@
-<div style="width: 100%; background-color:lightgray;">
-  <%= form_for(private_conversation) do |f| %>
+<div class="row content no_margin">
+  <%= form_for private_conversation, class: "col s12" do |f| %>
 
     <% if private_conversation.new_record? %>
-      <div class="field">
-        <%= f.label :recipient, "Recipient" %>
-        <%= f.text_field :recipient %>
+      <div class="row no_margin_bottom">
+        <div class="input-field col s12">
+          <%= f.text_field :recipient %>
+          <%= f.label :recipient %>
+        </div>
       </div>
     <% else %>
       <%= f.hidden_field :recipient %>
     <% end %>
 
     <%= f.fields_for :messages, private_message do |message| %>
-      <div class="field">
-        <%= message.label :content, "Message" %>
-        <%= message.text_area :content %>
+      <div class="row no_margin_bottom">
+        <div class="input-field col s12">
+          <%= message.text_area :content, class: "materialize-textarea" %>
+          <%= message.label :content, "Message" %>
+        </div>
       </div>
     <% end %>
 
-    <div class="actions">
-      <%= f.submit(private_conversation.new_record? ? "Create Conversation" : "Send Message") %>
+    <div class="row no_margin_bottom">
+      <div class="col s12">
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+          <%= (private_conversation.new_record? ? "Create Conversation" : "Send Message") %> <i class="material-icons right">send</i>
+        </button>
+      </div>
     </div>
+
   <% end %>
 </div>

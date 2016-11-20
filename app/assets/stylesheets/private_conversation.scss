@@ -44,7 +44,6 @@ body.c-private_conversations {
         z-index: 5;
         position: relative;
       }
-
     }
   }
 
@@ -60,11 +59,17 @@ body.c-private_conversations {
         z-index: 80;
         padding-left: 25%;
         padding-right: 8.33333%;
+        bottom: 0px;
+        padding-bottom: 50px;
+
+        form textarea.materialize-textarea {
+          overflow-y: auto;
+        }
       }
 
       div#chat_body {
         margin-top: 180px;
-        margin-bottom: 180px;
+        margin-bottom: 200px;
       }
 
       div#compose_message {
@@ -75,6 +80,10 @@ body.c-private_conversations {
 
     @media #{$medium-and-down} {
 
+      div#chat_body {
+        margin-bottom: 0px !important;
+      }
+
       div#compose_message {
         position: absolute;
         background: white;
@@ -83,6 +92,10 @@ body.c-private_conversations {
         z-index: 80;
         padding: 0 0.75rem;
         padding-bottom: 50px;
+      }
+
+      form textarea.materialize-textarea {
+        max-height: unset !important;
       }
     }
   }
