@@ -88,7 +88,8 @@ group :test do
   # Quickly generate fake names, urls, etc
   gem 'faker', '~> 1.6'
   # BDD testing
-  gem 'capybara-webkit', '~> 1.11'
+  gem 'capybara', '~> 2.7'
+  gem 'poltergeist', '~> 1.11'
   # A few extra testing matchers
   gem 'shoulda-matchers', '~> 3.1', require: false
   # Cleans the test database after every test

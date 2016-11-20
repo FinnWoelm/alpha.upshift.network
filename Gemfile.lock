@@ -81,9 +81,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    capybara-webkit (1.11.1)
-      capybara (>= 2.3.0, < 2.8.0)
-      json
+    cliver (0.3.2)
     coderay (1.1.1)
     coffee-rails (4.2.1)
       coffee-script (>= 2.2.0)
@@ -172,6 +170,10 @@ GEM
       shellany (~> 0.0)
     pg (0.18.4)
     pkg-config (1.1.7)
+    poltergeist (1.11.0)
+      capybara (~> 2.1)
+      cliver (~> 0.3.1)
+      websocket-driver (>= 0.2.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -309,7 +311,7 @@ DEPENDENCIES
   capistrano-rails-console (~> 1.0.2)
   capistrano-rvm
   capistrano3-puma
-  capybara-webkit (~> 1.11)
+  capybara (~> 2.7)
   coffee-rails (~> 4.2.1)
   database_cleaner (~> 1.5)
   factory_girl_rails (~> 4.7)
@@ -324,6 +326,7 @@ DEPENDENCIES
   newrelic_rpm (~> 3.16)
   nokogiri (~> 1.6)
   pg (~> 0.15)
+  poltergeist (~> 1.11)
   pry-byebug
   pry-rails
   puma (~> 3.6)
@@ -342,4 +345,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.12.5
+   1.13.6
