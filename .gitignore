@@ -41,7 +41,3 @@ bower.json
 
 # Ignore application configuration
 /config/application.yml
-
-# Ignore bin files
-# https://robots.thoughtbot.com/use-bundlers-binstubs
-bin/
