@@ -52,7 +52,6 @@ $(document).on 'turbolinks:before-cache', ->
   $("[id=sidenav-overlay]").remove()
   $(".material-tooltip").remove()
   $("div.drag-target").remove()
-  $("#toast-container").remove()
   $("body").attr("data-is-cached", "true")
 
 
