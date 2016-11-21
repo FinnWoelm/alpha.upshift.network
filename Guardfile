@@ -72,3 +72,15 @@ guard :rspec, cmd: "bundle exec rspec" do
     Dir[File.join("**/#{m[1]}.feature")][0] || "spec/acceptance"
   end
 end
+
+
+guard :teaspoon, all_on_start: false, formatters: "documentation" do
+
+  # Implementation files
+  watch(%r{^app/assets/javascripts/(.+).coffee}) { |m| "#{m[1]}_spec" }
+  #watch(%r{app/assets/javascripts/(.+?)\.(js\.coffee|js|coffee)$})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+
+  # Specs / Helpers
+  watch(%r{^spec/javascripts/(.*)})
+  #watch(%r{^spec/javascripts/(.*)\.(js\.coffee|js|coffee)$}) { "spec/javascripts" }
+end

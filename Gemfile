@@ -53,6 +53,8 @@ group :development, :test do
   gem 'pry-byebug'
   # We will use bullet to avoid N+1 queries
   gem 'bullet', '~> 5.2.0'
+  # JavaScript unit testing
+  gem 'teaspoon-jasmine', '~> 2.3'
 end
 
 group :development do
@@ -66,6 +68,7 @@ group :development do
 
   # Automatically run tests when files update
   gem 'guard-rspec', '~> 4.7', require: false
+  gem 'guard-teaspoon', '~> 0.8', require: false
 
   gem 'capistrano',         require: false
   gem 'capistrano-rvm',     require: false
