@@ -113,7 +113,8 @@ Teaspoon.configure do |config|
   #config.driver_timeout = 180
 
   # Specify a server to use with Rack (e.g. thin, mongrel). If nil is provided Rack::Server is used.
-  #config.server = nil
+  # We use thin here because running two instances of Puma leads to problems
+  config.server = :thin
 
   # Specify a host to run on a specific host, otherwise Teaspoon will use 127.0.0.1.
   #config.server_host = nil

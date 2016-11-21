@@ -23,7 +23,7 @@ before_script:
 
 script:
   - bundle exec rspec spec/
-  - bundle exec teaspoon --format=dot
+  - bundle exec teaspoon --format=dot --server=puma
 
 bundler_args: --without development production
 

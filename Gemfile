@@ -69,6 +69,8 @@ group :development do
   # Automatically run tests when files update
   gem 'guard-rspec', '~> 4.7', require: false
   gem 'guard-teaspoon', '~> 0.8', require: false
+  # Use Thin server for guard-teaspoon
+  gem 'thin', '~> 1.7', require: false
 
   gem 'capistrano',         require: false
   gem 'capistrano-rvm',     require: false
