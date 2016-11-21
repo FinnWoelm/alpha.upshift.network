@@ -26,5 +26,7 @@
       </div>
     </div>
 
+    <%= render(partial: "shared/notice", locals: {notice: notice}) if notice %>
+
   </body>
 </html>

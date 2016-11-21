@@ -15,13 +15,7 @@
     <%= yield %>
   </div>
 
-  <script type="text/javascript">
-
-    $(document).ready(function() {
-      Materialize.toast("<%= notice %>", 5000);
-    });
-
-  </script>
+  <%= render(partial: "shared/notice", locals: {notice: notice}) if notice %>
 
   </body>
 </html>

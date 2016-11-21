@@ -1,32 +1,30 @@
-sudo: required
-dist: trusty
-addons:
-  apt:
-    sources:
-      - ubuntu-sdk-team
-    packages:
-      - libqt5webkit5-dev
-      - qtdeclarative5-dev
-
 language: ruby
 rvm:
   - 2.3.1
+
+# Use caching
+cache:
+  bundler: true
 
 # Use PostgreSQL as database
 services:
   - postgresql
 
+# Install recent version of PhantomJS
 before_install:
-  - export QMAKE=/usr/lib/x86_64-linux-gnu/qt5/bin/qmake
+  - "export PATH=$PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64/bin:$PATH"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then wget https://github.com/Medium/phantomjs/releases/download/v2.1.1/phantomjs-2.1.1-linux-x86_64.tar.bz2 -O $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2; fi"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then tar -xvf $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/travis_phantomjs; fi"
+  - "phantomjs --version"
 
 before_script:
   - psql -c 'create database upshift_network_test;' -U postgres
 
 script:
-  - bundle exec rake db:test:prepare
-  - xvfb-run bundle exec rspec spec
+  - bundle exec rspec spec/
 
-bundler_args: --binstubs=./bundler_stubs --without development
+bundler_args: --without development production
 
 # whitelist
 branches:
@@ -34,8 +32,9 @@ branches:
     - master
     - development
 
+# spoof some environment variables so that tests can pass
 env:
   global:
-    - MAILJET_API_KEY: spoof # we do not need the actual API key for testing
-    - MAILJET_SECRET_KEY: spoof # we do not need the actual secret for testing
-    - USER_REGISTRATION_EMAIL_TEMPLATE_ID: spoof
+    - MAILJET_API_KEY=spoof
+    - MAILJET_SECRET_KEY=spoof
+    - USER_REGISTRATION_EMAIL_TEMPLATE_ID=spoof
