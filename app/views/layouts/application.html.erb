@@ -19,10 +19,7 @@
     <%= yield %>
   </div>
 
-  <!-- show flash message -->
-  <script type="text/javascript">
-    show_notice("<%= notice %>", 5000);
-  </script>
+  <%= render(partial: "shared/notice", locals: {notice: notice}) if notice %>
 
   </body>
 </html>
