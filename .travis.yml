@@ -1,32 +1,22 @@
-sudo: required
-dist: trusty
-addons:
-  apt:
-    sources:
-      - ubuntu-sdk-team
-    packages:
-      - libqt5webkit5-dev
-      - qtdeclarative5-dev
-
 language: ruby
 rvm:
   - 2.3.1
+
+# Use caching
+cache:
+  bundler: true
 
 # Use PostgreSQL as database
 services:
   - postgresql
 
-before_install:
-  - export QMAKE=/usr/lib/x86_64-linux-gnu/qt5/bin/qmake
-
 before_script:
   - psql -c 'create database upshift_network_test;' -U postgres
 
 script:
-  - bundle exec rake db:test:prepare
-  - xvfb-run bundle exec rspec spec
+  - bundle exec rspec spec/
 
-bundler_args: --binstubs=./bundler_stubs --without development
+bundler_args: --without development production
 
 # whitelist
 branches:
@@ -34,8 +24,9 @@ branches:
     - master
     - development
 
+# spoof some environment variables so that tests can pass
 env:
   global:
-    - MAILJET_API_KEY: spoof # we do not need the actual API key for testing
-    - MAILJET_SECRET_KEY: spoof # we do not need the actual secret for testing
-    - USER_REGISTRATION_EMAIL_TEMPLATE_ID: spoof
+    - MAILJET_API_KEY=spoof
+    - MAILJET_SECRET_KEY=spoof
+    - USER_REGISTRATION_EMAIL_TEMPLATE_ID=spoof
