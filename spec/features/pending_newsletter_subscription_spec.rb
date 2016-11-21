@@ -33,6 +33,15 @@ feature 'Pending Newsletter Subscription' do
   end
 
   def and_i_submit_my_information
+    # We need to wait until the modal is fully visible, otherwise clicking on
+    # the submit button will occasionally fail (miss? click too soon?)
+    # We have two option:
+    # 1) Materialize will remove the class "velocity-animating" once the modal
+    # is fully opened
+    expect(page).to have_selector('#join.modal.open:not(.velocity-animating)', visible: true)
+    # 2) Simply sleep for a second before continuing. This is independent of
+    # Materialize, but slightly slower, so we'll stick with #1 for now
+    # sleep 1
     @name = Faker::Name.name
     @email = Faker::Internet.email
     fill_in 'Name',   with: @name
