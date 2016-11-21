@@ -27,6 +27,19 @@
 # for .singularize
 require 'active_support/inflector'
 
+### Teaspoon-Jasmine JS unit specs
+guard :teaspoon, all_on_start: false, formatters: "documentation", environment: "spec/teaspoon_env.rb" do
+
+  # Implementation files
+  watch(%r{^app/assets/javascripts/(.+).coffee}) { |m| "#{m[1]}_spec" }
+  #watch(%r{app/assets/javascripts/(.+?)\.(js\.coffee|js|coffee)$})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+
+  # Specs / Helpers
+  watch(%r{^spec/javascripts/(.*)})
+  #watch(%r{^spec/javascripts/(.*)\.(js\.coffee|js|coffee)$}) { "spec/javascripts" }
+end
+
+### Rspec specs
 guard :rspec, cmd: "bundle exec rspec" do
   require "guard/rspec/dsl"
   dsl = Guard::RSpec::Dsl.new(self)

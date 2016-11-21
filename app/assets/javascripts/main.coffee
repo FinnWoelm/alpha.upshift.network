@@ -61,7 +61,7 @@ $(document).on 'turbolinks:before-cache', ->
 
 # Is user looking at a cached version of the page?
 is_cached_page = ->
-  $("body").data("is-cached")
+  $("body").attr("data-is-cached") == "true"
 
 
 @show_notice = (notice, duration) ->
