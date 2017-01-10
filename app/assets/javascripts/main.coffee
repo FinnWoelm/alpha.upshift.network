@@ -53,6 +53,7 @@ $(document).on 'turbolinks:before-cache', ->
   $(".material-tooltip").remove()
   $("div.drag-target").remove()
   $("body").attr("data-is-cached", "true")
+  $("body").css("overflow", "unset")
 
 
 ##############################################################
