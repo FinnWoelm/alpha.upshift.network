@@ -55,6 +55,9 @@ group :development, :test do
   gem 'bullet', '~> 5.2.0'
   # JavaScript unit testing
   gem 'teaspoon-jasmine', '~> 2.3'
+  gem 'magic_lamp', '~> 1.1'
+  # Automatically generate testing models
+  gem 'factory_girl_rails', '~> 4.7'
 end
 
 group :development do
@@ -88,8 +91,6 @@ group :test do
   gem 'rspec-rails', '~> 3.5'
   # Testing controllers for rendered template and variables
   gem 'rails-controller-testing', '~> 1.0'
-  # Automatically generate testing models
-  gem 'factory_girl_rails', '~> 4.7'
   # Quickly generate fake names, urls, etc
   gem 'faker', '~> 1.6'
   # BDD testing

@@ -39,4 +39,9 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # prevent caching for Magic Lamp JS fixtures
+  config.assets.configure do |env|
+    env.cache = ActiveSupport::Cache.lookup_store(:null_store)
+  end
 end

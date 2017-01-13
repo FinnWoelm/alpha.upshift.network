@@ -144,6 +144,10 @@ GEM
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     lumberjack (1.0.10)
+    magic_lamp (1.8.1)
+      method_source
+      rails (>= 4.0.0)
+      rake
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
     mailjet (1.4.9)
@@ -334,6 +338,7 @@ DEPENDENCIES
   guard-teaspoon (~> 0.8)
   jquery-rails
   listen (~> 3.0.5)
+  magic_lamp (~> 1.1)
   mailjet (~> 1.4)
   material_icons
   materialize-sass (~> 0.97)
