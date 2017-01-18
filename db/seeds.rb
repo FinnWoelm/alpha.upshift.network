@@ -49,11 +49,12 @@ Friendship.create(:initiator => alice, :acceptor => carla)
 Friendship.create(:initiator => alice, :acceptor => dennis)
 
 # Create some private conversations
-conversations = []
 20.times do |i|
  u = User.create(:username => "user#{i}", :password => "password", :name => "user#{i}", :email => "user#{i}@upshift.network", :confirmed_registration => true)
- Profile.create(:user => u)
- PrivateConversation.new(:sender => alice, :recipient => u)
+ Profile.create(:user => u, :visibility => :is_network_only)
+ conversation = PrivateConversation.new(:sender => alice, :recipient => u)
+ conversation.messages.build(:content => "initial message", :sender => alice)
+ conversation.save
 end
 
 # Create some private messages
