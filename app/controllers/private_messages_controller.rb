@@ -4,7 +4,7 @@ class PrivateMessagesController < ApplicationController
   before_action :authorize
   before_action :set_conversation_by_id
 
-  # POST /conversation/:id/message/
+  # POST /conversation/:private_conversation_id/message/
   def create
     render('error', status: 404, layout: 'fluid_with_side_nav') and return unless @private_conversation
 
@@ -29,6 +29,20 @@ class PrivateMessagesController < ApplicationController
         }
       end
     end
+  end
+
+  # GET /conversation/:private_conversation_id/messages/refresh.js
+  def refresh
+    render(:error, status: 404, layout: 'fluid_with_side_nav') and return unless @private_conversation
+
+    @private_messages =
+      @private_conversation.messages.
+      where("id > ?", params[:last_message_id]).
+      order(id: :asc)
+
+    @private_conversation.mark_read_for @current_user
+
+    (render js: '' and return) if @private_messages.none?
   end
 
   protected

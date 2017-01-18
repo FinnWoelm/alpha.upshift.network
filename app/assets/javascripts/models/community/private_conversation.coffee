@@ -9,6 +9,8 @@ class @PrivateConversation
   #/ Instance: Public
   #// add_message_from_user_compose_form: adds a message that was entered by the
   #//                                     user
+  #// add_new_messages: adds one or more new messages fetched from the server
+  #// fetch_new_messages: fetches newest messages from the server
   #// get_preview: returns an instance of PrivateConversationPreview that
   #//              belongs to this instance of PrivateConversation
   #// mark_deleted: marks the conversation as deleted and disables message form
@@ -53,6 +55,26 @@ class @PrivateConversation
     @_selector().find("#compose_message form .materialize-textarea").val("")
     @_selector().find("#compose_message form .materialize-textarea").trigger("autoresize")
     @_selector().find("#compose_message form").trigger('checkform.areYouSure');
+
+
+  # adds one or more messages fetched from the server
+  add_new_messages: (messages) ->
+
+    # clear any unfetched messages
+    @_selector().find("#chat_body .private_message.pushed").remove()
+
+    # adds each message
+    for message in messages
+      @_add_message message[0], message[1]
+
+
+  # fetches new messages in this conversation
+  fetch_new_messages: ->
+    return unless @id
+    conversation_id = @id
+    last_message_id = $("#chat_body div.private_message:not(.pushed)").last().attr("data-message-id")
+    last_message_id = 0 if last_message_id == undefined
+    $.get(url: "/conversation/#{conversation_id}/messages/refresh.js?last_message_id=#{last_message_id}")
 
 
   # returns an instance of PrivateConversationPreview that belongs to this

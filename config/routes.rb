@@ -48,6 +48,9 @@ Rails.application.routes.draw do
   # Private Conversations & Messages
   resources :private_conversations, only: [:new, :create, :show, :update, :destroy], :path => "conversation" do
     resources :private_messages, only: [:create], :path => "message"
+    resources :private_messages, only: [], :path => "messages" do
+      get 'refresh', on: :collection, constraints: lambda { |req| req.format == :js }
+    end
   end
   get '/conversations' => "private_conversations#index", as: :private_conversations_home
 

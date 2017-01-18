@@ -35,7 +35,7 @@ $(document).on 'turbolinks:load', ->
         $(@).find("input[type=submit], button[type=submit]").first().find("i:not(.loading-indicator)").removeClass("hide")
 
 
-  # on failed ajax call, show toast
+  # on failed ajax call, show toast (only if it's a failed form submission)
   $(document).ajaxError (event, xhr, settings) ->
 
     $("form[data-remote=true]").each ->

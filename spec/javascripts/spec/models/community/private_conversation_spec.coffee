@@ -48,6 +48,55 @@ describe 'Model: PrivateConversation', ->
       expect($("#compose_message form .materialize-textarea").val()).toEqual ""
 
 
+  describe "#add_new_messages", ->
+
+    messages = null
+
+    beforeEach ->
+      messages = [
+        [message_id = id_of_last_message+1, message_html = "<div class='private_message' data-message-id='#{id_of_last_message+1}'>some_content1</div>"],
+        [message_id = id_of_last_message+2, message_html = "<div class='private_message' data-message-id='#{id_of_last_message+2}'>some_content2</div>"],
+        [message_id = id_of_last_message+3, message_html = "<div class='private_message' data-message-id='#{id_of_last_message+3}'>some_content3</div>"],
+      ]
+
+    it "clears 'unfetched' messages", ->
+      active_conversation.add_message_from_user_compose_form messages[0][0], messages[0][1]
+      expect($("#chat_body .private_message.pushed").length).toEqual 1
+      active_conversation.add_new_messages messages
+      expect($("#chat_body .private_message.pushed").length).toEqual 0
+
+    it "calls _add_message for each message", ->
+      spyOn(active_conversation, '_add_message')
+      active_conversation.add_new_messages messages
+      expect(active_conversation._add_message).toHaveBeenCalledWith messages[0][0], messages[0][1]
+      expect(active_conversation._add_message).toHaveBeenCalledWith messages[1][0], messages[1][1]
+      expect(active_conversation._add_message).toHaveBeenCalledWith messages[2][0], messages[2][1]
+
+
+  describe "#fetch_new_messages", ->
+
+    beforeEach ->
+      spyOn($, 'get')
+      active_conversation.fetch_new_messages()
+
+    it "makes an ajax:get call", ->
+      expect($.get).toHaveBeenCalled()
+
+    it "sends the ID of last fetched message", ->
+      id_of_last_fetched_message =
+        $("#chat_body div.private_message:not(.pushed)").last().attr("data-message-id")
+      expect($.get.calls.argsFor(0)[0].url).toContain id_of_last_fetched_message
+
+    it "sends the ID of the conversation", ->
+      expect($.get.calls.argsFor(0)[0].url).toContain active_conversation.id
+
+    it "calls the refresh action", ->
+      expect($.get.calls.argsFor(0)[0].url).toContain "refresh"
+
+    it "requests content type: JS", ->
+      expect($.get.calls.argsFor(0)[0].url).toContain ".js?"
+
+
   describe "#get_preview", ->
 
     it "returns a PrivateConversationPreview object with the ID of current

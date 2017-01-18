@@ -10,6 +10,17 @@ feature 'Private Message' do
     then_i_should_see_the_messages_in_that_private_conversation
   end
 
+  context "When new messages in the conversation are received" do
+    scenario "User can see new messages without reloading", :js => true do
+      given_i_am_logged_in_as_a_user
+      and_i_have_some_private_conversations_with_messages
+      when_i_go_to_my_private_conversations
+      and_i_click_on_one_of_the_private_conversations
+      and_i_receive_new_messages
+      then_i_should_see_the_new_messages
+    end
+  end
+
   scenario "User can send a message in a conversation", :js => true do
     given_i_am_logged_in_as_a_user
     and_i_have_some_private_conversations_with_messages
@@ -57,6 +68,19 @@ feature 'Private Message' do
     fill_in 'Message', with: @my_message_text
     click_on "Send Message"
   end
+
+  def and_i_receive_new_messages
+    @new_message = PrivateMessage.create(
+      :sender => @other_users[0],
+      :conversation => PrivateConversation.find_conversations_between([@user, @other_users[0]]).first,
+      :content => "This message should be fetched automatically"
+    )
+  end
+
+  def then_i_should_see_the_new_messages
+    expect(page).to have_content ("This message should be fetched automatically")
+  end
+
 
   def then_i_should_see_my_new_message_in_the_private_conversation
     expect(page).to have_content(@my_message_text)

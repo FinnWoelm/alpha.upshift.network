@@ -41,3 +41,27 @@ describe 'View: PrivateConversation#show', ->
       spyOn(PrivateConversationPreview, "enable_caching")
       $(document).trigger 'turbolinks:load'
       expect(PrivateConversationPreview.enable_caching).toHaveBeenCalled()
+
+    describe "BackgroundJob: fetch new messages", ->
+
+      id = callback = interval = null
+
+      beforeEach ->
+        spyOn(BackgroundJob, 'add')
+        $(document).trigger 'turbolinks:load'
+        id        = BackgroundJob.add.calls.argsFor(0)[0]
+        callback  = BackgroundJob.add.calls.argsFor(0)[1]
+        interval  = BackgroundJob.add.calls.argsFor(0)[2]
+
+      it "creates with ID 'private-conversation-fetch-new-messages'", ->
+        expect(id).toEqual 'private-conversation-fetch-new-messages'
+
+      it "creates with interval 1000ms", ->
+        expect(interval).toEqual 1000
+
+      it "creates with callback fetch_new_messages()", ->
+        spyOn(PrivateConversation, "get_active_conversation").and.
+          returnValue(active_conversation)
+        spyOn(active_conversation, 'fetch_new_messages')
+        callback()
+        expect(active_conversation.fetch_new_messages).toHaveBeenCalled()

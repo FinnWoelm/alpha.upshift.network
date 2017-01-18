@@ -30,3 +30,10 @@ $(document).on 'turbolinks:load', ->
 
     # cache the side navigation
     PrivateConversationPreview.enable_caching()
+
+    # get latest messages from server
+    BackgroundJob.add(
+      "private-conversation-fetch-new-messages",
+      -> PrivateConversation.get_active_conversation().fetch_new_messages(),
+      1000
+    )
