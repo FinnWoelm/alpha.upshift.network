@@ -1,0 +1,45 @@
+<%
+  # if no local variables are passed, these are the defaults
+  sidenav = true if local_assigns[:sidenav].nil?
+  fluid = false if local_assigns[:fluid].nil?
+%>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>UpshiftNetwork</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+
+  <body class="<%= 'c-' + controller_path.gsub('/', '-') %> <%= 'a-' + action_name %>">
+
+  <div id="toast-container" data-turbolinks-permanent></div>
+
+  <%= render partial: "shared/navigation", locals: {fluid: fluid} %>
+
+  <% if sidenav %>
+  <div class="container-fluid">
+    <div class="row no_margin_bottom">
+      <div id="desktop_side_navigation" class="col l2 hide-on-med-and-down no_padding z-depth-1">
+        <%= render partial: "shared/side_navigation" %>
+      </div>
+      <div class="col l8 push-l1 m12 s12">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+
+  <% else %>
+  <div class="container<%= fluid ? "-fluid" : "" %>">
+    <%= yield %>
+  </div>
+  <% end %>
+
+  <%= render(partial: "shared/notice", locals: {notice: notice}) if notice %>
+
+  </body>
+</html>
