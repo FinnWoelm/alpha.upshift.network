@@ -1,6 +1,7 @@
 class PrivateConversationsController < ApplicationController
   before_action :authorize
   before_action :set_conversation, only: :show
+  before_action :get_recent_conversations_for_sidenav, only: [:show, :new]
 
   layout Proc.new{
     if ['show'].include?(action_name)
@@ -13,19 +14,15 @@ class PrivateConversationsController < ApplicationController
   # GET /conversations
   def index
     @private_conversations =
-      @current_user.
-      private_conversations.
-      most_recent_activity_first.
-      includes(:participants).
-      includes(:most_recent_message)
+      PrivateConversation.
+      for_user(@current_user).
+      with_unread_message_count_for(@current_user)
   end
 
   # GET /conversation/new
   def new
     @private_conversation = PrivateConversation.new
     @private_message = @private_conversation.messages.build
-
-    get_recent_conversations
   end
 
   # POST /conversation/
@@ -45,7 +42,7 @@ class PrivateConversationsController < ApplicationController
     if @private_conversation.save
       redirect_to @private_conversation
     else
-      get_recent_conversations
+      get_recent_conversations_for_sidenav
       render :new
     end
 
@@ -53,8 +50,6 @@ class PrivateConversationsController < ApplicationController
 
   # GET /conversation/:username
   def show
-    get_recent_conversations
-
     render('error', status: 404, layout: 'fluid_with_side_nav') and return unless @private_conversation
 
     @private_conversation.mark_read_for @current_user

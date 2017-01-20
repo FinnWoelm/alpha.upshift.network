@@ -120,6 +120,80 @@ RSpec.describe PrivateConversation, type: :model do
 
     end
 
+    describe ":for_user" do
+
+      let(:current_user) { create(:user) }
+      let!(:conversations_with_user) {
+        create_list(:private_conversation, 3, sender: current_user) +
+        create_list(:private_conversation, 3, recipient: current_user)
+      }
+      let!(:conversations_without_user) {
+        create_list(:private_conversation, 3)
+      }
+
+      it "returns conversations that the user is a participant in" do
+        ids_of_conversations = PrivateConversation.for_user(current_user).map(&:id)
+        conversations_with_user.each do |conversation|
+          expect(ids_of_conversations).to include conversation.id
+        end
+      end
+
+      it "does not return conversations that the user is not a participant in" do
+        ids_of_conversations = PrivateConversation.for_user(current_user).pluck(:id)
+        conversations_without_user.each do |conversation|
+          expect(ids_of_conversations).not_to include conversation.id
+        end
+      end
+
+      it "sorts conversations by most recent activity first" do
+        conversations = PrivateConversation.for_user(current_user)
+        expect(conversations[0].updated_at).to be > conversations[1].updated_at
+        expect(conversations[1].updated_at).to be > conversations[2].updated_at
+        expect(conversations[2].updated_at).to be > conversations[3].updated_at
+        expect(conversations[3].updated_at).to be > conversations[4].updated_at
+      end
+    end
+
+    describe ":with_unread_message_count_for" do
+
+      let(:current_user) { create(:user) }
+      let(:conversation) { create(:private_conversation, :sender => current_user) }
+      let(:participantship_of_current_user) {
+        current_user.participantships_in_private_conversations.first
+      }
+
+      before do
+        create_list(:private_message, 5, :conversation => conversation)
+      end
+
+      context "when read_at is nil" do
+
+        before do
+          participantship_of_current_user.update_attributes(:read_at => nil)
+        end
+
+        it "sets unread_message_count to 5" do
+          expect(
+            PrivateConversation.with_unread_message_count_for(current_user).
+            first.unread_message_count
+          ).to eq 5
+        end
+      end
+
+      context "when read_at equals created_at of last message" do
+
+        before do
+          participantship_of_current_user.update_attributes(:read_at => Time.now)
+        end
+
+        it "sets unread_message_count to 0" do
+          expect(
+            PrivateConversation.with_unread_message_count_for(current_user).
+            first.unread_message_count
+          ).to eq 0
+        end
+      end
+    end
   end
 
   describe "validations" do
@@ -146,6 +220,7 @@ RSpec.describe PrivateConversation, type: :model do
 
       it { is_expected.to receive(:cast_recipient_to_user) }
       it { is_expected.to receive(:add_sender_and_recipient_as_participants) }
+
     end
   end
 

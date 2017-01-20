@@ -21,14 +21,12 @@ class ApplicationController < ActionController::Base
 
   # Get the user's private conversations ordered by most recent,
   # include the most recent message
-  def get_recent_conversations
+  def get_recent_conversations_for_sidenav
     @private_conversations_in_sidenav =
-        @current_user.
-        private_conversations.
-        most_recent_activity_first.
-        includes(:participants).
-        includes(:most_recent_message)
+      PrivateConversation.
+      for_user(@current_user).
+      with_unread_message_count_for(@current_user)
   end
-  helper_method :get_recent_conversations
+  helper_method :get_recent_conversations_for_sidenav
 
 end

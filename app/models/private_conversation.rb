@@ -33,16 +33,33 @@ class PrivateConversation < ApplicationRecord
 
   # finds the conversations between a set of users
   # use like PrivateConversations.find_conversations_between [alice, bob]
-  scope :find_conversations_between,
-    ->(users) {
-      joins(participantships: :participant).
-      where(users: {id: users.pluck(:id)}).
-      group("id").
-      having("count(\"private_conversations\".\"id\") = ?", users.size)
-    }
+  scope :find_conversations_between, -> (users) do
+    joins(participantships: :participant).
+    where(users: {id: users.pluck(:id)}).
+    group("id").
+    having("count(\"private_conversations\".\"id\") = ?", users.size)
+  end
+
+  # finds conversations that a user is a participant in
+  scope :for_user, -> (user) do
+    joins(:participantships).
+    where(participantship_in_private_conversations: {participant_id: user.id}).
+    most_recent_activity_first.
+    includes(:participants).
+    includes(:most_recent_message)
+  end
+
+  scope :with_unread_message_count_for, -> (user) do
+    joins(:participantships).
+    joins("LEFT OUTER JOIN private_messages AS unread_private_messages ON private_conversations.id = unread_private_messages.private_conversation_id and unread_private_messages.created_at > COALESCE(participantship_in_private_conversations.read_at, to_timestamp('0001-01-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS'))").
+    merge( PrivateConversation.select("private_conversations.*, count(DISTINCT unread_private_messages.id) as unread_message_count")).
+    where(participantship_in_private_conversations: {participant_id: user.id}).
+    group(:id)
+  end
 
   # # Accessors
   attr_accessor(:sender, :recipient)
+  attr_accessor(:unread_message_count)
 
   # # Validations
   validates :sender, presence: true, on: :create
@@ -62,6 +79,11 @@ class PrivateConversation < ApplicationRecord
     if: "sender.present? and recipient.present? and recipient.is_a?(User)"
 
   # # Callbacks
+  after_initialize do
+    if attributes['unread_message_count'].present?
+      @unread_message_count = attributes['unread_message_count']
+    end
+  end
   after_initialize :cast_recipient_to_user, if: :new_record?
   after_initialize :add_sender_and_recipient_as_participants, if: :new_record?
 

@@ -23,10 +23,20 @@ body.c-private_conversations {
         @extend .grey-text, .text-darken-4;
         transition: all .3s;
 
+        .unread_message_count {
+          @extend .red;
+          @extend .white-text;
+        }
+
         &:hover {
           @extend .red;
           @extend .white-text;
           @extend .z-depth-2;
+
+          .unread_message_count {
+            @extend .white;
+            @extend .red-text;
+          }
         }
 
         img {

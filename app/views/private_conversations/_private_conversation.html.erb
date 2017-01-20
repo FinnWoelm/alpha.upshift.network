@@ -37,6 +37,13 @@
         <strong>
           <%= list_participants private_conversation.participants %>
         </strong>
+        <span class='unread_message_count badge'>
+          <% if private_conversation.unread_message_count and private_conversation.unread_message_count > 0 %>
+            <%= private_conversation.unread_message_count.to_s %>
+          <% elsif private_conversation.participantship_of(@current_user).read_at.nil? %>
+            new
+          <% end %>
+        </span>
 
         <br/>
         <%= show_conversation_preview private_conversation, 250 %>

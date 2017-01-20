@@ -12,7 +12,7 @@ class PrivateMessagesController < ApplicationController
     if @private_message.save
       redirect_to @private_conversation
     else
-      get_recent_conversations
+      get_recent_conversations_for_sidenav
       @private_conversation.mark_read_for @current_user
       render "private_conversations/show", layout: "fullscreen"
     end

@@ -8,6 +8,13 @@
       alt:  conversation_partner.name %>
 </div>
 <div>
+  <span class='badge red white-text'>
+    <% if private_conversation.unread_message_count and private_conversation.unread_message_count > 0 %>
+      <%= private_conversation.unread_message_count.to_s %>
+    <% elsif private_conversation.participantship_of(@current_user).read_at.nil? %>
+      new
+    <% end %>
+  </span>
   <span class='line'>
     <%= list_participants private_conversation.participants %>
   </span>
