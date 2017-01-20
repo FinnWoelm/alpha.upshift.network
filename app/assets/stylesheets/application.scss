@@ -134,6 +134,18 @@ nav ul:not(.side-nav) li a i+span.badge {
   border-radius: 2px;
 }
 
+// NAVIGATION: Option for fixed, sticky nov
+@media #{$large-and-up} {
+  nav#main_navigation.fixed {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 100;
+  }
+}
+
+
 // ANCHORS & LINKS
 
 // ANCHOR: position button correctly

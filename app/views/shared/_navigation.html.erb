@@ -1,9 +1,10 @@
 <%
   # navigation is not fluid or fixed unless explicitly set
   fluid ||= false
+  fixed ||= false
 %>
 
-<nav id="main_navigation" class="primary_color">
+<nav id="main_navigation" class="<%= fixed ? "fixed " : "" %>primary_color">
   <div class="container<%= fluid ? "-fluid" : "" %>">
     <div class="nav-wrapper row">
       <div class="col s12">

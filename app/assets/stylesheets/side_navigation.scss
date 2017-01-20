@@ -82,3 +82,14 @@ div#desktop_side_navigation, ul#mobile_navigation {
   }
 
 }
+
+// fixed side nav for full screen views
+@media #{$large-and-up} {
+  div#desktop_side_navigation.fixed {
+    position: fixed;
+    top: 64px;
+    left: 0px;
+    z-index: 90;
+    overflow-y: auto;
+  }
+}

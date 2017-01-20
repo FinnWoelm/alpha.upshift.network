@@ -2,6 +2,7 @@
   # if no local variables are passed, these are the defaults
   sidenav = true if local_assigns[:sidenav].nil?
   fluid = false if local_assigns[:fluid].nil?
+  fixed = false if local_assigns[:fixed].nil?
 %>
 <!DOCTYPE html>
 <html>
@@ -15,19 +16,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
-  <body class="<%= 'c-' + controller_path.gsub('/', '-') %> <%= 'a-' + action_name %>">
+  <body class="<%= 'c-' + controller_path.gsub('/', '-') %> <%= 'a-' + action_name %><%= ((fixed and fluid) ? ' fullscreen' : '') %>">
 
   <div id="toast-container" data-turbolinks-permanent></div>
 
-  <%= render partial: "shared/navigation", locals: {fluid: fluid} %>
+  <%= render partial: "shared/navigation", locals: {fluid: fluid, fixed: fixed} %>
 
   <% if sidenav %>
   <div class="container-fluid">
     <div class="row no_margin_bottom">
-      <div id="desktop_side_navigation" class="col l2 hide-on-med-and-down no_padding z-depth-1">
+      <div id="desktop_side_navigation" class="<%= fixed ? "fixed " : "" %>col l2 hide-on-med-and-down no_padding z-depth-1">
         <%= render partial: "shared/side_navigation" %>
       </div>
-      <div class="col l8 push-l1 m12 s12">
+      <div class="col l8 push-l<%= fixed ? "3" : "1" %> m12 s12">
         <%= yield %>
       </div>
     </div>
