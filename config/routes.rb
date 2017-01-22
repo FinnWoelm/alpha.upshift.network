@@ -8,6 +8,9 @@ end
 
 Rails.application.routes.draw do
 
+  # Magic Lamp for using views in JS specs
+  mount MagicLamp::Genie, at: "/magic_lamp" if defined?(MagicLamp)
+
   # External
   resources :pending_newsletter_subscriptions, only: :create do
     get 'confirm', on: :collection
