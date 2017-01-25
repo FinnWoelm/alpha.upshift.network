@@ -4,19 +4,21 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  config.before(:each) do
-    DatabaseCleaner.strategy = :transaction
+  config.around(:each) do |example|
+
+    # Use really fast transaction strategy for all examples expect 'js: true'
+    # Capybara specs.
+    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
+
+    # Start transaction/truncation
+    DatabaseCleaner.cleaning do
+
+      # Run example
+      example.run
+    end
+
+    # Clear session data
+    Capybara.reset_sessions!
   end
 
-  config.before(:each, :js => true) do
-    DatabaseCleaner.strategy = :truncation
-  end
-
-  config.before(:each) do
-    DatabaseCleaner.start
-  end
-
-  config.after(:each) do
-    DatabaseCleaner.clean
-  end
 end
