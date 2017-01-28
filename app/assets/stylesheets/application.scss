@@ -121,10 +121,10 @@ nav ul:not(.side-nav) li {
 }
 
 // NAVIGATION: Badges on icons
-nav li a i+span.badge {
+nav ul:not(.side-nav) li a i+span.badge {
   display: block;
-  float: right
-  ;position: relative;
+  float: right;
+  position: relative;
   top: -55px;
   left: 10px;
   line-height: 1;
