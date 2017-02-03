@@ -5,15 +5,18 @@
 $(document).on 'turbolinks:load', ->
 
   $(".material-tooltip").remove()
-  $('.tooltipped').tooltip({delay: 50})
+  $(".tooltipped").each ->
+    $(@).tooltip({delay: 50})
 
 
-  $('.datepicker').pickadate({
-    selectMonths: true, #Creates a dropdown to control month
-    selectYears: 2 #Creates a dropdown of 15 years to control year
-  })
+  $('.datepicker').each ->
+    $(@).pickadate({
+      selectMonths: true, #Creates a dropdown to control month
+      selectYears: 2 #Creates a dropdown of 15 years to control year
+    })
 
-  $('.dropdown-button').dropdown({
+  $('.dropdown-button').each ->
+    $(@a).dropdown({
       inDuration: 300,
       outDuration: 225,
       constrain_width: false, #Does not change width of dropdown to that of the activator
@@ -21,19 +24,21 @@ $(document).on 'turbolinks:load', ->
       gutter: 0, #Spacing from edge
       belowOrigin: true, #Displays dropdown below the button
       alignment: 'right' #Displays dropdown with edge aligned to the left of button
-    }
-  )
+    })
 
   $(document).ready ->
-    $('.parallax').parallax()
+    $('.parallax').each ->
+      $(@).parallax()
 
 
   $("#toggle_mobile_navigation").off("click")
   $("[id=sidenav-overlay]").remove()
   $("div.drag-target").remove()
-  $("#toggle_mobile_navigation").sideNav()
+  $("#toggle_mobile_navigation").each ->
+    $(@).sideNav()
 
-  $('textarea.with_counter').characterCounter()
+  $('textarea.with_counter').each ->
+    $(@).characterCounter()
 
   # make sure labels do not overlap text
   Materialize.updateTextFields();
