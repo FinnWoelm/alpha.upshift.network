@@ -18,29 +18,49 @@
 
   <body class="<%= 'c-' + controller_path.gsub('/', '-') %> <%= 'a-' + action_name %><%= ((fixed and fluid) ? ' fullscreen' : '') %>">
 
-  <div id="toast-container" data-turbolinks-permanent></div>
+    <div id="toast-container" data-turbolinks-permanent></div>
 
-  <%= render partial: "shared/navigation", locals: {fluid: fluid, fixed: fixed} %>
+    <%= render partial: "shared/navigation", locals: {fluid: fluid, fixed: fixed} %>
 
-  <% if sidenav %>
-  <div class="container-fluid">
-    <div class="row no_margin_bottom">
-      <div id="desktop_side_navigation" class="<%= fixed ? "fixed " : "" %>col l2 hide-on-med-and-down no_padding z-depth-1">
-        <%= render partial: "shared/side_navigation" %>
-      </div>
-      <div class="col l8 push-l<%= fixed ? "3" : "1" %> m12 s12">
-        <%= yield %>
+    <% if sidenav %>
+    <div class="container-fluid">
+      <div class="row no_margin_bottom">
+        <div id="desktop_side_navigation" class="<%= fixed ? "fixed " : "" %>col l2 hide-on-med-and-down no_padding z-depth-1">
+          <%= render partial: "shared/side_navigation" %>
+        </div>
+        <div class="col l8 push-l<%= fixed ? "3" : "1" %> m12 s12">
+          <%= yield %>
+        </div>
       </div>
     </div>
-  </div>
 
-  <% else %>
-  <div class="container<%= fluid ? "-fluid" : "" %>">
-    <%= yield %>
-  </div>
-  <% end %>
+    <% else %>
+    <div class="container<%= fluid ? "-fluid" : "" %>">
+      <%= yield %>
+    </div>
+    <% end %>
 
-  <%= render(partial: "shared/notice", locals: {notice: notice}) if notice %>
+    <%= render(partial: "shared/notice", locals: {notice: notice}) if notice %>
+
+    <% if sidenav %>
+    <script type="text/javascript">
+
+      // make side nav full height
+      $(document).ready(function() {
+
+        // resize home div when the DOM is loaded
+        Application.resize_side_nav_to_full_height();
+
+        // and whenever we resize the window
+        $( window ).resize(function() {
+          Application.resize_side_nav_to_full_height();
+        });
+
+
+      });
+
+    </script>
+    <% end %>
 
   </body>
 </html>

@@ -26,6 +26,50 @@ describe 'Application', ->
         expect(Application.is_viewport_at_bottom()).toBeFalsy()
 
 
+    describe "#resize_side_nav_to_full_height", ->
+
+      beforeEach ->
+        MagicLamp.load "static/home"
+        # add main navigation with height 64px
+        $(".magic-lamp").append("<div id='main_navigation'></div>")
+        $("#main_navigation").height 64
+        # add side navigation
+        $(".magic-lamp").append("<div id='desktop_side_navigation' style='position:fixed;'></div>")
+
+      describe "when document is longer than viewport", ->
+
+        beforeEach ->
+          $(".magic-lamp").height $(window).height() * 5
+
+        it "sets side nav to extend over full document", ->
+          expect($(document).height()).toBeGreaterThan $(window).height()
+          Application.resize_side_nav_to_full_height()
+          nav_height = $(document).height() - $("#main_navigation").height()
+          expect($("#desktop_side_navigation").height()).toEqual nav_height
+
+      describe "when document is shorter than viewport", ->
+
+        beforeEach ->
+          $(".magic-lamp").height($(window).height() - 100)
+
+        it "sets side nav to fill viewport", ->
+          expect($(document).height()).not.toBeGreaterThan $(window).height()
+          Application.resize_side_nav_to_full_height()
+          nav_height = $(window).height() - $("#main_navigation").height()
+          expect($("#desktop_side_navigation").height()).toEqual nav_height
+
+      describe "when layout is fullscreen", ->
+
+        beforeEach ->
+          $(".magic-lamp").height $(window).height() * 5
+          $("body").addClass("fullscreen")
+
+        it "limits sidenav to screen height and overflows vertically", ->
+          Application.resize_side_nav_to_full_height()
+          nav_height = $(window).height() - $("#main_navigation").height()
+          expect($("#desktop_side_navigation").height()).toEqual nav_height
+
+
   describe "#show_notice", ->
 
     afterAll ->
