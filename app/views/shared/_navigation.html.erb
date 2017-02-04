@@ -59,8 +59,8 @@
             <li>
               <%= link_to private_conversations_home_path do %>
                 <%= material_icon.chat_bubble %>
+                Conversations
                 <% if @current_user.unread_private_conversations.size > 0 %>
-                  Conversations
                   <span class="red-text badge">
                     <%= @current_user.unread_private_conversations.size %>
                   </span>
