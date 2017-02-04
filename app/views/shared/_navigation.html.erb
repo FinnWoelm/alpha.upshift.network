@@ -46,13 +46,7 @@
           </ul>
           <ul id="mobile_navigation" class="side-nav" >
 
-            <%=
-              if @community
-                render "shared/side_navigation/community"
-              else
-                render "shared/side_navigation/user"
-              end
-            %>
+            <%= render partial: "shared/side_navigation" %>
 
             <li><div class="divider"></div></li>
 
