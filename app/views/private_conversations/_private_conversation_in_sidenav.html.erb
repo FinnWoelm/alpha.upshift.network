@@ -1,6 +1,17 @@
-<span class='line'>
-  <%= list_participants private_conversation.participants %>
-</span>
-<span class='line content'>
-  <%= show_conversation_preview private_conversation %>
-</span>
+<%
+  conversation_partner = get_participants_without_current_user(private_conversation.participants).first
+%>
+
+<div class='participants left'>
+  <%= image_tag conversation_partner.profile_picture,
+      class: 'responsive-img ' + conversation_partner.color_scheme_with_font_color,
+      alt:  conversation_partner.name %>
+</div>
+<div>
+  <span class='line'>
+    <%= list_participants private_conversation.participants %>
+  </span>
+  <span class='line content'>
+    <%= show_conversation_preview private_conversation %>
+  </span>
+</div>

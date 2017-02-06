@@ -98,6 +98,20 @@ body.c-private_conversations {
       &:not(.active) .content {
         @extend .grey-text;
       }
+
+      div.participants {
+        margin-right: 5px;
+
+        img {
+          display: block;
+          margin: auto;
+          width: 48px;
+          height: 48px;
+          overflow: hidden;
+          text-align: center;
+          border-radius: 5px;
+        }
+      }
     }
   }
 }

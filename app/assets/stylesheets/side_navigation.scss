@@ -81,10 +81,30 @@ div#desktop_side_navigation, ul#mobile_navigation {
       color: white;
     }
 
+    a.multiple_lines {
+      &.two {
+        height: 72px;
+        line-height: 24px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+
+      // if we have multiple lines, position the badge right on the first line
+      span.badge {
+        margin-top: 0px !important;
+      }
+
+      .line {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+
   }
 
   // styling for inline-badges
-  a > .badge {
+  a span.badge {
     display: block !important;
     float: right !important;
     margin-top: 13px;
@@ -93,7 +113,7 @@ div#desktop_side_navigation, ul#mobile_navigation {
   }
 
   // ensure that content does not wrap or overflow
-  a > span.content {
+  a span.content {
     display: block;
     white-space: nowrap;
     overflow: hidden;
