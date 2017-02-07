@@ -36,6 +36,14 @@ if defined? Bullet
     :class_name => "PrivateConversation",
     :association => :messages
 
+  # We need to eager load senders for each message. This will cause Bullet
+  # to raise alarm on update, since update does not require loading of messages
+  # and/or senders. Going forward, we need to refactor the controller to only
+  # eagerload in the appropriate scenarios.
+  Bullet.add_whitelist :type => :unused_eager_loading,
+    :class_name => "PrivateMessage",
+    :association => :sender
+
   # We need to eager load participants for each conversation (to get the name).
   # This will cause Bullet to raise alarm if the number of participants is
   # zero or one.

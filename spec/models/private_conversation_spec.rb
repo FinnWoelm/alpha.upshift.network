@@ -71,6 +71,10 @@ RSpec.describe PrivateConversation, type: :model do
         expect(private_conversation.association(:messages)).to be_loaded
       end
 
+      it "eagerloads each message's sender" do
+        expect(private_conversation.messages.first.association(:sender)).to be_loaded
+      end
+
       it "eagerloads participants" do
         expect(private_conversation.association(:participants)).to be_loaded
       end

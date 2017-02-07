@@ -29,7 +29,7 @@ class PrivateConversation < ApplicationRecord
   scope :most_recent_activity_first,
     -> { order('"private_conversations"."updated_at" DESC') }
   scope :with_associations,
-    -> { includes(:messages).includes(:participants) }
+    -> { includes(:messages => :sender).includes(:participants) }
 
   # finds the conversations between a set of users
   # use like PrivateConversations.find_conversations_between [alice, bob]

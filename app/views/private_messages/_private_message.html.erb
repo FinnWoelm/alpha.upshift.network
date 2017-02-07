@@ -3,9 +3,17 @@
   sender = private_message.conversation.participants.find{|p| p.id == private_message.sender_id}
 %>
 
-<div class="message <%= sender.eql?(@current_user) ? 'sent' : 'received' %>">
-  <div class="dot <%= sender.color_scheme %>"></div>
-  <div class="content <%= sender.color_scheme_with_font_color %>">
-     <%= private_message.content %>
+<div class="row private_message <%= sender.eql?(@current_user) ? 'sent' : 'received' %>">
+
+  <div class="col s1 sender center-align tooltipped" dataposition="bottom" data-delay="50" data-tooltip="<%= private_message.sender.name %>">
+    <%= image_tag private_message.sender.profile_picture, class: 'responsive-img ' + sender.color_scheme_with_font_color, alt: sender.name %>
   </div>
+
+  <div class="col s10 message">
+    <div class="dot <%= sender.color_scheme %>"></div>
+    <div class="content <%= sender.color_scheme_with_font_color %> tooltipped" data-position="bottom" data-delay="50" data-tooltip="<%= private_message.created_at %>">
+       <%= private_message.content %>
+    </div>
+  </div>
+
 </div>
