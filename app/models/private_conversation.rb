@@ -43,12 +43,10 @@ class PrivateConversation < ApplicationRecord
 
   # # Accessors
   attr_accessor(:sender, :recipient)
-  attr_accessor(:initial_message)
 
   # # Validations
   validates :sender, presence: true, on: :create
   validates :recipient, presence: true, on: :create
-  validates :messages, presence: true, on: :create
   validates :participantships,
     length: {
       is: 2,
@@ -102,7 +100,8 @@ class PrivateConversation < ApplicationRecord
   # are new messages, to avoid unnessecary database insert statements)
   def mark_read_for participant
     if participantship_of( participant ).read_at.nil? or
-      participantship_of( participant ).read_at < messages.first.created_at
+      (messages.first.present? and
+      participantship_of( participant ).read_at < messages.first.created_at)
 
       participantship_of( participant ).touch(:read_at)
 

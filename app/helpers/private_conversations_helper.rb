@@ -51,7 +51,7 @@ module PrivateConversationsHelper
   def nav_link_conversation_preview conversation
     nav_text =
       render(
-        partial: 'private_conversation_in_sidenav',
+        partial: 'private_conversations/private_conversation_in_sidenav',
         locals: {private_conversation: conversation}
       )
 

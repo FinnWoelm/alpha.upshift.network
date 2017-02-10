@@ -46,9 +46,11 @@ body.c-private_conversations {
       }
     }
   }
+}
 
+body.c-private_conversations, body.c-private_messages {
   // Formatting of header and compose message form
-  &.a-show, &.a-update, &.a-new, &.a-create {
+  &.a-show, &.a-new, &.a-create {
     @media #{$large-and-up} {
 
       div#compose_message {

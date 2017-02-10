@@ -64,7 +64,13 @@ RSpec.describe PrivateConversation, type: :model do
     end
 
     describe ":with_associations" do
-      before { create(:private_conversation) }
+      before do
+        @conversation = create(:private_conversation)
+        @conversation.messages.create(
+          :content => 'hello',
+          :sender => @conversation.sender
+        )
+      end
       let(:private_conversation) { PrivateConversation.with_associations.first }
 
       it "eagerloads messages" do
@@ -119,7 +125,6 @@ RSpec.describe PrivateConversation, type: :model do
   describe "validations" do
     it { is_expected.to validate_presence_of(:sender).on(:create) }
     it { is_expected.to validate_presence_of(:recipient).on(:create) }
-    it { is_expected.to validate_presence_of(:messages).on(:create) }
     it { is_expected.to validate_length_of(:participantships).
           with_message("needs exactly two conversation participants")
     }
@@ -256,6 +261,19 @@ RSpec.describe PrivateConversation, type: :model do
           }
         allow(participantship).
           to receive(:read_at) { Time.now }
+      }
+
+      it "does not touch read_at of participant's participantship" do
+        expect(participantship).not_to receive(:touch).with(:read_at)
+      end
+    end
+
+    context "when there are no messages" do
+      before {
+        allow(private_conversation).
+          to receive_message_chain(:messages, :first, :present?) { false }
+        allow(participantship).
+          to receive(:read_at) { Time.now - 1.minute }
       }
 
       it "does not touch read_at of participant's participantship" do

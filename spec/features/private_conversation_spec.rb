@@ -18,13 +18,13 @@ feature 'Private Conversation' do
   end
 
   context "When a conversation with recipient already exists" do
-    scenario "New message will be appended to that conversation" do
+    scenario "User will be redirected to existing conversation" do
       given_i_am_logged_in_as_a_user
       and_there_is_a_user_i_want_to_message
       and_i_am_already_in_a_conversation_with_that_user
       when_i_go_to_my_private_conversations
       and_i_start_a_new_private_conversation_with_the_user_i_want_to_message
-      then_i_should_have_added_a_message_to_the_existing_conversation
+      then_i_should_see_the_existing_conversation
     end
   end
 
@@ -78,7 +78,6 @@ feature 'Private Conversation' do
   def and_i_start_a_new_private_conversation_with_the_user_i_want_to_message
     click_on "New conversation..."
     fill_in 'Recipient', with: @user_to_message.username
-    fill_in 'Message',  with: Faker::Lorem.paragraph
     click_on "Create Conversation"
   end
 
@@ -86,8 +85,8 @@ feature 'Private Conversation' do
     expect(PrivateConversation.find_conversations_between([@user, @user_to_message])).to be_any
   end
 
-  def then_i_should_have_added_a_message_to_the_existing_conversation
-    expect(@existing_conversation.reload.messages.count).to eq(@initial_message_count + 1)
+  def then_i_should_see_the_existing_conversation
+    expect(page).to have_content "Conversation with #{@user_to_message.name}"
   end
 
   def and_i_delete_one_of_the_private_conversations

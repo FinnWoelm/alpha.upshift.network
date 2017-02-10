@@ -46,7 +46,9 @@ Rails.application.routes.draw do
   resources :posts, only: [:new, :create, :show, :destroy], :path => "post"
 
   # Private Conversations & Messages
-  resources :private_conversations, only: [:new, :create, :show, :update, :destroy], :path => "conversation"
+  resources :private_conversations, only: [:new, :create, :show, :update, :destroy], :path => "conversation" do
+    resources :private_messages, only: [:create], :path => "message"
+  end
   get '/conversations' => "private_conversations#index", as: :private_conversations_home
 
   # Like Path

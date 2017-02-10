@@ -1,7 +1,7 @@
-body.c-private_conversations {
+body.c-private_conversations, body.c-private_messages {
 
   // Formatting of messages in conversation
-  &.a-show, &.a-update {
+  &.a-show, &.a-create {
     div.private_message {
 
       // Message sent by user
