@@ -73,6 +73,95 @@ describe 'Model: PrivateConversation', ->
       expect($("#chat_body").html()).toContain("conversation was deleted")
 
 
+  describe "#set_up_chat_body_and_compose_message_form", ->
+
+    height_of_viewport = $(window).height()
+    active_conversation = null
+
+    beforeEach ->
+      active_conversation = PrivateConversation.get_active_conversation()
+      active_conversation.set_up_chat_body_and_compose_message_form()
+
+    it "calls ._set_max_height_for_compose_message_form", ->
+      spyOn(active_conversation, '_set_max_height_for_compose_message_form')
+      active_conversation.set_up_chat_body_and_compose_message_form()
+      expect(active_conversation._set_max_height_for_compose_message_form).
+        toHaveBeenCalled()
+
+    it "calls ._determine_if_stick_to_bottom", ->
+      spyOn(active_conversation, '_determine_if_stick_to_bottom')
+      active_conversation.set_up_chat_body_and_compose_message_form()
+      expect(active_conversation._determine_if_stick_to_bottom).
+        toHaveBeenCalled()
+
+    it "adds margin-bottom to #chat_body equal to form height", ->
+      margin_bottom_of_chat_body = parseInt(
+        $("#chat_body").css("margin-bottom")
+      )
+      message_form_height = $("#compose_message").innerHeight()
+      expect(margin_bottom_of_chat_body).toEqual message_form_height
+
+    describe "when window is resized", ->
+
+      beforeEach ->
+        spyOn(PrivateConversation, 'get_active_conversation').and.returnValue(
+          active_conversation
+        )
+        spyOn(active_conversation, '_set_max_height_for_compose_message_form')
+        $(window).trigger 'resize'
+
+      it "calls ._set_max_height_for_compose_message_form", ->
+        expect(active_conversation._set_max_height_for_compose_message_form).
+          toHaveBeenCalled()
+
+    describe "when window is scrolled", ->
+
+      beforeEach ->
+        spyOn(PrivateConversation, 'get_active_conversation').and.returnValue(
+          active_conversation
+        )
+        spyOn(active_conversation, '_determine_if_stick_to_bottom')
+        $(window).trigger 'scroll'
+
+      it "calls ._determine_if_stick_to_bottom", ->
+        expect(active_conversation._determine_if_stick_to_bottom).
+          toHaveBeenCalled()
+
+    describe "ResizeSensor", ->
+
+      resize_sensor_function =
+      resize_sensor_element = null
+
+      beforeEach ->
+        spyOn(window, 'ResizeSensor')
+        active_conversation.set_up_chat_body_and_compose_message_form()
+        resize_sensor_element = window.ResizeSensor.calls.argsFor(0)[0]
+        resize_sensor_function = window.ResizeSensor.calls.argsFor(0)[1]
+
+      it "creates a ResizeSensor on #compose_message", ->
+        expect(window.ResizeSensor).toHaveBeenCalled()
+        expect(resize_sensor_element.attr('id')).toEqual "compose_message"
+
+      describe "when ResizeSensor is triggered", ->
+
+        it "adjusts margin-bottom", ->
+          total_height_of_form = $("#compose_message").innerHeight()
+          $("#chat_body").css('margin-bottom', total_height_of_form - 5)
+          resize_sensor_function.call()
+          expect(parseInt($("#chat_body").css('margin-bottom'))).
+            toEqual total_height_of_form
+
+        describe "when body has class 'stick_to_bottom'", ->
+
+          beforeEach ->
+            $("body").addClass("stick_to_bottom")
+            spyOn(Application, 'jump_to_bottom_of_page')
+
+          it "jumps to bottom of page", ->
+            resize_sensor_function.call()
+            expect(Application.jump_to_bottom_of_page).toHaveBeenCalled()
+
+
   ## Instance: Private
 
   describe "#_add_message", ->
@@ -136,6 +225,32 @@ describe 'Model: PrivateConversation', ->
         expect(Application.jump_to_bottom_of_page).not.toHaveBeenCalled()
 
 
+  describe "#_determine_if_stick_to_bottom", ->
+
+    beforeEach ->
+      $(document).height($(window).height() * 5)
+
+    describe "if user has scrolled to bottom", ->
+
+      beforeEach ->
+        spyOn(Application, 'is_viewport_at_bottom').and.returnValue(true)
+
+      it "body has class 'stick_to_bottom'", ->
+        PrivateConversation.get_active_conversation().
+          _determine_if_stick_to_bottom()
+        expect($("body").hasClass("stick_to_bottom")).toBeTruthy()
+
+    describe "if user has not scrolled to bottom", ->
+
+      beforeEach ->
+        spyOn(Application, 'is_viewport_at_bottom').and.returnValue(false)
+
+      it "body does not have class 'stick_to_bottom'", ->
+        PrivateConversation.get_active_conversation().
+          _determine_if_stick_to_bottom()
+        expect($("body").hasClass("stick_to_bottom")).toBeFalsy()
+
+
   describe "#_selector", ->
 
     describe "when conversation is active", ->
@@ -149,3 +264,27 @@ describe 'Model: PrivateConversation', ->
       it "returns object with length 0", ->
         some_random_id = "abc123"
         expect((new PrivateConversation(some_random_id))._selector().length).toEqual 0
+
+
+  describe "#_set_max_height_for_compose_message_form", ->
+
+    height_of_viewport = $(window).height()
+
+    beforeEach ->
+      PrivateConversation.get_active_conversation().
+        _set_max_height_for_compose_message_form()
+
+    it "sets max-height of compose message form to half-height of viewport", ->
+      max_height_of_form = parseInt(
+        $("#compose_message .materialize-textarea").css("max-height")
+      )
+      vertical_spacing_around_form = parseInt(
+        $("#compose_message").outerHeight() -
+        $("#compose_message .materialize-textarea").height()
+      )
+      remaining_vertical_space =
+        height_of_viewport -
+        $("#main_navigation").innerHeight() -
+        $("div.page_heading").innerHeight()
+      expect(max_height_of_form).
+        toEqual remaining_vertical_space / 2 - vertical_spacing_around_form

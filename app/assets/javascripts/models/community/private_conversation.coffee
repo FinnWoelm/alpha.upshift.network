@@ -12,12 +12,18 @@ class @PrivateConversation
   #// get_preview: returns an instance of PrivateConversationPreview that
   #//              belongs to this instance of PrivateConversation
   #// mark_deleted: marks the conversation as deleted and disables message form
+  #// set_up_chat_body_and_compose_message_form: Set max height on form and add
+  #//                                            margin-bottom to chat_body.
+  #//                                            Also handle resizing.
   #
   #/ Instance: Private
   #// add_messages: appends one or multiple messages to the bottom of the chat
   #//               (and moves viewport)
+  #// determine_if_stick_to_bottom: add class 'stick_to_bottom' to body if user
+  #//                               has scrolled to bottom
   #// selector: returns the jquery selector for this conversation
-
+  #// set_max_height_for_compose_message_form: set css field max-height for
+  #//                                          form to 1/2 of viewport
 
   #########################
   # Static Public Methods #
@@ -66,6 +72,41 @@ class @PrivateConversation
     @_selector().find("#compose_message form button[type=submit]").addClass("disabled")
 
 
+  # Set max height on form and add margin-bottom to chat_body. Also handle
+  # resizing of window and form.
+  set_up_chat_body_and_compose_message_form: ->
+
+    # set max-height for compose message form
+    @_set_max_height_for_compose_message_form()
+
+    # if window is resized, let us reset max-height for form
+    $( window ).resize ->
+      PrivateConversation.get_active_conversation()._set_max_height_for_compose_message_form()
+
+    # set margin-bottom on chat body
+    @_selector().find("#chat_body").css 'margin-bottom', $("#compose_message").innerHeight()
+
+    # add class 'stick_to_bottom' to body if user has scrolled to bottom
+    @_determine_if_stick_to_bottom()
+
+    # re-run this whenever the user scrolls
+    $(window).scroll ->
+      PrivateConversation.get_active_conversation()._determine_if_stick_to_bottom()
+
+    # automatically update margin-bottom for chat body as compose message div
+    # changes in height and scroll to bottom of viewport
+    # Credits: ResizeSensor is the work of @MarcJSchmidt, learn more at
+    # https://github.com/marcj/css-element-queries
+    new ResizeSensor @_selector().find('#compose_message'), ->
+
+      PrivateConversation.get_active_conversation()._selector().
+        find("#chat_body").css(
+          'margin-bottom', $("#compose_message").innerHeight()
+        )
+
+      Application.jump_to_bottom_of_page() if $("body").hasClass("stick_to_bottom")
+
+
   ############################
   # Private Instance Methods #
   ############################
@@ -86,6 +127,34 @@ class @PrivateConversation
 
     Application.jump_to_bottom_of_page() if was_viewport_at_bottom
 
+  # add class 'stick_to_bottom' to body if user has scrolled to bottom
+  _determine_if_stick_to_bottom: ->
+     $("body").removeClass("stick_to_bottom")
+     if Application.is_viewport_at_bottom()
+       $("body").addClass("stick_to_bottom")
+
   # returns the jquery selector for this conversation (or undefined if conversation is no longer open)
   _selector: ->
     $("div.private_conversation.show[data-conversation-id='#{@id}']")
+
+  # set css field max-height for form to 1/2 of viewport
+  _set_max_height_for_compose_message_form: ->
+
+    height_of_viewport = $(window).height()
+
+    height_of_main_navigation = $("#main_navigation").innerHeight()
+    height_of_chat_header = $("div.page_heading").innerHeight()
+
+    remaining_vertical_space =
+      height_of_viewport - height_of_main_navigation - height_of_chat_header
+
+    # amount of space we are using around the textarea
+    vertical_spacing_in_compose_message =
+      @_selector().find("#compose_message").outerHeight() -
+      @_selector().find("#compose_message .materialize-textarea").height()
+
+    # the compose area gets max-height of half the window space
+    @_selector().find("#compose_message .materialize-textarea").css(
+      'max-height',
+      remaining_vertical_space / 2 - vertical_spacing_in_compose_message
+    )
