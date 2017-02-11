@@ -5,6 +5,8 @@ class @PrivateConversationPreview
   #/ Static: Public
   #// add: adds a preview (and deletes existing ones with the same conversation
   #//      ID)
+  #// enable_caching: adds data-turbolinks-permanent to the previews, so that
+  #//                 they can persist when user navigates browser back
   #//
   #/ Instance: Public
   #// highlight: adds css class 'active' to the preview
@@ -44,6 +46,18 @@ class @PrivateConversationPreview
     if update_updated_at
       $("div.private_conversation_previews").
         attr("data-updated-at", updated_at)
+
+
+  # makes previews of private conversations in side navigation
+  # turbolinks-permanent, so that they remain in current state when navigating
+  # to a prior site
+  @enable_caching: ->
+    $("#desktop_side_navigation .private_conversation_previews").
+      attr("id", "private_conversation_previews_cached_desktop")
+    $("#mobile_navigation .private_conversation_previews").
+      attr("id", "private_conversation_previews_cached_mobile")
+
+    $(".private_conversation_previews").attr("data-turbolinks-permanent", "true")
 
 
   ###########################

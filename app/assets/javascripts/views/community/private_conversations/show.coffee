@@ -7,6 +7,10 @@ $(document).on 'turbolinks:render', ->
     # scroll to bottom of chat on page load
     Application.jump_to_bottom_of_page()
 
+    # manually set active conversation in side navigation
+    PrivateConversation.get_active_conversation().get_preview().highlight()
+
+
 # run these actions after fetching the fresh version from server
 $(document).on 'turbolinks:load', ->
 
@@ -23,3 +27,6 @@ $(document).on 'turbolinks:load', ->
     $('form#new_private_message textarea#private_message_content').keydown (e) ->
       if e.keyCode == 13 && e.ctrlKey
         $(this).parents("form").first().find("button[type=submit]").click()
+
+    # cache the side navigation
+    PrivateConversationPreview.enable_caching()

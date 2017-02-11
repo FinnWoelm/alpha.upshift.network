@@ -80,6 +80,30 @@ describe 'Model: PrivateConversationPreview', ->
           expect($(".preview_conversation:eq(0)").html()).toEqual "OLD CONTENT"
 
 
+  describe ".enable_caching_of_previews_in_side_navigation", ->
+
+    beforeEach ->
+      # wrap side nav in desktop and mobile side nav wrappers
+      $(".magic-lamp").append("<div id='desktop_side_navigation'></div>")
+      $(".magic-lamp").append("<div id='mobile_navigation'></div>")
+      $("#desktop_side_navigation").append $("div.private_conversation_previews")
+      $("#mobile_navigation").append $("div.private_conversation_previews").clone()
+
+      PrivateConversationPreview.enable_caching()
+
+    it "adds an ID to the preview container (needed for turbolinks-permanent)", ->
+      expect($("#desktop_side_navigation div.private_conversation_previews").
+        attr('id')).toBeDefined()
+      expect($("#mobile_navigation div.private_conversation_previews").
+        attr('id')).toBeDefined()
+
+    it "applies data-turbolinks-permanent", ->
+      expect($("#desktop_side_navigation div.private_conversation_previews").
+        attr('data-turbolinks-permanent')).toBeDefined()
+      expect($("#mobile_navigation div.private_conversation_previews").
+        attr('data-turbolinks-permanent')).toBeDefined()
+
+
   ## Instance: Public
 
   describe "#highlight", ->
