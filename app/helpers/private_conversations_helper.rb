@@ -60,7 +60,13 @@ module PrivateConversationsHelper
         locals: {private_conversation: conversation}
       )
 
-    nav_link(nav_text, link_to_private_conversation(conversation), nil, "preview_conversation multiple_lines two")
+    nav_link(
+      nav_text,
+      link_to_private_conversation(conversation),
+      nil,
+      "preview_conversation multiple_lines two",
+      {conversation_id: conversation.id, updated_at: conversation.updated_at.exact}
+    )
   end
 
 end

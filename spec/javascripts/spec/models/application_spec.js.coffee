@@ -1,5 +1,20 @@
 describe 'Application', ->
 
+  describe "#init_new_tooltips", ->
+
+    beforeEach ->
+      MagicLamp.load "static/home"
+      tooltip = '<div class="tooltipped">I\'m a tooltip</div>'
+      $(".magic-lamp").append(tooltip) for [1..3]
+
+    it "initializes new tooltips", ->
+      expect($('.tooltipped').length).toEqual 3
+      $('.tooltipped').each ->
+        expect($(@).attr('data-tooltip-id')).toEqual undefined
+      Application.init_new_tooltips()
+      $('.tooltipped').each ->
+        expect($(@).attr('data-tooltip-id')).not.toEqual undefined
+
   describe "#is_viewport_at_bottom", ->
 
     beforeEach ->
@@ -22,6 +37,16 @@ describe 'Application', ->
       it "returns false", ->
         expect(Application.is_viewport_at_bottom()).toBeFalsy()
 
+
+    describe '#jump_to_bottom_of_page', ->
+
+      beforeEach ->
+        MagicLamp.load "static/home"
+        $("#static_home").height $(window).height() * 3
+
+      it "jumps to bottom of page", ->
+        Application.jump_to_bottom_of_page()
+        expect($(window).scrollTop()).toEqual $(document).height() - $(window).height()
 
     describe "#resize_side_nav_to_full_height", ->
 

@@ -11,11 +11,23 @@ class PrivateMessagesController < ApplicationController
     @private_message = @private_conversation.messages.build(private_message_params)
 
     if @private_message.save
-      redirect_to link_to_private_conversation @private_conversation
+      respond_to do |format|
+        format.html {
+          redirect_to link_to_private_conversation @private_conversation
+        }
+        format.js { }
+      end
     else
-      get_recent_conversations_for_sidenav
-      @private_conversation.mark_read_for @current_user
-      render "private_conversations/show", layout: "fullscreen"
+      respond_to do |format|
+        format.html {
+          get_recent_conversations_for_sidenav
+          @private_conversation.mark_read_for @current_user
+          render "private_conversations/show", layout: "fullscreen"
+        }
+        format.js {
+          render :error
+        }
+      end
     end
   end
 
@@ -23,7 +35,14 @@ class PrivateMessagesController < ApplicationController
 
     # sets the conversation by ID
     def set_conversation_by_id
-      @private_conversation = @current_user.private_conversations.with_associations.find_by id: params[:private_conversation_id]
+      respond_to do |format|
+        format.html {
+          @private_conversation = @current_user.private_conversations.with_associations.find_by id: params[:private_conversation_id]
+        }
+        format.js {
+          @private_conversation = @current_user.private_conversations.includes(:participants).find_by id: params[:private_conversation_id]
+        }
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

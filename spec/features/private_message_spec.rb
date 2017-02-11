@@ -10,13 +10,14 @@ feature 'Private Message' do
     then_i_should_see_the_messages_in_that_private_conversation
   end
 
-  scenario "User can send a message in a conversation" do
+  scenario "User can send a message in a conversation", :js => true do
     given_i_am_logged_in_as_a_user
     and_i_have_some_private_conversations_with_messages
     when_i_go_to_my_private_conversations
     and_i_click_on_one_of_the_private_conversations
     and_i_send_a_new_message
     then_i_should_see_my_new_message_in_the_private_conversation
+    and_i_should_see_my_new_message_in_the_side_nav
   end
 
   def given_i_am_logged_in_as_a_user
@@ -60,5 +61,11 @@ feature 'Private Message' do
   def then_i_should_see_my_new_message_in_the_private_conversation
     expect(page).to have_content(@my_message_text)
   end
+
+  def and_i_should_see_my_new_message_in_the_side_nav
+    expect(page).to have_selector("#mobile_navigation a.preview_conversation span.content", text: @my_message_text[0..10])
+    expect(page).to have_selector("#desktop_side_navigation a.preview_conversation span.content", text: @my_message_text[0..10])
+  end
+
 
 end

@@ -3,7 +3,9 @@ class @Application
   # Methods
   #
   #/ Static: Public
+  #// init_new_tooltips = Initializes new tooltips on the page
   #// is_viewport_at_bottom = is the viewport at the bottom of the screen?
+  #// jump_to_bottom_of_page = moves viewport to bottom of the site
   #// resize_side_nav_to_full_height = resizes the side navigation to height
   #//                                  of viewport or document (whichever is
   #//                                  bigger). Exception: Fullscreen pages
@@ -15,8 +17,17 @@ class @Application
   #/ Static: Private
   #// is_cached_page = is this page loaded from cache?
 
+  @init_new_tooltips: ->
+    $('.tooltipped').each ->
+      if $(@).attr("data-tooltip-id") == undefined
+        $(@).tooltip();
+
   @is_viewport_at_bottom: ->
     ($(window).scrollTop() >= $(document).height() - $(window).height())
+
+
+  @jump_to_bottom_of_page = ->
+    $('html, body').scrollTop( $(document).height() )
 
 
   @resize_side_nav_to_full_height: ->

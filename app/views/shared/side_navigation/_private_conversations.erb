@@ -27,10 +27,10 @@
       "new_conversation multiple_lines two"
     ) %>
 
-  <% conversations.each do |conversation| %>
-
-    <%= nav_link_conversation_preview(conversation) %>
-
-  <% end %>
+    <div class="private_conversation_previews" data-updated-at="<%= conversations[0].present? ? conversations[0].updated_at.exact : 0 %>">
+      <% conversations.each do |conversation| %>
+        <%= nav_link_conversation_preview(conversation) %>
+      <% end %>
+    </div>
 
 </div>
