@@ -9,6 +9,16 @@ feature 'Private Conversation' do
     then_i_should_see_my_private_conversations
   end
 
+  context "When new messages/conversations are received" do
+    scenario "User can see new messages/conversations without reloading", :js => true do
+      given_i_am_logged_in_as_a_user
+      and_i_go_to_create_a_new_conversation
+      when_i_receive_a_new_conversation
+      then_i_should_see_the_new_conversation_in_the_sidenav
+    end
+  end
+
+
   scenario "User can start a new conversation" do
     given_i_am_logged_in_as_a_user
     and_there_is_a_user_i_want_to_message
@@ -59,9 +69,29 @@ feature 'Private Conversation' do
     visit private_conversations_home_path
   end
 
+  def when_i_receive_a_new_conversation
+    @other_user = create(:user)
+    conversation = create(:private_conversation, :sender => @other_user, :recipient => @user)
+    @initial_message = conversation.messages.create(
+      :sender => @other_user,
+      :content => "some random content"
+    ).content
+  end
+
+  def and_i_go_to_create_a_new_conversation
+    visit new_private_conversation_path
+  end
+
   def then_i_should_see_my_private_conversations
     @other_users.each do |u|
       expect(page).to have_content("#{u.name}")
+    end
+  end
+
+  def then_i_should_see_the_new_conversation_in_the_sidenav
+    using_wait_time 6 do
+      expect(page).to have_content @other_user.name
+      expect(page).to have_content @initial_message[0..10]
     end
   end
 

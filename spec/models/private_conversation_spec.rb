@@ -154,6 +154,62 @@ RSpec.describe PrivateConversation, type: :model do
       end
     end
 
+    describe ":order_by_updated_at" do
+
+      it "calls reorder with the passed order" do
+        expect(PrivateConversation).to receive(:reorder).with(:updated_at => :asc)
+        PrivateConversation.order_by_updated_at("asc")
+      end
+
+      context "when argument is not passed" do
+
+        it "does not change the scope" do
+          expect(PrivateConversation).not_to receive(:reorder)
+          PrivateConversation.order_by_updated_at(nil)
+        end
+      end
+    end
+
+    describe ":updated_after" do
+
+      let(:conversations) { create_list(:private_conversation, 5) }
+      let!(:msg1) { create(:private_message, :conversation => conversations[0]) }
+      let!(:msg2) { create(:private_message, :conversation => conversations[1]) }
+
+      it "returns conversations created after conversation 3" do
+        expect(PrivateConversation.updated_after(conversations[2].created_at.exact).map(&:id)).
+          to include conversations[3].id
+        expect(PrivateConversation.updated_after(conversations[2].created_at.exact).map(&:id)).
+          to include conversations[4].id
+        expect(PrivateConversation.updated_after(conversations[2].created_at.exact).map(&:id)).
+          not_to include conversations[2].id
+      end
+
+      context "when min_updated_at is not passed" do
+
+        it "does not change the scope" do
+          expect(PrivateConversation.all.updated_after(nil).map(&:id)).
+            to eq PrivateConversation.all.map(&:id)
+        end
+      end
+    end
+
+    describe ":with_params" do
+
+      it "calls updated_after" do
+        time = Time.now
+        expect(PrivateConversation).
+          to receive(:updated_after).with(time).and_call_original
+        PrivateConversation.with_params(:updated_after => time)
+      end
+
+      it "calls order_by_updated_at" do
+        expect(PrivateConversation).
+          to receive(:order_by_updated_at).with("asc").and_call_original
+        PrivateConversation.with_params(:order => "asc")
+      end
+    end
+
     describe ":with_unread_message_count_for" do
 
       let(:current_user) { create(:user) }

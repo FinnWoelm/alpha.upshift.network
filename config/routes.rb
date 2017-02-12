@@ -53,6 +53,9 @@ Rails.application.routes.draw do
     end
   end
   get '/conversations' => "private_conversations#index", as: :private_conversations_home
+  resources :private_conversations, only: [], :path => "conversations" do
+    get 'refresh', on: :collection, constraints: lambda { |req| req.format == :js }
+  end
 
   # Like Path
   post '/:likable_type/:likable_id/like', to: 'likes#create', as: :like

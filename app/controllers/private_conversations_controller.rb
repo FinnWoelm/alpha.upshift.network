@@ -21,6 +21,22 @@ class PrivateConversationsController < ApplicationController
       with_unread_message_count_for(@current_user)
   end
 
+  # GET /conversations/refresh
+  def refresh
+    @private_conversations =
+      PrivateConversation.
+      for_user(@current_user).
+      with_unread_message_count_for(@current_user).
+      with_params(
+        updated_after: params[:updated_after],
+        order: params[:order]
+      ).
+      limit(10)
+
+    # render nothing if we have no private conversations
+    (render js: '' and return) if @private_conversations.first.nil?
+  end
+
   # GET /conversation/new
   def new
     @private_conversation = PrivateConversation.new

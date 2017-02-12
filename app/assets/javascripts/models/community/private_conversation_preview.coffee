@@ -7,6 +7,7 @@ class @PrivateConversationPreview
   #//      ID)
   #// enable_caching: adds data-turbolinks-permanent to the previews, so that
   #//                 they can persist when user navigates browser back
+  #// fetch_new_previews: pings the server for new previews (max 10)
   #//
   #/ Instance: Public
   #// highlight: adds css class 'active' to the preview
@@ -58,6 +59,17 @@ class @PrivateConversationPreview
       attr("id", "private_conversation_previews_cached_mobile")
 
     $(".private_conversation_previews").attr("data-turbolinks-permanent", "true")
+
+
+  # pings the server for new previews (max 10)
+  @fetch_new_previews: (order = "desc") ->
+    last_updated_at =
+      $("div.private_conversation_previews").last().attr("data-updated-at")
+    $.get(
+      url: "/conversations/refresh.js?" +
+        "updated_after=#{encodeURIComponent(last_updated_at)}&" +
+        "order=#{encodeURIComponent(order)}"
+    )
 
 
   ###########################

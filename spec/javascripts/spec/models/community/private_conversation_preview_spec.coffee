@@ -104,6 +104,31 @@ describe 'Model: PrivateConversationPreview', ->
         attr('data-turbolinks-permanent')).toBeDefined()
 
 
+  describe ".fetch_new_previews", ->
+
+    beforeEach ->
+      spyOn($, 'get')
+      PrivateConversationPreview.fetch_new_previews('asc')
+
+    it "makes an ajax:get call", ->
+      expect($.get).toHaveBeenCalled()
+
+    it "sends updated_at", ->
+      last_updated_at =
+        $("div.private_conversation_previews").last().attr("data-updated-at")
+      expect($.get.calls.argsFor(0)[0].url).toContain encodeURIComponent(last_updated_at)
+
+    it "sends the order", ->
+      $.get.calls.reset()
+      PrivateConversationPreview.fetch_new_previews('asc_or_desc')
+      expect($.get.calls.argsFor(0)[0].url).toContain "order=asc_or_desc"
+
+    it "calls the refresh action", ->
+      expect($.get.calls.argsFor(0)[0].url).toContain "refresh"
+
+    it "requests content type: JS", ->
+      expect($.get.calls.argsFor(0)[0].url).toContain ".js?"
+
   ## Instance: Public
 
   describe "#highlight", ->

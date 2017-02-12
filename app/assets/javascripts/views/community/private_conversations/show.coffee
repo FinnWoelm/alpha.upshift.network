@@ -37,3 +37,10 @@ $(document).on 'turbolinks:load', ->
       -> PrivateConversation.get_active_conversation().fetch_new_messages(),
       1000
     )
+
+    # get latest previews from server
+    BackgroundJob.add(
+      "private-conversation-preview-fetch-new-previews",
+      -> PrivateConversationPreview.fetch_new_previews(),
+      5000
+    )

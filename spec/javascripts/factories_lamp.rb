@@ -21,6 +21,15 @@ MagicLamp.define(controller: PrivateConversationsController) do
     @private_conversations = FactoryGirl.create_list(:private_conversation, 5, :sender => @current_user).sort_by(&:updated_at).reverse
     render(partial: "shared/side_navigation/private_conversations", locals: {conversations: @private_conversations})
   end
+
+  fixture(name: 'refresh') do
+    @current_user = FactoryGirl.create(:user)
+    @private_conversations = FactoryGirl.create_list(:private_conversation, 5, :sender => @current_user)
+    @private_conversations.each do |c|
+      FactoryGirl.create(:private_message, :conversation => c)
+    end
+    render 'refresh.js'
+  end
 end
 
 MagicLamp.define(controller: PrivateMessagesController) do

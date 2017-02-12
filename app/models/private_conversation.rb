@@ -49,6 +49,27 @@ class PrivateConversation < ApplicationRecord
     includes(:most_recent_message)
   end
 
+  # reorders conversations according to passed order
+  scope :order_by_updated_at, -> (order) do
+    if order.present?
+      reorder(:updated_at => order.to_sym)
+    end
+  end
+
+  # finds conversations updated after the passed time (min_updated_at)
+  scope :updated_after, -> (updated_after) do
+    if updated_after.present?
+      where("private_conversations.updated_at > ?", updated_after).
+      distinct
+    end
+  end
+
+  # applies multiple params
+  scope :with_params, -> (updated_after: nil, order: nil) do
+    updated_after(updated_after).
+    order_by_updated_at(order)
+  end
+
   scope :with_unread_message_count_for, -> (user) do
     joins(:participantships).
     joins("LEFT OUTER JOIN private_messages AS unread_private_messages ON private_conversations.id = unread_private_messages.private_conversation_id and unread_private_messages.created_at > COALESCE(participantship_in_private_conversations.read_at, to_timestamp('0001-01-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS'))").

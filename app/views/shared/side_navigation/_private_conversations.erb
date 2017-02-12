@@ -27,7 +27,7 @@
       "new_conversation multiple_lines two"
     ) %>
 
-    <div class="private_conversation_previews" data-updated-at="<%= conversations[0].present? ? conversations[0].updated_at.exact : 0 %>">
+    <div class="private_conversation_previews" data-updated-at="<%= conversations[0].present? ? conversations[0].updated_at.exact : Time.zone.now.exact %>">
       <% conversations.each do |conversation| %>
         <%= nav_link_conversation_preview(conversation) %>
       <% end %>

@@ -5,3 +5,10 @@ $(document).on 'turbolinks:load', ->
 
     # cache the side navigation
     PrivateConversationPreview.enable_caching()
+
+    # get latest previews from server
+    BackgroundJob.add(
+      "private-conversation-preview-fetch-new-previews",
+      -> PrivateConversationPreview.fetch_new_previews(),
+      5000
+    )
