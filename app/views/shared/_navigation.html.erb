@@ -52,25 +52,36 @@
 
             <li>
               <%= link_to profile_path(@current_user) do %>
-                <%= material_icon.account_circle %> My Profile
+                <%= material_icon.account_circle %>
+                <span class="content">
+                  My Profile
+                </span>
               <% end %>
             </li>
 
             <li>
               <%= link_to private_conversations_home_path do %>
-                <%= material_icon.chat_bubble %>
-                Conversations
+
+                <%# unread conversations indicator %>
                 <% if @current_user.unread_private_conversations.size > 0 %>
-                  <span class="red-text badge">
+                  <span class="red white-text badge">
                     <%= @current_user.unread_private_conversations.size %>
                   </span>
                 <% end %>
+
+                <%= material_icon.chat_bubble %>
+                <span class="content">
+                  Conversations
+                </span>
               <% end %>
             </li>
 
             <li>
               <%= link_to logout_path do %>
-                <%= material_icon.power_settings_new %> Logout
+                <%= material_icon.power_settings_new %>
+                <span class="content">
+                  Logout
+                </span>
               <% end %>
             </li>
 

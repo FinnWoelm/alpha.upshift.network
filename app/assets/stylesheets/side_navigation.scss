@@ -29,7 +29,7 @@ div#desktop_side_navigation, ul#mobile_navigation {
       background-color: #01000299;
       color: white;
       height: $back_button_height;
-      padding: 0px 32px;
+      padding: 0px 16px;
       line-height: $back_button_height;
       z-index: 2;
       display: block;
@@ -67,7 +67,7 @@ div#desktop_side_navigation, ul#mobile_navigation {
       font-weight: 500;
       height: 48px;
       line-height: 48px;
-      padding: 0 32px;
+      padding: 0 16px;
     }
 
     a:hover, a:focus {
@@ -79,6 +79,22 @@ div#desktop_side_navigation, ul#mobile_navigation {
       color: white;
     }
 
+  }
+
+  // styling for inline-badges
+  a > .badge {
+    display: block !important;
+    float: right !important;
+    margin-top: 13px;
+    height: unset !important;
+    line-height: 22px;
+  }
+
+  // ensure that content does not wrap or overflow
+  a > span.content {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
 }
