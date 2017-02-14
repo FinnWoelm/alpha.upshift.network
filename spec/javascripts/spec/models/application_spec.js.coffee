@@ -1,6 +1,3 @@
-//= require jquery
-//= require models/application
-
 describe 'Application', ->
 
   describe "#is_viewport_at_bottom", ->
@@ -50,10 +47,13 @@ describe 'Application', ->
       describe "when document is shorter than viewport", ->
 
         beforeEach ->
-          $(".magic-lamp").height($(window).height() - 100)
+          $("body").css('max-height', $(window).height() - 100)
+
+        afterEach ->
+          $("body").css('max-height', 'unset')
 
         it "sets side nav to fill viewport", ->
-          expect($(document).height()).not.toBeGreaterThan $(window).height()
+          expect($("body").height()).not.toBeGreaterThan $(window).height()
           Application.resize_side_nav_to_full_height()
           nav_height = $(window).height() - $("#main_navigation").height()
           expect($("#desktop_side_navigation").height()).toEqual nav_height
