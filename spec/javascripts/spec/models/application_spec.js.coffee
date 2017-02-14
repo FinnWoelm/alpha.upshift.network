@@ -1,6 +1,3 @@
-//= require jquery
-//= require models/application
-
 describe 'Application', ->
 
   describe "#is_viewport_at_bottom", ->
