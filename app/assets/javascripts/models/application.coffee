@@ -25,7 +25,7 @@ class @Application
     $("#desktop_side_navigation").css("height", "unset")
 
     # get the html height
-    height_of_html = $(document).height()
+    height_of_body = $("body").height()
 
     # get the viewport height
     height_of_viewport = $(window).height()
@@ -38,12 +38,12 @@ class @Application
 
     # if we are on a fullscreen page, then html height should be height of
     # viewport
-    height_of_html = height_of_viewport if fullscreen
+    height_of_body = height_of_viewport if fullscreen
 
     # set side nav to whichever height is greater
     $("#desktop_side_navigation").height(
-      Math.max(height_of_html, height_of_viewport) - height_of_main_navigation
-     )
+      Math.max(height_of_body, height_of_viewport) - height_of_main_navigation
+    )
 
 
   @show_notice: (notice, duration) ->
