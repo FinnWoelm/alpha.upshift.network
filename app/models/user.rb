@@ -113,6 +113,12 @@ class User < ApplicationRecord
   validates_with AttachmentContentTypeValidator, attributes: :profile_picture,
     content_type: ["image/jpeg", "image/gif", "image/png"]
 
+  # Color Scheme
+  validates :color_scheme,
+    inclusion: {
+      in: Color.color_options,
+      message: "%{value} is not a valid option"
+    }
 
   # before_validation :create_profile_if_not_exists, on: :create
   # create default profile picture if no picture is set
@@ -122,6 +128,11 @@ class User < ApplicationRecord
   # We want to always use username in routes
   def to_param
     username
+  end
+
+  # returns both color_scheme and the font color for the color_scheme
+  def color_scheme_with_font_color
+    "#{color_scheme} #{Color.font_color_for(color_scheme)}"
   end
 
   # gets unread conversations
@@ -157,8 +168,8 @@ class User < ApplicationRecord
       name,
       {
         :size =>  250,
-        :background_color => '#000000',
-        :font_color => '#FFFFFF'
+        :background_color => Color.convert_to_hex(color_scheme),
+        :font_color => Color.convert_to_hex(Color.font_color_for(color_scheme))
       }
     ))
     self.profile_picture = "data:image/png;base64,#{image}"
