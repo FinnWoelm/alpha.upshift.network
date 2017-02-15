@@ -115,6 +115,9 @@ class User < ApplicationRecord
 
 
   # before_validation :create_profile_if_not_exists, on: :create
+  # create default profile picture if no picture is set
+  before_validation :generate_default_profile_picture,
+    if: "!profile_picture.present?"
 
   # We want to always use username in routes
   def to_param
@@ -146,6 +149,19 @@ class User < ApplicationRecord
   # checks whether this user has sent a friend request to another user
   def has_sent_friend_request_to? user
     friendship_requests_sent.exists?(recipient_id: user.id)
+  end
+
+  # get a user's profile picture
+  def generate_default_profile_picture
+    image = Base64.encode64(Avatarly.generate_avatar(
+      name,
+      {
+        :size =>  250,
+        :background_color => '#000000',
+        :font_color => '#FFFFFF'
+      }
+    ))
+    self.profile_picture = "data:image/png;base64,#{image}"
   end
 
   # when printing the record to the screen
