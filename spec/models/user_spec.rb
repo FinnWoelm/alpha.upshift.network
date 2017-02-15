@@ -104,6 +104,8 @@ RSpec.describe User, type: :model do
     context "validates profile picture" do
 
       it do
+        # temporarily disable the callback
+        allow(user).to receive(:generate_default_profile_picture).and_return(nil)
         is_expected.to validate_attachment_presence(:profile_picture)
       end
 
@@ -116,6 +118,21 @@ RSpec.describe User, type: :model do
       it do
         is_expected.to validate_attachment_size(:profile_picture).
           less_than(1.megabytes)
+      end
+    end
+  end
+
+  describe "callbacks" do
+
+    describe "before validation" do
+
+      after { user.validate }
+
+      context "when profile picture is nil" do
+
+        before { user.profile_picture = nil }
+
+        it { is_expected.to receive(:generate_default_profile_picture) }
       end
     end
   end
@@ -201,6 +218,34 @@ RSpec.describe User, type: :model do
       it "returns false" do
         is_expected.not_to have_sent_friend_request_to other_user
       end
+    end
+  end
+
+  describe "#generate_default_profile_picture" do
+
+    it "generates an avatar using Avatarly " do
+      expect(Avatarly).to receive(:generate_avatar).and_return("encoded_image")
+      user.generate_default_profile_picture
+    end
+
+    it "passes the user's name" do
+      expect(Avatarly).to receive(:generate_avatar).with(user.name, anything).
+        and_return("encoded_image")
+      user.generate_default_profile_picture
+    end
+
+    it "sets size to 250px" do
+      expect(Avatarly).to receive(:generate_avatar).with(
+        anything,
+        hash_including(:size => 250)
+      ).and_return("encoded_image")
+      user.generate_default_profile_picture
+    end
+
+    it "sets profile_picture" do
+      user.profile_picture = nil
+      user.generate_default_profile_picture
+      expect(user.profile_picture).to be_present
     end
   end
 
