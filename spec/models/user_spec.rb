@@ -9,6 +9,7 @@ RSpec.describe User, type: :model do
   end
 
   it { is_expected.to have_secure_password }
+  it { should have_attached_file(:profile_picture) }
 
   describe "associations" do
     it { is_expected.to have_one(:profile).dependent(:destroy).
@@ -98,6 +99,24 @@ RSpec.describe User, type: :model do
         is_expected.to be_invalid
       end
 
+    end
+
+    context "validates profile picture" do
+
+      it do
+        is_expected.to validate_attachment_presence(:profile_picture)
+      end
+
+      it do
+        is_expected.to validate_attachment_content_type(:profile_picture).
+          allowing('image/png', 'image/gif', 'image/jpeg').
+          rejecting('text/plain', 'text/xml', 'application/pdf')
+      end
+
+      it do
+        is_expected.to validate_attachment_size(:profile_picture).
+          less_than(1.megabytes)
+      end
     end
   end
 
