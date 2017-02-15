@@ -6,7 +6,7 @@
       <%# PROFILE PICTURE %>
       <%= link_to profile_path @current_user do %>
         <div class="author_image z-depth-1 grey">
-          <%= image_tag profile_picture @current_user.username %>
+          <%= image_tag @current_user.profile_picture.url %>
         </div>
       <% end %>
 

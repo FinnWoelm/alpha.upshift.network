@@ -10,7 +10,7 @@
 
   <div class="user_meta container">
     <div class="profile_picture">
-      <%= image_tag profile_picture @profile.user.username %>
+      <%= image_tag @profile.user.profile_picture.url(:large) %>
     </div>
 
     <div class="user_name z-depth-3 indigo white-text center-align">
