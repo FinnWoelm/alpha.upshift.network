@@ -5,6 +5,7 @@ FactoryGirl.define do
     username {
       Faker::Internet.user_name( "#{name}".first(26).strip, %w(_) ) }
     password { Faker::Internet.password(10, 50) }
+    profile_picture { File.new("#{Rails.root}/public/system_fallbacks/users/profile_picture/large.png") }
     last_seen_at nil
     confirmed_registration true
 

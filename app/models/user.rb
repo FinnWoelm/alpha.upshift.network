@@ -1,6 +1,14 @@
 class User < ApplicationRecord
   has_secure_password
   has_secure_token :registration_token
+  has_attached_file :profile_picture, styles: {
+      large: ["250x250#", :jpg],
+      medium: ["100x100#", :jpg]
+    },
+    :default_style => :medium,
+    :url => "/system/:rails_env/users/:param/profile_picture/:style.:extension",
+    :path => ":rails_root/public/system/:rails_env/users/:param/profile_picture/:style.:extension",
+    :default_url => "/system_fallbacks/users/profile_picture/:style.png"
 
   include Rails.application.routes.url_helpers
 
@@ -97,6 +105,13 @@ class User < ApplicationRecord
   validates :password, confirmation: true
   validates :password,
     length: { in: 8..50 }, unless: "password.nil?"
+
+  # Profile picture
+  validates_with AttachmentPresenceValidator, attributes: :profile_picture
+  validates_with AttachmentSizeValidator, attributes: :profile_picture,
+    less_than: 1.megabytes
+  validates_with AttachmentContentTypeValidator, attributes: :profile_picture,
+    content_type: ["image/jpeg", "image/gif", "image/png"]
 
 
   # before_validation :create_profile_if_not_exists, on: :create
