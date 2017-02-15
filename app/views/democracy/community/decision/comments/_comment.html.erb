@@ -39,7 +39,7 @@
 
       <%# AUTHOR NAME %>
       <%= link_to profile_path comment.author do %>
-        <div class="author_name z-depth-1 indigo white-text">
+        <div class="author_name z-depth-1 <%= comment.author.color_scheme_with_font_color %>">
           <%= comment.author.name %>
         </div>
       <% end %>

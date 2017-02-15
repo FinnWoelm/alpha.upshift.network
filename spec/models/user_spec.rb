@@ -120,6 +120,11 @@ RSpec.describe User, type: :model do
           less_than(1.megabytes)
       end
     end
+
+    context "validates color_scheme" do
+      it { is_expected.to validate_inclusion_of(:color_scheme).
+        in_array(Color.color_options) }
+    end
   end
 
   describe "callbacks" do
@@ -140,6 +145,19 @@ RSpec.describe User, type: :model do
   describe "#to_param" do
     it "returns the username" do
       expect(user.to_param).to eq(user.username)
+    end
+  end
+
+  describe "#color_scheme_with_font_color" do
+
+    it "returns the color scheme" do
+      expect(user.color_scheme_with_font_color).to include(user.color_scheme)
+    end
+
+    it "returns the font color" do
+      expect(user.color_scheme_with_font_color).to include(
+        Color.font_color_for(user.color_scheme)
+      )
     end
   end
 
@@ -238,6 +256,24 @@ RSpec.describe User, type: :model do
       expect(Avatarly).to receive(:generate_avatar).with(
         anything,
         hash_including(:size => 250)
+      ).and_return("encoded_image")
+      user.generate_default_profile_picture
+    end
+
+    it "passes the user's color_scheme for background_color" do
+      hex_color = Color.convert_to_hex(user.color_scheme)
+      expect(Avatarly).to receive(:generate_avatar).with(
+        anything,
+        hash_including(:background_color => hex_color)
+      ).and_return("encoded_image")
+      user.generate_default_profile_picture
+    end
+
+    it "passes the font color for the user's color_scheme for font_color" do
+      hex_color = Color.convert_to_hex(Color.font_color_for(user.color_scheme))
+      expect(Avatarly).to receive(:generate_avatar).with(
+        anything,
+        hash_including(:font_color => hex_color)
       ).and_return("encoded_image")
       user.generate_default_profile_picture
     end
