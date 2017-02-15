@@ -42,6 +42,10 @@ GEM
     airbrussh (1.0.2)
       sshkit (>= 1.6.1, != 1.7.0)
     arel (7.1.1)
+    avatarly (1.5.0)
+      rfc822
+      rmagick
+      unicode_utils
     bcrypt (3.1.11)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
@@ -231,6 +235,8 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    rfc822 (0.1.5)
+    rmagick (2.16.0)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
@@ -301,6 +307,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.2)
+    unicode_utils (1.4.0)
     uniform_notifier (1.10.0)
     web-console (2.3.0)
       activemodel (>= 4.0)
@@ -317,6 +324,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  avatarly (~> 1.5)
   bcrypt (~> 3.1.7)
   bullet (~> 5.2.0)
   capistrano

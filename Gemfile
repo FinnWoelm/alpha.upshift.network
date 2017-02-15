@@ -46,6 +46,9 @@ gem 'newrelic_rpm', '~> 3.16'
 # Nokogiri for parsing fields with errors
 gem "nokogiri", '~> 1.6'
 
+# Use Avatarly for users' profile pictures
+gem "avatarly", '~> 1.5'
+
 group :development, :test do
   # We will use pry rails as our console
   gem 'pry-rails'
