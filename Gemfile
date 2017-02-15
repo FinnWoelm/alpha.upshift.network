@@ -49,6 +49,9 @@ gem "nokogiri", '~> 1.6'
 # Use Avatarly for users' profile pictures
 gem "avatarly", '~> 1.5'
 
+# Paperclip for attachments (e.g. profile pictures)
+gem "paperclip", "~> 5.0"
+
 group :development, :test do
   # We will use pry rails as our console
   gem 'pry-rails'
