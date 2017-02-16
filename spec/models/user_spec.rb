@@ -104,12 +104,6 @@ RSpec.describe User, type: :model do
     context "validates profile picture" do
 
       it do
-        # temporarily disable the callback
-        allow(user).to receive(:generate_default_profile_picture).and_return(nil)
-        is_expected.to validate_attachment_presence(:profile_picture)
-      end
-
-      it do
         is_expected.to validate_attachment_content_type(:profile_picture).
           allowing('image/png', 'image/gif', 'image/jpeg').
           rejecting('text/plain', 'text/xml', 'application/pdf')
@@ -129,15 +123,42 @@ RSpec.describe User, type: :model do
 
   describe "callbacks" do
 
-    describe "before validation" do
+    describe "after create" do
 
-      after { user.validate }
+      subject(:user) { build(:user) }
+      after { user.save }
 
-      context "when profile picture is nil" do
+      it { is_expected.to receive(:generate_fallback_profile_picture).and_call_original }
+      it { is_expected.to receive(:generate_symlink_for_fallback_profile_picture) }
+    end
 
-        before { user.profile_picture = nil }
+    describe "after update" do
 
-        it { is_expected.to receive(:generate_default_profile_picture) }
+      subject!(:user) { create(:user) }
+
+      after { user.save }
+
+      context "when name was updated" do
+        after { user.name = "Something..." }
+        it { is_expected.to receive(:generate_fallback_profile_picture) }
+      end
+
+      context "when color_scheme was updated" do
+        after { user.color_scheme = Color.color_options.sample }
+        it { is_expected.to receive(:generate_fallback_profile_picture) }
+      end
+
+      context "when profile_picture was updated and set to nil" do
+        before do
+          user.profile_picture = File.new(
+            "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.png"
+          )
+          user.save
+        end
+        after do
+          user.profile_picture = nil
+        end
+        it { is_expected.to receive(:generate_symlink_for_fallback_profile_picture) }
       end
     end
   end
@@ -239,17 +260,19 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#generate_default_profile_picture" do
+  describe "#generate_fallback_profile_picture" do
+
+    subject!(:user) { create(:user) }
 
     it "generates an avatar using Avatarly " do
       expect(Avatarly).to receive(:generate_avatar).and_return("encoded_image")
-      user.generate_default_profile_picture
+      user.generate_fallback_profile_picture
     end
 
     it "passes the user's name" do
       expect(Avatarly).to receive(:generate_avatar).with(user.name, anything).
         and_return("encoded_image")
-      user.generate_default_profile_picture
+      user.generate_fallback_profile_picture
     end
 
     it "sets size to 250px" do
@@ -257,7 +280,7 @@ RSpec.describe User, type: :model do
         anything,
         hash_including(:size => 250)
       ).and_return("encoded_image")
-      user.generate_default_profile_picture
+      user.generate_fallback_profile_picture
     end
 
     it "passes the user's color_scheme for background_color" do
@@ -266,7 +289,7 @@ RSpec.describe User, type: :model do
         anything,
         hash_including(:background_color => hex_color)
       ).and_return("encoded_image")
-      user.generate_default_profile_picture
+      user.generate_fallback_profile_picture
     end
 
     it "passes the font color for the user's color_scheme for font_color" do
@@ -275,13 +298,17 @@ RSpec.describe User, type: :model do
         anything,
         hash_including(:font_color => hex_color)
       ).and_return("encoded_image")
-      user.generate_default_profile_picture
+      user.generate_fallback_profile_picture
     end
 
-    it "sets profile_picture" do
-      user.profile_picture = nil
-      user.generate_default_profile_picture
-      expect(user.profile_picture).to be_present
+    it "saves the file to storage" do
+      path_to_file = "#{Rails.root}/public#{user.profile_picture.url}".rpartition('/').first + "/fallback.jpg"
+      # remove file if it exists
+      if FileTest.exist?(path_to_file)
+        FileUtils.remove_file(path_to_file)
+      end
+      user.generate_fallback_profile_picture
+      expect(FileTest.exist?(path_to_file)).to be_truthy
     end
   end
 
