@@ -1,6 +1,14 @@
 class User < ApplicationRecord
   has_secure_password
   has_secure_token :registration_token
+  has_attached_file :profile_picture, styles: {
+      large: ["250x250#", :jpg],
+      medium: ["100x100#", :jpg]
+    },
+    :default_style => :medium,
+    :url => "/system/:rails_env/users/:param/profile_picture/:style.:extension",
+    :path => ":rails_root/public/system/:rails_env/users/:param/profile_picture/:style.:extension",
+    :default_url => "/system/:rails_env/users/:param/profile_picture/:style.jpg"
 
   include Rails.application.routes.url_helpers
 
@@ -98,12 +106,42 @@ class User < ApplicationRecord
   validates :password,
     length: { in: 8..50 }, unless: "password.nil?"
 
+  # Profile picture
+  validates_with AttachmentSizeValidator, attributes: :profile_picture,
+    less_than: 1.megabytes
+  validates_with AttachmentContentTypeValidator, attributes: :profile_picture,
+    content_type: ["image/jpeg", "image/gif", "image/png"]
+
+  # Color Scheme
+  validates :color_scheme,
+    inclusion: {
+      in: Color.color_options,
+      message: "%{value} is not a valid option"
+    }
 
   # before_validation :create_profile_if_not_exists, on: :create
+
+  # create fallback profile_picture and symlinks after creation
+  after_create :generate_fallback_profile_picture
+  after_create :generate_symlink_for_fallback_profile_picture
+
+  # re-generate fallback profile picture whenever name or color_scheme changes
+  after_update :generate_fallback_profile_picture,
+    if: "name_changed? or color_scheme_changed?"
+
+  # create symlinks if profile_picture is removed
+  after_update :generate_symlink_for_fallback_profile_picture,
+    if: "profile_picture_updated_at_changed? and !profile_picture.present?"
+
 
   # We want to always use username in routes
   def to_param
     username
+  end
+
+  # returns both color_scheme and the font color for the color_scheme
+  def color_scheme_with_font_color
+    "#{color_scheme} #{Color.font_color_for(color_scheme)}"
   end
 
   # gets unread conversations
@@ -116,6 +154,49 @@ class User < ApplicationRecord
 
   def friends
     friends_found + friends_made
+  end
+
+  # generate fallback profile picture for user (using Avatarly)
+  def generate_fallback_profile_picture
+
+    # create profile picture
+    fallback_profile_picture = Avatarly.generate_avatar(
+      name,
+      {
+        :size =>  250,
+        :background_color => Color.convert_to_hex(color_scheme),
+        :font_color => Color.convert_to_hex(Color.font_color_for(color_scheme)),
+        :format => 'jpg'
+      }
+    )
+
+    # create directory if not exists
+    FileUtils::mkdir_p "#{Rails.root}/public#{profile_picture.url}".rpartition('/').first
+
+    # save file
+    File.open("#{Rails.root}/public#{profile_picture.url}".rpartition('/').first + "/fallback.jpg", 'wb+') do |f|
+      f.write fallback_profile_picture
+    end
+
+    if !profile_picture.present?
+      touch :profile_picture_updated_at
+    end
+  end
+
+  # create a symlink to the user's fallback profile picture
+  def generate_symlink_for_fallback_profile_picture
+    begin
+      profile_picture.options[:styles].keys.each do |key|
+        # create a symlink for each style of profile picture: medium, large, ...
+        File.symlink(
+          "#{Rails.root}/public#{profile_picture.url}".rpartition('/').first + "/fallback.jpg",
+          "#{Rails.root}/public#{profile_picture.url}".rpartition('/').first + "/#{key.to_s}.jpg"
+        )
+      end
+    rescue Errno::EEXIST => error
+    end
+
+    touch :profile_picture_updated_at
   end
 
   # checks whether this user is friends with another user
@@ -175,6 +256,11 @@ class User < ApplicationRecord
         :email => email,
         :registration_token => registration_token
       )
+    end
+
+    # sets profile_picture_updated_at to now
+    def set_profile_picture_updated_at
+      profile_picture_updated_at = Time.now
     end
 
   # protected

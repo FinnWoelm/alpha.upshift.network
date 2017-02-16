@@ -9,6 +9,7 @@ RSpec.describe User, type: :model do
   end
 
   it { is_expected.to have_secure_password }
+  it { should have_attached_file(:profile_picture) }
 
   describe "associations" do
     it { is_expected.to have_one(:profile).dependent(:destroy).
@@ -99,11 +100,85 @@ RSpec.describe User, type: :model do
       end
 
     end
+
+    context "validates profile picture" do
+
+      it do
+        is_expected.to validate_attachment_content_type(:profile_picture).
+          allowing('image/png', 'image/gif', 'image/jpeg').
+          rejecting('text/plain', 'text/xml', 'application/pdf')
+      end
+
+      it do
+        is_expected.to validate_attachment_size(:profile_picture).
+          less_than(1.megabytes)
+      end
+    end
+
+    context "validates color_scheme" do
+      it { is_expected.to validate_inclusion_of(:color_scheme).
+        in_array(Color.color_options) }
+    end
+  end
+
+  describe "callbacks" do
+
+    describe "after create" do
+
+      subject(:user) { build(:user) }
+      after { user.save }
+
+      it { is_expected.to receive(:generate_fallback_profile_picture).and_call_original }
+      it { is_expected.to receive(:generate_symlink_for_fallback_profile_picture) }
+    end
+
+    describe "after update" do
+
+      subject!(:user) { create(:user) }
+
+      after { user.save }
+
+      context "when name was updated" do
+        after { user.name = "Something..." }
+        it { is_expected.to receive(:generate_fallback_profile_picture) }
+      end
+
+      context "when color_scheme was updated" do
+        after { user.color_scheme = Color.color_options.sample }
+        it { is_expected.to receive(:generate_fallback_profile_picture) }
+      end
+
+      context "when profile_picture was updated and set to nil" do
+        before do
+          user.profile_picture = File.new(
+            "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.png"
+          )
+          user.save
+        end
+        after do
+          user.profile_picture = nil
+        end
+        it { is_expected.to receive(:generate_symlink_for_fallback_profile_picture) }
+      end
+    end
   end
 
   describe "#to_param" do
     it "returns the username" do
       expect(user.to_param).to eq(user.username)
+    end
+  end
+
+  describe "#color_scheme_with_font_color" do
+
+    it "returns the color scheme" do
+      expect(user.color_scheme_with_font_color).to include(user.color_scheme)
+    end
+
+    it "returns the font color" do
+      expect(user.color_scheme_with_font_color).to include(
+        Color.font_color_for(user.color_scheme)
+      )
     end
   end
 
@@ -182,6 +257,58 @@ RSpec.describe User, type: :model do
       it "returns false" do
         is_expected.not_to have_sent_friend_request_to other_user
       end
+    end
+  end
+
+  describe "#generate_fallback_profile_picture" do
+
+    subject!(:user) { create(:user) }
+
+    it "generates an avatar using Avatarly " do
+      expect(Avatarly).to receive(:generate_avatar).and_return("encoded_image")
+      user.generate_fallback_profile_picture
+    end
+
+    it "passes the user's name" do
+      expect(Avatarly).to receive(:generate_avatar).with(user.name, anything).
+        and_return("encoded_image")
+      user.generate_fallback_profile_picture
+    end
+
+    it "sets size to 250px" do
+      expect(Avatarly).to receive(:generate_avatar).with(
+        anything,
+        hash_including(:size => 250)
+      ).and_return("encoded_image")
+      user.generate_fallback_profile_picture
+    end
+
+    it "passes the user's color_scheme for background_color" do
+      hex_color = Color.convert_to_hex(user.color_scheme)
+      expect(Avatarly).to receive(:generate_avatar).with(
+        anything,
+        hash_including(:background_color => hex_color)
+      ).and_return("encoded_image")
+      user.generate_fallback_profile_picture
+    end
+
+    it "passes the font color for the user's color_scheme for font_color" do
+      hex_color = Color.convert_to_hex(Color.font_color_for(user.color_scheme))
+      expect(Avatarly).to receive(:generate_avatar).with(
+        anything,
+        hash_including(:font_color => hex_color)
+      ).and_return("encoded_image")
+      user.generate_fallback_profile_picture
+    end
+
+    it "saves the file to storage" do
+      path_to_file = "#{Rails.root}/public#{user.profile_picture.url}".rpartition('/').first + "/fallback.jpg"
+      # remove file if it exists
+      if FileTest.exist?(path_to_file)
+        FileUtils.remove_file(path_to_file)
+      end
+      user.generate_fallback_profile_picture
+      expect(FileTest.exist?(path_to_file)).to be_truthy
     end
   end
 
