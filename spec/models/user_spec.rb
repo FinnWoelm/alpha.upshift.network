@@ -84,7 +84,8 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_length_of(:username).is_at_least(3).is_at_most(26) }
     it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
 
-    context "validates format of username" do
+    context "validates username" do
+
       it "must not contain special characters" do
         user.username = "a*<>$@/r"
         is_expected.to be_invalid
@@ -100,6 +101,10 @@ RSpec.describe User, type: :model do
         is_expected.to be_invalid
       end
 
+      it "must not equal any assigned URL" do
+        user.username = Helper::RouteRecognizer.get_initial_path_segments.sample
+        is_expected.to be_invalid
+      end
     end
 
     context "validates profile picture" do

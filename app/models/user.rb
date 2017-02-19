@@ -95,6 +95,13 @@ class User < ApplicationRecord
     length: { in: 3..26 }
   validates :username,
     uniqueness: { :case_sensitive => false }
+  # Username cannot be any existing Upshift route
+  validates :username,
+    exclusion: {
+      in: Helper::RouteRecognizer.get_initial_path_segments,
+      message: "%(value) is not available"
+    },
+    on: :create
 
   # Email
   validates :email, presence: true
