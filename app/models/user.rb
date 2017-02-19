@@ -108,7 +108,7 @@ class User < ApplicationRecord
 
   # Profile picture
   validates_with AttachmentSizeValidator, attributes: :profile_picture,
-    less_than: 1.megabytes
+    less_than: 5.megabytes
   validates_with AttachmentContentTypeValidator, attributes: :profile_picture,
     content_type: ["image/jpeg", "image/gif", "image/png"]
 
@@ -127,12 +127,14 @@ class User < ApplicationRecord
   # ## After create:
   # ### generate_fallback_profile_picture
   # ### generate_symlink_for_fallback_profile_picture
+  # ### destroy_original_profile_picture (if profile picture was added)
   #
   # ## Before update:
   # ### set_profile_picture_updated_at (if profile_picture_updated_at is nil)
   #
   # ## After update:
   # ### generate_fallback_profile_picture (if name or color scheme have changed)
+  # ### destroy_original_profile_picture (if profile picture was added)
   # ### generate_symlink_for_fallback_profile_picture (if profile_picture was removed)
 
   # before_validation :create_profile_if_not_exists, on: :create
@@ -142,6 +144,10 @@ class User < ApplicationRecord
 
   # create symlinks for fallback profile_picture
   after_create :generate_symlink_for_fallback_profile_picture
+
+  # destroy the original profile picture (b/c it is not needed)
+  after_save :destroy_original_profile_picture,
+    if: "profile_picture_updated_at_changed? and profile_picture.present?"
 
   # re-generate fallback profile picture whenever name or color_scheme changes
   after_update :generate_fallback_profile_picture,
@@ -272,6 +278,11 @@ class User < ApplicationRecord
   end
 
   private
+
+    # destroy the original profile picture (b/c it is not needed)
+    def destroy_original_profile_picture
+      File.unlink(self.profile_picture.path(:original))
+    end
 
     # return the path for confirming the registration
     def registration_confirmation_path

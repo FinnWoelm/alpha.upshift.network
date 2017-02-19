@@ -111,7 +111,7 @@ RSpec.describe User, type: :model do
 
       it do
         is_expected.to validate_attachment_size(:profile_picture).
-          less_than(1.megabytes)
+          less_than(5.megabytes)
       end
     end
 
@@ -130,6 +130,25 @@ RSpec.describe User, type: :model do
 
       it { is_expected.to receive(:generate_fallback_profile_picture).and_call_original }
       it { is_expected.to receive(:generate_symlink_for_fallback_profile_picture) }
+    end
+
+    describe "after save" do
+
+      subject!(:user) { create(:user) }
+      after { user.save }
+
+      context "when profile_picture was updated and set to nil" do
+        before do
+          user.profile_picture = nil
+          user.save
+        end
+        after do
+          user.profile_picture = File.new(
+            "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.png"
+          )
+        end
+        it { is_expected.to receive(:destroy_original_profile_picture) }
+      end
     end
 
     describe "after update (commit)" do
@@ -418,6 +437,14 @@ RSpec.describe User, type: :model do
           "CONFIRMATION_PATH" => registration_confirmation_path
         }
       )
+    end
+  end
+
+  describe "destroy_original_profile_picture" do
+
+    it "removes the original profile picture" do
+      expect(File).to receive(:unlink).with(user.profile_picture.path(:original))
+      user.send(:destroy_original_profile_picture)
     end
   end
 
