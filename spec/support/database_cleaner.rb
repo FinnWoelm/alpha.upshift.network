@@ -17,6 +17,9 @@ RSpec.configure do |config|
       example.run
     end
 
+    # Delete Paperclip attachments
+    FileUtils.rm_rf(Dir["#{Rails.root}/public/system/test/[^.]*"])
+
     # Clear session data
     Capybara.reset_sessions!
   end

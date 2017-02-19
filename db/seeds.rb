@@ -6,13 +6,17 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
+# Clear old Paperclip attachments
+FileUtils.rm_rf(Dir["#{Rails.root}/public/system/#{Rails.env}/[^.]*"])
+
 # Create some users
 alice = User.create(
   :name => "Alice",
   :username => "alice",
   :email => "alice@upshift.network",
   :password => "password",
-  :confirmed_registration => true
+  :confirmed_registration => true,
+  :color_scheme => Color.color_options.sample
 )
 
 bob = User.create(
@@ -20,7 +24,8 @@ bob = User.create(
   :username => "bob",
   :email => "bob@upshift.network",
   :password => "password",
-  :confirmed_registration => true
+  :confirmed_registration => true,
+  :color_scheme => Color.color_options.sample
 )
 
 carla = User.create(
@@ -28,15 +33,17 @@ carla = User.create(
   :username => "carla",
   :email => "carla@upshift.network",
   :password => "password",
-  :confirmed_registration => true
+  :confirmed_registration => true,
+  :color_scheme => Color.color_options.sample
 )
 
 dennis = User.create(
-:name => "Dennis",
-:username => "dennis",
-:email => "dennis@upshift.network",
-:password => "password",
-:confirmed_registration => true
+  :name => "Dennis",
+  :username => "dennis",
+  :email => "dennis@upshift.network",
+  :password => "password",
+  :confirmed_registration => true,
+  :color_scheme => Color.color_options.sample
 )
 
 [alice, bob, carla, dennis].each do |user|
@@ -50,11 +57,18 @@ Friendship.create(:initiator => alice, :acceptor => dennis)
 
 # Create some private conversations
 20.times do |i|
- u = User.create(:username => "user#{i}", :password => "password", :name => "user#{i}", :email => "user#{i}@upshift.network", :confirmed_registration => true)
- Profile.create(:user => u, :visibility => :is_network_only)
- conversation = PrivateConversation.new(:sender => alice, :recipient => u)
- conversation.messages.build(:content => "initial message", :sender => alice)
- conversation.save
+  u = User.create(
+    :username => "user#{i}",
+    :password => "password",
+    :name => "user#{i}",
+    :email => "user#{i}@upshift.network",
+    :confirmed_registration => true,
+    :color_scheme => Color.color_options.sample
+  )
+  Profile.create(:user => u, :visibility => :is_network_only)
+  conversation = PrivateConversation.new(:sender => alice, :recipient => u)
+  conversation.messages.build(:content => "initial message", :sender => alice)
+  conversation.save
 end
 
 # Create some private messages

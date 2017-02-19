@@ -4,7 +4,7 @@
     <%# PROFILE PICTURE %>
     <%= link_to profile_path comment.author do %>
       <div class="author_image z-depth-1">
-        <%= image_tag profile_picture comment.author.username %>
+        <%= image_tag comment.author.profile_picture.url %>
       </div>
     <% end %>
 

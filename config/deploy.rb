@@ -33,6 +33,8 @@ set :puma_init_active_record, true  # Change to false when not using ActiveRecor
 ## Linked Files & Directories (Default None):
 # set :linked_files, %w{config/database.yml}
 # set :linked_dirs,  %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+# Symlink public/system, so that attachments survive new deployments
+set :linked_dirs, fetch(:linked_dirs, []).push('public/system')
 
 namespace :puma do
   desc 'Create Directories for Puma Pids and Socket'
@@ -78,6 +80,24 @@ namespace :deploy do
   after  :finishing,    :cleanup
   after  :finishing,    :restart
 end
+
+# Paperclip is aware of new attachment styles you have added in previous
+# deploys. The only thing you should do after each deployment is to call
+# 'rake paperclip:refresh:missing_styles'
+namespace :paperclip do
+  desc "build missing paperclip styles"
+  task :build_missing_styles do
+    on roles(:app) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, "paperclip:refresh:missing_styles"
+        end
+      end
+    end
+  end
+end
+
+after("deploy:compile_assets", "paperclip:build_missing_styles")
 
 # ps aux | grep puma    # Get puma pid
 # kill -s SIGUSR2 pid   # Restart puma

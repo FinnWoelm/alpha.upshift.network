@@ -6,13 +6,13 @@
       <%# PROFILE PICTURE %>
       <%= link_to profile_path decision.author do %>
         <div class="author_image z-depth-1 grey">
-          <%= image_tag profile_picture decision.author.username %>
+          <%= image_tag decision.author.profile_picture.url %>
         </div>
       <% end %>
 
       <%# AUTHOR NAME %>
       <%= link_to profile_path decision.author do %>
-        <div class="author_name z-depth-1 indigo white-text">
+        <div class="author_name z-depth-1 <%= decision.author.color_scheme_with_font_color %>">
           <%= decision.author.name %>
         </div>
       <% end %>

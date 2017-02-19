@@ -15,13 +15,6 @@ module ApplicationHelper
     render :partial => "likes/unlike_#{style}", locals: {object: object}
   end
 
-  # renders a user's profile picture
-  def profile_picture username
-    require 'digest/md5'
-    hash = Digest::MD5.hexdigest username.strip.downcase
-    "https://www.gravatar.com/avatar/#{hash}?d=identicon"
-  end
-
   # creates a link with text for a given path, highlighting nav element if active
   def nav_link link_text, link_path, link_controller = nil
     if link_controller

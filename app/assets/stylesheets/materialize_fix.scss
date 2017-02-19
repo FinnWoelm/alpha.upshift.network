@@ -1,0 +1,8 @@
+// Use Americanized spelling for colors (gray instead of grey)
+.gray {
+  @extend .grey;
+}
+
+.blue-gray {
+  @extend .blue-grey;
+}
