@@ -102,6 +102,8 @@ class User < ApplicationRecord
       message: "%(value) is not available"
     },
     on: :create
+  # Username cannot be any dictionary word
+  validate :username_cannot_be_a_dictionary_word, on: :create
 
   # Email
   validates :email, presence: true
@@ -306,6 +308,12 @@ class User < ApplicationRecord
     # sets profile_picture_updated_at to now
     def set_profile_picture_updated_at
       self.profile_picture_updated_at = Time.now
+    end
+
+    def username_cannot_be_a_dictionary_word
+      if Helper::Dictionary.exists? self.username
+        errors.add(:username, "is not available")
+      end
     end
 
   # protected

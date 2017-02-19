@@ -105,6 +105,11 @@ RSpec.describe User, type: :model do
         user.username = Helper::RouteRecognizer.get_initial_path_segments.sample
         is_expected.to be_invalid
       end
+
+      it "must not equal any dictionary words" do
+        user.username = "ocean"
+        is_expected.to be_invalid
+      end
     end
 
     context "validates profile picture" do
