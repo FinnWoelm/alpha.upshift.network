@@ -10,6 +10,7 @@ RSpec.describe User, type: :model do
 
   it { is_expected.to have_secure_password }
   it { should have_attached_file(:profile_picture) }
+  it { is_expected.to have_readonly_attribute(:username)}
 
   describe "associations" do
     it { is_expected.to have_one(:profile).dependent(:destroy).
@@ -83,7 +84,8 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_length_of(:username).is_at_least(3).is_at_most(26) }
     it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
 
-    context "validates format of username" do
+    context "validates username" do
+
       it "must not contain special characters" do
         user.username = "a*<>$@/r"
         is_expected.to be_invalid
@@ -99,6 +101,20 @@ RSpec.describe User, type: :model do
         is_expected.to be_invalid
       end
 
+      it "must not be blacklisted" do
+        Helper::BlacklistedUsername.create(:username => user.username)
+        is_expected.to be_invalid
+      end
+
+      it "must not equal any assigned URL" do
+        user.username = Helper::RouteRecognizer.get_initial_path_segments.sample
+        is_expected.to be_invalid
+      end
+
+      it "must not equal any dictionary words" do
+        user.username = "ocean"
+        is_expected.to be_invalid
+      end
     end
 
     context "validates profile picture" do
@@ -130,6 +146,14 @@ RSpec.describe User, type: :model do
 
       it { is_expected.to receive(:generate_fallback_profile_picture).and_call_original }
       it { is_expected.to receive(:generate_symlink_for_fallback_profile_picture) }
+    end
+
+    describe "after destroy" do
+
+      subject!(:user) { create(:user) }
+      after { user.destroy }
+
+      it { is_expected.to receive(:blacklist_username) }
     end
 
     describe "after save" do
@@ -437,6 +461,15 @@ RSpec.describe User, type: :model do
           "CONFIRMATION_PATH" => registration_confirmation_path
         }
       )
+    end
+  end
+
+  describe "#blacklist_username" do
+
+    it "saves the username to the blacklisted usernames" do
+      user.username = "tom_and_jerry"
+      user.send(:blacklist_username)
+      expect(Helper::BlacklistedUsername.exists?(username: "tom_and_jerry")).to be_truthy
     end
   end
 

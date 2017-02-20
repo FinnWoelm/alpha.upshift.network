@@ -12,6 +12,10 @@ class User < ApplicationRecord
 
   include Rails.application.routes.url_helpers
 
+  # # Attributes
+  # ## Username should never be changed
+  attr_readonly :username
+
   # # Associations
   # ## Profile
   has_one :profile, inverse_of: :user, dependent: :destroy
@@ -91,6 +95,17 @@ class User < ApplicationRecord
     length: { in: 3..26 }
   validates :username,
     uniqueness: { :case_sensitive => false }
+  # Username cannot be blacklisted (be a previously-used username)
+  validate :username_cannot_be_blacklisted, on: :create
+  # Username cannot be any existing Upshift route
+  validates :username,
+    exclusion: {
+      in: Helper::RouteRecognizer.get_initial_path_segments,
+      message: "%(value) is not available"
+    },
+    on: :create
+  # Username cannot be any dictionary word
+  validate :username_cannot_be_a_dictionary_word, on: :create
 
   # Email
   validates :email, presence: true
@@ -136,6 +151,9 @@ class User < ApplicationRecord
   # ### generate_fallback_profile_picture (if name or color scheme have changed)
   # ### destroy_original_profile_picture (if profile picture was added)
   # ### generate_symlink_for_fallback_profile_picture (if profile_picture was removed)
+  #
+  # ## After destroy:
+  # ## blacklist_username
 
   # before_validation :create_profile_if_not_exists, on: :create
 
@@ -144,6 +162,9 @@ class User < ApplicationRecord
 
   # create symlinks for fallback profile_picture
   after_create :generate_symlink_for_fallback_profile_picture
+
+  # blacklist username (to prevent re-assignment)
+  after_destroy :blacklist_username
 
   # destroy the original profile picture (b/c it is not needed)
   after_save :destroy_original_profile_picture,
@@ -279,6 +300,11 @@ class User < ApplicationRecord
 
   private
 
+    # blacklists the user's username (to prevent future re-assignment)
+    def blacklist_username
+      Helper::BlacklistedUsername.create(:username => self.username)
+    end
+
     # destroy the original profile picture (b/c it is not needed)
     def destroy_original_profile_picture
       File.unlink(self.profile_picture.path(:original))
@@ -295,6 +321,18 @@ class User < ApplicationRecord
     # sets profile_picture_updated_at to now
     def set_profile_picture_updated_at
       self.profile_picture_updated_at = Time.now
+    end
+
+    def username_cannot_be_a_dictionary_word
+      if Helper::Dictionary.exists? self.username
+        errors.add(:username, "is not available")
+      end
+    end
+
+    def username_cannot_be_blacklisted
+      if Helper::BlacklistedUsername.exists? username: self.username
+        errors.add(:username, "is not available")
+      end
     end
 
   # protected
