@@ -12,6 +12,10 @@ class User < ApplicationRecord
 
   include Rails.application.routes.url_helpers
 
+  # # Attributes
+  # ## Username should never be changed
+  attr_readonly :username
+
   # # Associations
   # ## Profile
   has_one :profile, inverse_of: :user, dependent: :destroy
