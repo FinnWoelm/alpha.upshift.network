@@ -5,8 +5,7 @@ class ProfilesController < ApplicationController
 
   # GET /:username
   def show
-    render_404 and return unless @profile
-    render_404 and return unless @profile.viewable_by?(@current_user)
+    render('error', status: 404, layout: 'errors') and return unless @profile and @profile.viewable_by?(@current_user)
 
     @posts = @user.posts.most_recent_first.with_associations
     @post = Post.new
