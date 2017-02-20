@@ -27,5 +27,8 @@ module UpshiftNetwork
 
     end
 
+    # use our own error handling
+    config.exceptions_app = self.routes
+
   end
 end
