@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215160626) do
+ActiveRecord::Schema.define(version: 20170220011351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,13 @@ ActiveRecord::Schema.define(version: 20170215160626) do
     t.datetime "updated_at",   null: false
     t.index ["acceptor_id"], name: "index_friendships_on_acceptor_id", using: :btree
     t.index ["initiator_id"], name: "index_friendships_on_initiator_id", using: :btree
+  end
+
+  create_table "helper_blacklisted_usernames", force: :cascade do |t|
+    t.citext   "username",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["username"], name: "index_helper_blacklisted_usernames_on_username", unique: true, using: :btree
   end
 
   create_table "likes", force: :cascade do |t|
