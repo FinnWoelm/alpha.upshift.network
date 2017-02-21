@@ -25,19 +25,6 @@
             :commentable_id => comment.commentable_id),
           as: :comment,
           class: "col s12" do |f| %>
-          <div class="row no_margin_bottom">
-            <% if comment.errors.any? %>
-              <div id="error_explanation">
-                <h2><%= pluralize(comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
-
-                <ul>
-                <% comment.errors.full_messages.each do |message| %>
-                  <li><%= message %></li>
-                <% end %>
-                </ul>
-              </div>
-            <% end %>
-          </div>
 
           <div class="row no_margin_bottom">
             <div class="input-field col s12 grey darken-4">

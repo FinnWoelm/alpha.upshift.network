@@ -1,23 +1,6 @@
 <div class="row">
   <%= form_for decision, url: community_decisions_path, class: 'col s12' do |f| %>
 
-    <% if decision.errors.any? %>
-      <div class="row no_margin_bottom">
-        <div class="col s12">
-          <div id="error_explanation">
-            <h2><%= pluralize(decision.errors.count, "error") %> prohibited this decision from being saved:</h2>
-
-            <ul>
-            <% decision.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
-            <% end %>
-            </ul>
-          </div>
-        </div>
-      </div>
-    <% end %>
-
-
     <div class="row">
       <div class="input-field col s12">
         <%= f.text_field :title %>
@@ -34,8 +17,8 @@
 
     <div class="row">
       <div class="input-field col s12">
-        <%= f.label :ends_at, "Deadline for Participation" %>
         <%= f.text_field :ends_at, class: 'datepicker', placeholder: 'Click to choose a date' %>
+        <%= f.label :ends_at, "Deadline for Participation" %>
       </div>
     </div>
 

@@ -279,6 +279,17 @@ a.btn-small {
   }
 }
 
+// FORMS: List of errors
+form label + ul.errors {
+  @extend .red-text;
+  font-size: 0.8rem;
+  padding-left: 10px;
+  margin: 0px;
+  margin-top: -15px;
+  margin-bottom: 20px;
+  display: block;
+}
+
 // FIXES
 
 // FIXES: parallax has a white space on the left
