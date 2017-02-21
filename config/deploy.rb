@@ -99,6 +99,16 @@ end
 
 after("deploy:compile_assets", "paperclip:build_missing_styles")
 
+# Generate a static 500 page (server error) after deployment that can be served
+# even when the entire Rails app goes overboard.
+task :generate_500_html do
+  on roles(:web) do |host|
+    public_500_html = File.join(release_path, "public/500.html")
+    execute :curl, "-k", "https://#{host.hostname}/500", "> #{public_500_html}"
+  end
+end
+after "deploy:published", :generate_500_html
+
 # ps aux | grep puma    # Get puma pid
 # kill -s SIGUSR2 pid   # Restart puma
 # kill -s SIGTERM pid   # Stop puma
