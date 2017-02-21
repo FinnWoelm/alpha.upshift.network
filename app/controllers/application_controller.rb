@@ -13,15 +13,6 @@ class ApplicationController < ActionController::Base
     redirect_to confirmation_reminder_registration_path unless current_user.confirmed_registration
   end
 
-  # renders the standard 404 error page in public/404.html
-  def render_404
-    respond_to do |format|
-        format.html { render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found }
-        format.xml  { head :not_found }
-        format.any  { head :not_found }
-      end
-  end
-
   # Returns a shallow path for a given object, such as decision_path for
   # Democracy::Community::Decision
   def shallow_path_to object
