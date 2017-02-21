@@ -6,8 +6,7 @@ class PostsController < ApplicationController
 
   # GET /post/1
   def show
-    render_404 and return unless @post
-    render_404 and return unless @post.readable_by?(@current_user)
+    render('error', status: 404, layout: 'errors') and return unless @post and @post.readable_by?(@current_user)
   end
 
   # GET /post/new
