@@ -1,0 +1,18 @@
+<div class="section"></div>
+
+<div class="row">
+  <div class="col s12 center-align">
+    <%= material_icon.question_answer.style('font-size: 200px;') %>
+    <h1>
+      Conversation not found
+    </h1>
+    <p class="flow-text">Conversation could not be found. It might not exist or it might have been deleted.</p>
+
+    <%= link_to new_private_conversation_path, class: "btn waves-effect waves-light" do %>
+      Start new conversation
+    <% end %>
+
+  </div>
+</div>
+
+<div class="section"></div>
