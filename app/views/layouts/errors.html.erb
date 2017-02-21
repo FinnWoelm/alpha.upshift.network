@@ -1,0 +1,5 @@
+<% if @current_user %>
+  <%= render partial: "shared/main", locals: {fluid: true} %>
+<% else %>
+  <%= render partial: "shared/main", locals: {sidenav: false, fluid: true} %>
+<% end %>

@@ -34,7 +34,7 @@ class PrivateConversationsController < ApplicationController
 
   # GET /conversation/:username
   def show
-    render_404 and return unless @private_conversation
+    render('error', :status => 404) and return unless @private_conversation
 
     @private_conversation.mark_read_for @current_user
 

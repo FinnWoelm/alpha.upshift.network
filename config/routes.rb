@@ -11,6 +11,11 @@ Rails.application.routes.draw do
   # Magic Lamp for using views in JS specs
   mount MagicLamp::Genie, at: "/magic_lamp" if defined?(MagicLamp)
 
+  # Errors
+  match "/404", :to => "errors#not_found", :via => :all
+  match "/422", :to => "errors#unacceptable", :via => :all
+  match "/500", :to => "errors#internal_server_error", :via => :all
+
   # External
   resources :pending_newsletter_subscriptions, only: :create do
     get 'confirm', on: :collection
