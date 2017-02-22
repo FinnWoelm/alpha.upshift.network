@@ -52,6 +52,9 @@ gem "avatarly", '~> 1.5'
 # Paperclip for attachments (e.g. profile pictures)
 gem "paperclip", "~> 5.0"
 
+# Selectively disable logging on a per-action basis
+gem 'silencer', "~> 1.0"
+
 group :development, :test do
   # We will use pry rails as our console
   gem 'pry-rails'
