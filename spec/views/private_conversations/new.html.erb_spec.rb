@@ -31,7 +31,7 @@ RSpec.describe "private_conversations/new.html.erb", type: :view do
       render
 
       expect(private_conversation.errors.size).to eq(1)
-      expect(rendered).to have_text("Recipient does not exist or their profile is private")
+      expect(rendered).to have_text("does not exist or their profile is private")
     end
 
     it "shows error if recipient profile is private" do
@@ -41,7 +41,7 @@ RSpec.describe "private_conversations/new.html.erb", type: :view do
       render
 
       expect(private_conversation.errors.size).to eq(1)
-      expect(rendered).to have_text("Recipient does not exist or their profile is private")
+      expect(rendered).to have_text("does not exist or their profile is private")
     end
 
   end

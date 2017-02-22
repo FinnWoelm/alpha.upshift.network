@@ -1,24 +1,6 @@
 <div class="row">
   <%= form_for registration, url: registration_path, class: 'col s12' do |f| %>
 
-
-    <% if registration.errors.any? %>
-      <div class="row no_margin_bottom">
-        <div class="col s12">
-          <div id="error_explanation">
-            <h2><%= pluralize(registration.errors.count, "error") %> prohibited this registration from being saved:</h2>
-
-            <ul>
-            <% registration.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
-            <% end %>
-            </ul>
-          </div>
-        </div>
-      </div>
-    <% end %>
-
-
     <div class="row">
       <div class="input-field col s12">
         <%= f.text_field :name %>

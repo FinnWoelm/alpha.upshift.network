@@ -22,21 +22,7 @@
         <%= form_for post, class: "col s12"  do |f| %>
 
           <div class="row no_margin_bottom">
-            <% if post.errors.any? %>
-              <div id="error_explanation">
-                <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
-
-                <ul>
-                <% post.errors.full_messages.each do |message| %>
-                  <li><%= message %></li>
-                <% end %>
-                </ul>
-              </div>
-            <% end %>
-          </div>
-
-          <div class="row no_margin_bottom">
-            <div class="input-field col s12 grey darken-4">
+            <div class="input-field col s12">
               <%= f.text_area :content, class: "materialize-textarea" %>
               <%= f.label :content, "What's on your mind?" %>
             </div>
