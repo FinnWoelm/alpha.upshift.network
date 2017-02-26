@@ -57,7 +57,7 @@ class @Application
     )
 
 
-  @show_notice: (notice, duration) ->
+  @show_notice: (notice, duration = 5000) ->
     Materialize.toast(notice, duration) unless @_is_cached_page()
 
   # Is user looking at a cached version of the page?
