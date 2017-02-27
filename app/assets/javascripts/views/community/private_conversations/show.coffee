@@ -18,3 +18,8 @@ $(document).on 'turbolinks:load', ->
 
     # scroll to bottom of chat on page load
     Application.jump_to_bottom_of_page()
+
+    # send messages using ctrl + enter
+    $('form#new_private_message textarea#private_message_content').keydown (e) ->
+      if e.keyCode == 13 && e.ctrlKey
+        $(this).parents("form").first().find("button[type=submit]").click()
