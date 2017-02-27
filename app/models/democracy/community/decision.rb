@@ -6,6 +6,9 @@ class Democracy::Community::Decision < ApplicationRecord
   belongs_to :community, :class_name => "Democracy::Community"
   belongs_to :author, :class_name => "User"
 
+  scope :with_associations,
+    -> { includes(:comments).includes(:author) }
+
   validates :community, presence: true
   validates :author, presence: true
   validates :title, presence: true
