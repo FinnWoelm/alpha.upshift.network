@@ -5,7 +5,7 @@ RSpec.describe PrivateConversationsController, type: :controller do
   let(:current_user) { create(:user) }
   before { @request.session['user_id'] = current_user.id }
 
-  it { should use_before_action(:authorize) }
+  it { is_expected.to use_before_action(:authorize) }
 
   describe "GET #new" do
     before { :get }

@@ -9,7 +9,7 @@ RSpec.describe User, type: :model do
   end
 
   it { is_expected.to have_secure_password }
-  it { should have_attached_file(:profile_picture) }
+  it { is_expected.to have_attached_file(:profile_picture) }
   it { is_expected.to have_readonly_attribute(:username)}
 
   describe "associations" do
@@ -208,7 +208,10 @@ RSpec.describe User, type: :model do
     describe "before save" do
 
       subject!(:user) { create(:user) }
-      before { user.profile_picture_updated_at = nil }
+      before do
+        allow(user).to receive(:generate_symlink_for_fallback_profile_picture)
+        user.profile_picture_updated_at = nil
+      end
       after { user.save }
 
       context "when profile_picture_updated_at is nil" do
