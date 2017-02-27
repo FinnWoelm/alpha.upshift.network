@@ -8,6 +8,9 @@
 ##############################################################
 $(document).on 'turbolinks:load', ->
 
+  # dirty form tracking on all forms
+  $('form').areYouSure()
+
   $(".material-tooltip").remove()
   $(".tooltipped").each ->
     $(@).tooltip({delay: 50})
