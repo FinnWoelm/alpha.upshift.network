@@ -9,7 +9,7 @@ RSpec.describe User, type: :model do
   end
 
   it { is_expected.to have_secure_password }
-  it { should have_attached_file(:profile_picture) }
+  it { is_expected.to have_attached_file(:profile_picture) }
   it { is_expected.to have_readonly_attribute(:username)}
 
   describe "associations" do
