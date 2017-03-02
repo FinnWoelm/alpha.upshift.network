@@ -20,7 +20,7 @@ RSpec.describe "private_conversations/index.html.erb", type: :view do
     @my_conversations.each do |c|
       expect(rendered).to have_text(c.recipient.name)
     end
-    assert_select "div.private_conversation_preview", :count => 5
+    assert_select "div.preview_conversation", :count => 5
   end
 
   it "renders conversations in order of most recent activity" do

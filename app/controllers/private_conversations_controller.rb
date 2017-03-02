@@ -35,6 +35,8 @@ class PrivateConversationsController < ApplicationController
 
     # render nothing if we have no private conversations
     (render js: '' and return) if @private_conversations.first.nil?
+
+    @render_previews_in_sidenav = params[:sidenav] == "true"
   end
 
   # GET /conversation/new

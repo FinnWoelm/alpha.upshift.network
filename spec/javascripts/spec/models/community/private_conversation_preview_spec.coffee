@@ -123,6 +123,11 @@ describe 'Model: PrivateConversationPreview', ->
       PrivateConversationPreview.fetch_new_previews('asc_or_desc')
       expect($.get.calls.argsFor(0)[0].url).toContain "order=asc_or_desc"
 
+    it "sends whether to render sidenav style or not", ->
+      $.get.calls.reset()
+      PrivateConversationPreview.fetch_new_previews('asc', 'true_or_false')
+      expect($.get.calls.argsFor(0)[0].url).toContain "sidenav=true_or_false"
+
     it "calls the refresh action", ->
       expect($.get.calls.argsFor(0)[0].url).toContain "refresh"
 

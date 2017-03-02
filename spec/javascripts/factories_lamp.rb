@@ -30,6 +30,12 @@ MagicLamp.define(controller: PrivateConversationsController) do
     end
     render 'refresh.js'
   end
+
+  fixture do
+    @current_user = FactoryGirl.create(:user)
+    @private_conversations = FactoryGirl.create_list(:private_conversation, 5, :sender => @current_user)
+    render :index
+  end
 end
 
 MagicLamp.define(controller: PrivateMessagesController) do

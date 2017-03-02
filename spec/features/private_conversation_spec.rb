@@ -10,11 +10,18 @@ feature 'Private Conversation' do
   end
 
   context "When new messages/conversations are received" do
-    scenario "User can see new messages/conversations without reloading", :js => true do
+    scenario "Sidenav: User can see new messages/conversations without reloading", :js => true do
       given_i_am_logged_in_as_a_user
       and_i_go_to_create_a_new_conversation
       when_i_receive_a_new_conversation
       then_i_should_see_the_new_conversation_in_the_sidenav
+    end
+
+    scenario "Index: User can see new messages/conversations without reloading", :js => true do
+      given_i_am_logged_in_as_a_user
+      when_i_go_to_my_private_conversations
+      when_i_receive_a_new_conversation
+      then_i_should_see_the_new_conversation
     end
   end
 
@@ -93,6 +100,10 @@ feature 'Private Conversation' do
       expect(page).to have_content @other_user.name
       expect(page).to have_content @initial_message[0..10]
     end
+  end
+
+  def then_i_should_see_the_new_conversation
+    then_i_should_see_the_new_conversation_in_the_sidenav
   end
 
   def and_there_is_a_user_i_want_to_message

@@ -62,13 +62,14 @@ class @PrivateConversationPreview
 
 
   # pings the server for new previews (max 10)
-  @fetch_new_previews: (order = "desc") ->
+  @fetch_new_previews: (order = "desc", render_in_sidenav = "true") ->
     last_updated_at =
       $("div.private_conversation_previews").last().attr("data-updated-at")
     $.get(
       url: "/conversations/refresh.js?" +
         "updated_after=#{encodeURIComponent(last_updated_at)}&" +
-        "order=#{encodeURIComponent(order)}"
+        "order=#{encodeURIComponent(order)}&" +
+        "sidenav=#{encodeURIComponent(render_in_sidenav)}"
     )
 
 
