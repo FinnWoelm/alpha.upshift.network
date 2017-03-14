@@ -1,0 +1,25 @@
+<%
+  humanized_records_name = records.model_name.singular.humanize.downcase
+  default_initial_link_text = "Click to load #{direction.to_s} #{pluralize(records.per_page, humanized_records_name)}..."
+  default_loading_link_text = "Loading #{direction.to_s} #{pluralize(records.per_page, humanized_records_name)}..."
+  default_error_link_text = "Failed to load #{direction.to_s} #{pluralize(records.per_page, humanized_records_name)}. Click to try again..."
+  page_limit = direction == :next ? records.total_pages : 1
+  pagination_anchor = records.anchor.is_a?(Time) ? records.anchor.exact : records.anchor
+%>
+
+<div class="infinity_scroll initial <%= use_javascript ? 'ready' : 'fallback' %> <%= direction %>" data-page-limit="<%= page_limit %>" data-page-anchor="<%= records.anchor %>" >
+  <%= link_to url_for(:params => {:page => records.send("#{direction}_page".to_sym), :anchor => pagination_anchor}), :remote => use_javascript do %>
+    <div>
+      <span class="initial-text">
+        <%= records.try(:pagination_link_text, direction, :initial, default_initial_link_text) || default_initial_link_text %>
+      </span>
+      <span class="loading-text">
+        <%= material_icon.autorenew.css_class('spin loading-indicator left') %>
+        <%= records.try(:pagination_link_text, direction, :loading, default_loading_link_text) || default_loading_link_text %>
+      </span>
+      <span class="error-text">
+        <%= records.try(:pagination_link_text, direction, :error,   default_error_link_text)   || default_error_link_text %>
+      </span>
+    </div>
+  <% end %>
+</div>

@@ -27,4 +27,34 @@ module ApplicationHelper
       :data => link_data
   end
 
+  # infinity_scroll loads the next page of records automatically when the
+  # infinity_scroll div scrolls into view
+  def infinity_scroll records
+    # if there is no next page, do not display anything
+    return if records.next_page.nil?
+
+    render :partial => "infinity_scroll/single_page",
+            locals: {
+              records: records,
+              direction: :next,
+              use_javascript: true
+            }
+  end
+
+  # infinity_scroll_fallback loads the previous page of records only upon click
+  # this is a fallback method for when a user has JS disabled (if JS is enabled,
+  # the user should never get into a situation where they need to load previous
+  # records)
+  def infinity_scroll_fallback records
+    # if there is no next page, do not display anything
+    return if records.previous_page.nil?
+
+    render :partial => "infinity_scroll/single_page",
+            locals: {
+              records: records,
+              direction: :previous,
+              use_javascript: false
+            }
+  end
+
 end

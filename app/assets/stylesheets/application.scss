@@ -14,6 +14,7 @@ $input-focus-color: color("grey", "darken-4") !default;
 @import "material_icons";
 
 // App Stylesheets
+@import "infinity_scroll";
 @import "side_navigation";
 @import "static";
 @import "post_and_comment";

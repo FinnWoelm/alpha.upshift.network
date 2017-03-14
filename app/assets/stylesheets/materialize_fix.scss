@@ -9,13 +9,16 @@
 
 // Spin icons
 i.spin {
-     -webkit-transform-origin: 50% 92%;
-     transform-origin:50% 92%;
-     -ms-transform-origin:50% 92%; /* IE 9 */
      -webkit-animation: spin 2s infinite linear;
      -moz-animation: spin 2s infinite linear;
      -o-animation: spin 2s infinite linear;
      animation: spin 2s infinite linear;
+}
+
+btn > i.spin {
+  -webkit-transform-origin: 50% 92%;
+  transform-origin:50% 92%;
+  -ms-transform-origin:50% 92%; /* IE 9 */
 }
 
 @-webkit-keyframes spin {
