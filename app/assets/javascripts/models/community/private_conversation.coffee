@@ -10,6 +10,8 @@ class @PrivateConversation
   #// add_message_from_user_compose_form: adds a message that was entered by the
   #//                                     user
   #// add_new_messages: adds one or more new messages fetched from the server
+  #// add_previous_messages: adds previous messages fetched from the server
+  #//                        (infinity scroll)
   #// fetch_new_messages: fetches newest messages from the server
   #// get_preview: returns an instance of PrivateConversationPreview that
   #//              belongs to this instance of PrivateConversation
@@ -66,6 +68,21 @@ class @PrivateConversation
     # adds each message
     for message in messages
       @_add_message message[0], message[1]
+
+
+  # adds older messages fetched from the server (via infinity scroll)
+  add_previous_messages: (messages) ->
+
+    # Save scroll position before messages are added
+    former_scroll_position = $(document).scrollTop()
+    former_document_height = $(document).height()
+
+    # adds each message
+    for message in messages
+      @_add_message message[0], message[1]
+
+    # Restore correct scroll position after adding messages
+    $(document).scrollTop(former_scroll_position + ($(document).height() - former_document_height))
 
 
   # fetches new messages in this conversation
@@ -146,6 +163,10 @@ class @PrivateConversation
     # OR if this is the first message
     else if (message_id > parseInt(@_selector().find("#chat_body .private_message").last().attr("data-message-id"))) or (@_selector().find("#chat_body .private_message").length == 0)
       @_selector().find("#chat_body > .section.bottom").before message_html
+
+    # add to top if ID is lesser than that of oldest message
+    else if (message_id < parseInt(@_selector().find("#chat_body .private_message").first().attr("data-message-id")))
+      @_selector().find("#chat_body > .section.top").after message_html
 
     Application.jump_to_bottom_of_page() if was_viewport_at_bottom
 

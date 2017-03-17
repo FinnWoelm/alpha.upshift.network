@@ -13,7 +13,9 @@ class PrivateConversation < ApplicationRecord
     :source => :participant
 
   # ## Private Messages
-  has_many :messages,
+  has_many :messages, -> {
+      includes(:sender)
+    },
     :class_name => "PrivateMessage",
     :foreign_key => "private_conversation_id",
     :dependent => :destroy,
@@ -29,7 +31,7 @@ class PrivateConversation < ApplicationRecord
   scope :most_recent_activity_first,
     -> { order('"private_conversations"."updated_at" DESC') }
   scope :with_associations,
-    -> { includes(:messages => :sender).includes(:participants) }
+    -> { includes(:participants) }
 
   # finds the conversations between a set of users
   # use like PrivateConversations.find_conversations_between [alice, bob]

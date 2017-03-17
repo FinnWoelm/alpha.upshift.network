@@ -74,6 +74,7 @@ class PrivateConversationsController < ApplicationController
 
     @private_conversation.mark_read_for @current_user
 
+    @private_messages = @private_conversation.messages.paginate_with_anchor(:page => params[:page], :anchor => params[:anchor], :anchor_column => :id, :anchor_orientation => :less_than)
     @private_message = @private_conversation.messages.build
   end
 

@@ -33,11 +33,13 @@ module ApplicationHelper
     # if there is no next page, do not display anything
     return if records.next_page.nil?
 
+    # only use infinity scroll (js-enabled) when page and anchor params are
+    # not manually set by user
     render :partial => "infinity_scroll/single_page",
             locals: {
               records: records,
               direction: :next,
-              use_javascript: true
+              use_javascript: (params[:page].nil? and params[:anchor].nil?)
             }
   end
 

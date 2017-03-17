@@ -10,6 +10,29 @@ feature 'Private Message' do
     then_i_should_see_the_messages_in_that_private_conversation
   end
 
+  context "When user scrolls to top of conversation (infinity scroll)" do
+    scenario 'User can see older messages', :js => true do
+      given_i_am_logged_in_as_a_user
+
+      # and I have a private conversation with more messages than are shown per page
+      @conversation = create(:private_conversation, :sender => @user)
+      create_list(:private_message, PrivateMessage.per_page+1, :conversation => @conversation)
+
+      # when I go to the private conversation
+      visit private_conversation_path @conversation
+
+      # then I should see as many messages as are shown per page
+      expect(page).to have_selector("#chat_body .private_message", count: PrivateMessage.per_page)
+
+      # when I scroll to the top (after not being at the top of the page)
+      page.driver.scroll_to(0, 10000)
+      page.driver.scroll_to(0, 0)
+
+      # then I should see as many messages as are shown per page + 1
+      expect(page).to have_selector("#chat_body .private_message", count: PrivateMessage.per_page+1)
+    end
+  end
+
   context "When new messages in the conversation are received" do
     scenario "User can see new messages without reloading", :js => true do
       given_i_am_logged_in_as_a_user

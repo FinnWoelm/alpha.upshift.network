@@ -73,6 +73,29 @@ describe 'Model: PrivateConversation', ->
       expect(active_conversation._add_message).toHaveBeenCalledWith messages[2][0], messages[2][1]
 
 
+  describe "#add_previous_messages", ->
+
+    messages =
+    id_of_first_message = null
+
+    beforeEach ->
+      id_of_first_message = parseInt(
+        $("#chat_body div.private_message").first().attr("data-message-id")
+      )
+      messages = [
+        [message_id = id_of_first_message-1, message_html = "<div class='private_message' data-message-id='#{id_of_first_message-1}'>some_content1</div>"],
+        [message_id = id_of_first_message-2, message_html = "<div class='private_message' data-message-id='#{id_of_first_message-2}'>some_content2</div>"],
+        [message_id = id_of_first_message-3, message_html = "<div class='private_message' data-message-id='#{id_of_first_message-3}'>some_content3</div>"],
+      ]
+
+    it "calls _add_message for each message", ->
+      spyOn(active_conversation, '_add_message')
+      active_conversation.add_previous_messages messages
+      expect(active_conversation._add_message).toHaveBeenCalledWith messages[0][0], messages[0][1]
+      expect(active_conversation._add_message).toHaveBeenCalledWith messages[1][0], messages[1][1]
+      expect(active_conversation._add_message).toHaveBeenCalledWith messages[2][0], messages[2][1]
+
+
   describe "#fetch_new_messages", ->
 
     beforeEach ->
@@ -251,6 +274,23 @@ describe 'Model: PrivateConversation', ->
         active_conversation._add_message message_id, message_html
         expect($("#chat_body .private_message").length).toEqual count+1
         expect($("#chat_body .private_message").last().html()).toContain "my private message 1234"
+
+    describe "when the ID is lower than the ID of the oldest message", ->
+
+      id_of_first_message = null
+
+      beforeEach ->
+        id_of_first_message = parseInt(
+          $("#chat_body div.private_message").first().attr("data-message-id")
+        )
+        message_id = id_of_first_message - 1
+        message_html = "<div class='private_message' data-message-id='#{message_id}'>my old private message</div>"
+
+      it "appends the message to the top of the chat", ->
+        count = $("#chat_body .private_message").length
+        active_conversation._add_message message_id, message_html
+        expect($("#chat_body .private_message").length).toEqual count+1
+        expect($("#chat_body .private_message").first().html()).toContain "my old private message"
 
 
     describe "when user has scrolled to bottom of chat", ->

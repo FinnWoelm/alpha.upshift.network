@@ -111,6 +111,12 @@ body.c-private_conversations, body.c-private_messages {
       }
     }
 
+    div#chat_body {
+      div.infinity_scroll {
+        margin-top: 45px;
+      }
+    }
+
     div#compose_message form div.tip {
       display: inline-block;
       padding-left: 10px;
