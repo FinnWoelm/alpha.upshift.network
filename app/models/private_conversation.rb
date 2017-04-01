@@ -80,6 +80,16 @@ class PrivateConversation < ApplicationRecord
     group(:id)
   end
 
+  # # Pagination
+  self.per_page = 15
+  def self.pagination_link_text direction, state, default_text
+
+    # make model name just 'conversations'
+    default_text.gsub!("private conversation", "conversation")
+
+    return default_text
+  end
+
   # # Accessors
   attr_accessor(:sender, :recipient)
   attr_accessor(:unread_message_count)

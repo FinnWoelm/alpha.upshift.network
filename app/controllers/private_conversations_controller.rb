@@ -18,7 +18,8 @@ class PrivateConversationsController < ApplicationController
     @private_conversations =
       PrivateConversation.
       for_user(@current_user).
-      with_unread_message_count_for(@current_user)
+      with_unread_message_count_for(@current_user).
+      paginate_with_anchor(:page => params[:page], :anchor => params[:anchor], :anchor_column => :updated_at, :anchor_orientation => :less_than)
   end
 
   # GET /conversations/refresh

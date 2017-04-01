@@ -34,7 +34,12 @@ MagicLamp.define(controller: PrivateConversationsController) do
 
   fixture do
     @current_user = FactoryGirl.create(:user)
-    @private_conversations = FactoryGirl.create_list(:private_conversation, 5, :sender => @current_user)
+    FactoryGirl.create_list(:private_conversation, 5, :sender => @current_user)
+    @private_conversations =
+      PrivateConversation.
+      for_user(@current_user).
+      with_unread_message_count_for(@current_user).
+      paginate_with_anchor(:page => nil, :anchor => nil, :anchor_column => :id, :anchor_orientation => :less_than)
     render :index
   end
 end

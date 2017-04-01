@@ -9,6 +9,27 @@ feature 'Private Conversation' do
     then_i_should_see_my_private_conversations
   end
 
+  context "When user scrolls to bottom of conversation (infinity scroll)" do
+    scenario 'User can see older conversations', :js => true do
+      given_i_am_logged_in_as_a_user
+
+      # and I have more private conversations than fit on a page
+      create_list(:private_conversation, PrivateConversation.per_page+1, :sender => @user)
+
+      # when I go to see my private conversations
+      visit private_conversations_home_path
+
+      # then I should see as many conversations as are shown per page
+      expect(page).to have_selector(".preview_conversation", count: PrivateConversation.per_page)
+
+      # when I scroll to the bottom
+      page.driver.scroll_to(0, 10000)
+
+      # then I should see as many conversations as are shown per page + 1
+      expect(page).to have_selector(".preview_conversation", count: PrivateConversation.per_page+1)
+    end
+  end
+
   context "When new messages/conversations are received" do
     scenario "Sidenav: User can see new messages/conversations without reloading", :js => true do
       given_i_am_logged_in_as_a_user
@@ -24,7 +45,6 @@ feature 'Private Conversation' do
       then_i_should_see_the_new_conversation
     end
   end
-
 
   scenario "User can start a new conversation" do
     given_i_am_logged_in_as_a_user

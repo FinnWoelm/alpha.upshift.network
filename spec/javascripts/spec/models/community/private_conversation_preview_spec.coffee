@@ -80,6 +80,40 @@ describe 'Model: PrivateConversationPreview', ->
           expect($(".preview_conversation:eq(0)").html()).toEqual "OLD CONTENT"
 
 
+  describe ".add_previous_conversation", ->
+
+    conversation_id =
+    updated_at =
+    html_of_preview = null
+
+    beforeEach ->
+      MagicLamp.load("private_conversations/index")
+      conversation_id = "the-conversation-id-2235"
+      updated_at = ExactDate.parse(
+          $("div.preview_conversation").last().attr("data-updated-at")
+        ).add(-ExactDate.HOUR)
+      html_of_preview = "<div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.to_s()}'>some preview content</div>"
+
+    it "adds preview to the bottom", ->
+      PrivateConversationPreview.add_previous_conversation conversation_id, updated_at.to_s(), html_of_preview
+      expect($(".preview_conversation").last().attr("data-conversation-id")).toEqual "the-conversation-id-2235"
+      expect($(".preview_conversation").last().html()).toEqual "some preview content"
+
+    describe "when conversation already exists with an equal or more recent timestamp", ->
+
+      beforeEach ->
+        html_of_preview = "<div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.add(ExactDate.MICROSECOND).to_s()}'>old preview content</div>"
+        PrivateConversationPreview.add_previous_conversation conversation_id, updated_at.add(ExactDate.MICROSECOND).to_s(), html_of_preview
+
+      it "does not add preview", ->
+        html_of_preview = html_of_preview.replace("old preview content", "new preview content")
+        PrivateConversationPreview.add_previous_conversation conversation_id, updated_at.to_s(), html_of_preview
+        expect($(".preview_conversation").last().attr("data-conversation-id")).toEqual "the-conversation-id-2235"
+        expect($(".preview_conversation").last().html()).toEqual "old preview content"
+
+
+
+
   describe ".enable_caching_of_previews_in_side_navigation", ->
 
     beforeEach ->

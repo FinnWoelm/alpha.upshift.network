@@ -5,6 +5,8 @@ class @PrivateConversationPreview
   #/ Static: Public
   #// add: adds a preview (and deletes existing ones with the same conversation
   #//      ID)
+  #// add_previous_conversation: adds a preview to the bottom (loaded via
+  #//                            pagination)
   #// enable_caching: adds data-turbolinks-permanent to the previews, so that
   #//                 they can persist when user navigates browser back
   #// fetch_new_previews: pings the server for new previews (max 10)
@@ -47,6 +49,20 @@ class @PrivateConversationPreview
     if update_updated_at
       $("div.private_conversation_previews").
         attr("data-updated-at", updated_at)
+
+
+  # adds a preview to the bottom (loaded via pagination)
+  @add_previous_conversation: (conversation_id, updated_at, html_of_preview) ->
+
+    # do nothing if a preview for this conversation already exists (with
+    # updated_at greater than or equal to this one)
+    return if (new PrivateConversationPreview conversation_id).updated_at.to_f() >= ExactDate.parse(updated_at).to_f()
+
+    # delete any existing preview with this ID
+    $(".preview_conversation[data-conversation-id='#{conversation_id}']").remove()
+
+    # insert at bottom
+    $("div.private_conversation_previews").append html_of_preview
 
 
   # makes previews of private conversations in side navigation

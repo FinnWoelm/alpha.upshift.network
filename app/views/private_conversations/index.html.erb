@@ -4,6 +4,8 @@
 
 <div class="section"></div>
 
+<%= infinity_scroll_fallback @private_conversations %>
+
 <div class="conversation_preview_wrapper">
   <div class="new_conversation">
     <%= link_to new_private_conversation_path, class: 'open_conversation' do %>
@@ -27,5 +29,7 @@
     <%= render(@private_conversations) %>
   </div>
 </div>
+
+<%= infinity_scroll @private_conversations %>
 
 <div class="section"></div>
