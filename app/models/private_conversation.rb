@@ -13,7 +13,9 @@ class PrivateConversation < ApplicationRecord
     :source => :participant
 
   # ## Private Messages
-  has_many :messages,
+  has_many :messages, -> {
+      includes(:sender)
+    },
     :class_name => "PrivateMessage",
     :foreign_key => "private_conversation_id",
     :dependent => :destroy,
@@ -29,26 +31,72 @@ class PrivateConversation < ApplicationRecord
   scope :most_recent_activity_first,
     -> { order('"private_conversations"."updated_at" DESC') }
   scope :with_associations,
-    -> { includes(:messages).includes(:participants) }
+    -> { includes(:participants) }
 
   # finds the conversations between a set of users
   # use like PrivateConversations.find_conversations_between [alice, bob]
-  scope :find_conversations_between,
-    ->(users) {
-      joins(participantships: :participant).
-      where(users: {id: users.pluck(:id)}).
-      group("id").
-      having("count(\"private_conversations\".\"id\") = ?", users.size)
-    }
+  scope :find_conversations_between, -> (users) do
+    joins(participantships: :participant).
+    where(users: {id: users.pluck(:id)}).
+    group("id").
+    having("count(\"private_conversations\".\"id\") = ?", users.size)
+  end
+
+  # finds conversations that a user is a participant in
+  scope :for_user, -> (user) do
+    joins(:participantships).
+    where(participantship_in_private_conversations: {participant_id: user.id}).
+    most_recent_activity_first.
+    includes(:participants).
+    includes(:most_recent_message)
+  end
+
+  # reorders conversations according to passed order
+  scope :order_by_updated_at, -> (order) do
+    if order.present?
+      reorder(:updated_at => order.to_sym)
+    end
+  end
+
+  # finds conversations updated after the passed time (min_updated_at)
+  scope :updated_after, -> (updated_after) do
+    if updated_after.present?
+      where("private_conversations.updated_at > ?", updated_after).
+      distinct
+    end
+  end
+
+  # applies multiple params
+  scope :with_params, -> (updated_after: nil, order: nil) do
+    updated_after(updated_after).
+    order_by_updated_at(order)
+  end
+
+  scope :with_unread_message_count_for, -> (user) do
+    joins(:participantships).
+    joins("LEFT OUTER JOIN private_messages AS unread_private_messages ON private_conversations.id = unread_private_messages.private_conversation_id and unread_private_messages.created_at > COALESCE(participantship_in_private_conversations.read_at, to_timestamp('0001-01-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS'))").
+    merge( PrivateConversation.select("private_conversations.*, count(DISTINCT unread_private_messages.id) as unread_message_count")).
+    where(participantship_in_private_conversations: {participant_id: user.id}).
+    group(:id)
+  end
+
+  # # Pagination
+  self.per_page = 15
+  def self.pagination_link_text direction, state, default_text
+
+    # make model name just 'conversations'
+    default_text.gsub!("private conversation", "conversation")
+
+    return default_text
+  end
 
   # # Accessors
   attr_accessor(:sender, :recipient)
-  attr_accessor(:initial_message)
+  attr_accessor(:unread_message_count)
 
   # # Validations
   validates :sender, presence: true, on: :create
   validates :recipient, presence: true, on: :create
-  validates :messages, presence: true, on: :create
   validates :participantships,
     length: {
       is: 2,
@@ -64,6 +112,11 @@ class PrivateConversation < ApplicationRecord
     if: "sender.present? and recipient.present? and recipient.is_a?(User)"
 
   # # Callbacks
+  after_initialize do
+    if attributes['unread_message_count'].present?
+      @unread_message_count = attributes['unread_message_count']
+    end
+  end
   after_initialize :cast_recipient_to_user, if: :new_record?
   after_initialize :add_sender_and_recipient_as_participants, if: :new_record?
 
@@ -71,7 +124,7 @@ class PrivateConversation < ApplicationRecord
 
   # adds a participant to the conversation
   def add_participant participant
-    self.participantships.build(:participant => participant) if participant
+    self.participantships.build(:participant => participant) if participant.is_a?(User)
   end
 
   # returns a list of participants that exclude the participant (object or ID)
@@ -102,7 +155,8 @@ class PrivateConversation < ApplicationRecord
   # are new messages, to avoid unnessecary database insert statements)
   def mark_read_for participant
     if participantship_of( participant ).read_at.nil? or
-      participantship_of( participant ).read_at < messages.first.created_at
+      (messages.first.present? and
+      participantship_of( participant ).read_at < messages.first.created_at)
 
       participantship_of( participant ).touch(:read_at)
 

@@ -28,7 +28,7 @@
         <div id="desktop_side_navigation" class="<%= fixed ? "fixed " : "" %>col l2 hide-on-med-and-down no_padding z-depth-1">
           <%= render partial: "shared/side_navigation" %>
         </div>
-        <div class="col l8 push-l<%= fixed ? "3" : "1" %> m12 s12">
+        <div class="main col l8 push-l<%= fixed ? "3" : "1" %> m12 s12">
           <%= yield %>
         </div>
       </div>
@@ -56,6 +56,12 @@
           Application.resize_side_nav_to_full_height();
         });
 
+        // and whenever DOM height changes
+        new ResizeSensor(
+          $("body:not(.fullscreen)"),
+          function() {
+            Application.resize_side_nav_to_full_height();
+          });
 
       });
 

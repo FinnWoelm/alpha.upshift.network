@@ -66,3 +66,4 @@ $(document).on 'turbolinks:before-cache', ->
   $("div.drag-target").remove()
   $("body").attr("data-is-cached", "true")
   $("body").css("overflow", "unset")
+  BackgroundJob.clear_all()

@@ -19,4 +19,15 @@ class ApplicationController < ActionController::Base
     Rails.application.routes.url_helpers.send("#{object.class.to_s.split("::").last.downcase}_path", object)
   end
 
+  # Get the user's private conversations ordered by most recent,
+  # include the most recent message
+  def get_recent_conversations_for_sidenav
+    @private_conversations_in_sidenav =
+      PrivateConversation.
+      for_user(@current_user).
+      with_unread_message_count_for(@current_user).
+      limit(10)
+  end
+  helper_method :get_recent_conversations_for_sidenav
+
 end

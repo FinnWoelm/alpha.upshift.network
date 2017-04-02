@@ -14,6 +14,20 @@ class PrivateMessage < ApplicationRecord
   # # Scopes
   default_scope -> { order('"private_messages"."id" DESC') }
 
+  # # Pagination
+  self.per_page = 30
+  def self.pagination_link_text direction, state, default_text
+
+    # flip the direction
+    default_text.gsub!("next", "previous") if direction == :next
+    default_text.gsub!("previous", "next") if direction == :previous
+
+    # make model name just 'messages'
+    default_text.gsub!("private message", "message")
+
+    return default_text
+  end
+
   # # Validations
   validates :conversation, presence: true
   validates :sender, presence: true

@@ -6,3 +6,38 @@
 .blue-gray {
   @extend .blue-grey;
 }
+
+// Spin icons
+i.spin {
+     -webkit-animation: spin 2s infinite linear;
+     -moz-animation: spin 2s infinite linear;
+     -o-animation: spin 2s infinite linear;
+     animation: spin 2s infinite linear;
+}
+
+btn > i.spin {
+  -webkit-transform-origin: 50% 92%;
+  transform-origin:50% 92%;
+  -ms-transform-origin:50% 92%; /* IE 9 */
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}

@@ -25,7 +25,7 @@ module PrivateConversationsHelper
   # - uses ID if multiple recipients
   def link_to_private_conversation private_conversation
 
-    # do not display current user on participant list
+    # get the other participants
     participants_without_current_user =
       get_participants_without_current_user private_conversation.participants
 
@@ -39,12 +39,34 @@ module PrivateConversationsHelper
   end
 
   # shows a preview of the conversation by showing its first messages
-  def show_conversation_preview private_conversation
+  def show_conversation_preview private_conversation, length=30
     if private_conversation.most_recent_message
-      return truncate(private_conversation.most_recent_message.content)
+      if private_conversation.most_recent_message.sender_id.eql?(@current_user.id)
+        icon = :call_made
+      else
+        icon = :call_received
+      end
+      return material_icon.send(icon).md_18.to_s + " " + truncate(private_conversation.most_recent_message.content, length: length)
     else
       return "No messages yet."
     end
+  end
+
+  # renders a preview of conversation for the sidebar
+  def nav_link_conversation_preview conversation
+    nav_text =
+      render(
+        partial: 'private_conversations/private_conversation_in_sidenav',
+        locals: {private_conversation: conversation}
+      )
+
+    nav_link(
+      nav_text,
+      link_to_private_conversation(conversation),
+      nil,
+      "preview_conversation multiple_lines two",
+      {conversation_id: conversation.id, updated_at: conversation.updated_at.exact}
+    )
   end
 
 end

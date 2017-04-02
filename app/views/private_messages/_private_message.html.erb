@@ -1,6 +1,19 @@
-<div class="private_conversation" style="display:block; padding: 10px 30px; background-color:lightblue; margin-bottom: 20px;">
+<%
+  # Get the sender of the message
+  sender = private_message.conversation.participants.find{|p| p.id == private_message.sender_id}
+%>
 
-  <p>From <%= render_sender_profile private_message %></p>
-  <p><%= private_message.content %></p>
+<div class="row private_message <%= sender.eql?(@current_user) ? 'sent' : 'received' %>" data-message-id="<%= private_message.id %>">
+
+  <div class="col s1 sender center-align tooltipped" dataposition="bottom" data-delay="50" data-tooltip="<%= private_message.sender.name %>">
+    <%= image_tag private_message.sender.profile_picture, class: 'responsive-img ' + sender.color_scheme_with_font_color, alt: sender.name %>
+  </div>
+
+  <div class="col s10 message">
+    <div class="dot <%= sender.color_scheme %>"></div>
+    <div class="content <%= sender.color_scheme_with_font_color %> tooltipped" data-position="bottom" data-delay="50" data-tooltip="<%= private_message.created_at %>">
+      <%= simple_format h((private_message.content).strip) %>
+    </div>
+  </div>
 
 </div>

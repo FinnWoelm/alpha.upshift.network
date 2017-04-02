@@ -2,78 +2,27 @@ require 'rails_helper'
 
 RSpec.describe "private_conversations/index.html.erb", type: :view do
 
+  let(:current_user) { create(:user) }
+  let!(:private_conversations) { create_list(:private_conversation, 5, :sender => current_user ) }
+
   before(:each) do
-    @current_user = create(:user)
+    assign(:current_user, current_user)
+    assign(:private_conversations, PrivateConversation.paginate(:page => 1))
   end
 
   it "shows all private conversations of the user" do
-
-    @my_conversations = []
-    5.times do
-      @my_conversations << create(:private_conversation, :sender => @current_user)
-    end
-
-    @private_conversations = @current_user.private_conversations
-
     render
 
-    @my_conversations.each do |c|
+    private_conversations.each do |c|
       expect(rendered).to have_text(c.recipient.name)
     end
-    assert_select "div.private_conversation", :count => 5
+
+    assert_select "div.preview_conversation", :count => 5
   end
 
-  it "does not show any private conversations of other users" do
-
-    @not_my_conversations = []
-    5.times do
-      @not_my_conversations << create(:private_conversation)
-    end
-
-    @private_conversations = @current_user.private_conversations
-
+  it "has an option to delete the conversation" do
     render
-
-    @not_my_conversations.each do |c|
-      expect(rendered).not_to have_text(c.recipient.name)
-    end
-    assert_select "div.private_conversation", :count => 0
-    expect(rendered).to have_text("You currently have no conversations.")
-  end
-
-  it "renders conversations in order of most recent activity" do
-    @most_recently_active_conversations = []
-    5.times { @most_recently_active_conversations << build(:private_conversation, :sender => @current_user) }
-
-    20.times do
-      conversation = @most_recently_active_conversations[rand(0..@most_recently_active_conversations.size-1)]
-      create(:private_message, :conversation => conversation, :sender => @current_user)
-
-      # move conversation to front of array
-      @most_recently_active_conversations -= [conversation]
-      @most_recently_active_conversations.unshift conversation
-
-    end
-
-    @private_conversations =
-      @current_user.
-      private_conversations.
-      most_recent_activity_first.
-      includes(:participants).
-      includes(:most_recent_message)
-
-    render
-
-    previous_recipient_name = ""
-
-    @most_recently_active_conversations.each do |conversation|
-      if not previous_recipient_name.empty? and not conversation.new_record?
-        expect(previous_recipient_name).
-          to appear_before(conversation.recipient.name)
-        previous_recipient_name = conversation.recipient.name
-      end
-    end
-
+    assert_select "a", :text => "Delete", :count => 5
   end
 
 end

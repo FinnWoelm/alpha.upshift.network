@@ -46,8 +46,16 @@ Rails.application.routes.draw do
   resources :posts, only: [:new, :create, :show, :destroy], :path => "post"
 
   # Private Conversations & Messages
-  resources :private_conversations, only: [:new, :create, :show, :update, :destroy], :path => "conversation"
+  resources :private_conversations, only: [:new, :create, :show, :update, :destroy], :path => "conversation" do
+    resources :private_messages, only: [:create], :path => "message"
+    resources :private_messages, only: [], :path => "messages" do
+      get 'refresh', on: :collection, constraints: lambda { |req| req.format == :js }
+    end
+  end
   get '/conversations' => "private_conversations#index", as: :private_conversations_home
+  resources :private_conversations, only: [], :path => "conversations" do
+    get 'refresh', on: :collection, constraints: lambda { |req| req.format == :js }
+  end
 
   # Like Path
   post '/:likable_type/:likable_id/like', to: 'likes#create', as: :like

@@ -14,12 +14,11 @@ RSpec.describe "private_conversations/new.html.erb", type: :view do
     assign(:private_conversation, private_conversation)
   end
 
-  it "renders a form for recipient and message" do
+  it "renders a form for recipient" do
     render
 
     expect(rendered).to have_selector("form")
     expect(rendered).to have_selector("label", :text => "Recipient")
-    expect(rendered).to have_selector("label", :text => "Message")
   end
 
   describe "validation errors" do

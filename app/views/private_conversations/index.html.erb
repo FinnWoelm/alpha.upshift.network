@@ -1,7 +1,35 @@
-<h1>Conversations</h1>
-
-<div class="new_private_conversation" style="display:block; padding: 10px 30px; background-color:lightgray; margin-bottom: 20px;">
-  <%= link_to "Start a new Conversation", new_private_conversation_path %>
+<div class="page_heading z-depth-1">
+  <h3>Conversations</h3>
 </div>
 
-<%= render(@private_conversations) || "You currently have no conversations." %>
+<div class="section"></div>
+
+<%= infinity_scroll_fallback @private_conversations %>
+
+<div class="conversation_preview_wrapper">
+  <div class="new_conversation">
+    <%= link_to new_private_conversation_path, class: 'open_conversation' do %>
+      <div class="row no_margin_bottom">
+        <div class="col s2 m2 l1 center-align">
+          <%= image_tag "community/add.png", class: 'responsive-img' %>
+        </div>
+        <div class="col s10 m10 l11">
+
+          <strong>
+            New conversation...
+          </strong>
+          <br/>
+          Start a conversation with a friend.
+
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <div class="private_conversation_previews" data-updated-at="<%= @private_conversations[0].try(:updated_at).try(:exact) || Time.zone.now.exact %>">
+    <%= render(@private_conversations) %>
+  </div>
+</div>
+
+<%= infinity_scroll @private_conversations %>
+
+<div class="section"></div>

@@ -1,0 +1,47 @@
+div.infinity_scroll {
+
+  border-radius: 5px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  @extend .center-align;
+  transition: .3s all;
+  @extend .gray, .lighten-3;
+
+  a {
+    div {
+      padding: 15px;
+
+      span {
+        @extend .grey-text;
+      }
+    }
+  }
+
+  .initial-text, .loading-text, .error-text {
+    display: none;
+  }
+
+  &.initial {
+    .initial-text {
+      display: block;
+    }
+  }
+
+  &.loading {
+    pointer-events: none;
+
+    .loading-text {
+      display: block;
+
+      // keep text centered by offsetting width of icon
+      i { margin-right: -1em; }
+    }
+  }
+
+  &.error {
+    .error-text {
+      display: block;
+    }
+  }
+
+}

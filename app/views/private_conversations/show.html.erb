@@ -1,7 +1,42 @@
-<h1>Conversation with <%= list_participants @private_conversation.participants %></h1>
+<div class="private_conversation show" data-conversation-id="<%= @private_conversation.id %>">
 
-<%= render partial: 'form', locals: {
-  private_conversation: @private_conversation,
-  private_message: @private_message} %>
+  <div class="page_heading z-depth-1">
+    <h3>Conversation with <%= list_participants @private_conversation.participants %></h3>
+  </div>
 
-<%= render @private_conversation.messages.select {|msg| msg.persisted?} %>
+  <div id="chat_body">
+
+    <%= infinity_scroll @private_messages %>
+
+    <div class="section top"></div>
+
+    <%= render @private_messages.sort_by(&:id) %>
+
+    <%= infinity_scroll_fallback @private_messages %>
+
+    <% # show noscript 'manual reload' notice
+      if @private_messages.current_page == 1 and not params[:anchor].nil? %>
+        <div class="infinity_scroll initial fallback">
+          <%= link_to url_for() do %>
+            <div>
+              <span class="initial-text">
+                Reload the page to see new messages
+              </span>
+            </div>
+          <% end %>
+        </div>
+    <% end %>
+
+    <div class="section bottom"></div>
+
+  </div>
+
+  <div id="compose_message" class="z-depth-1">
+    <div class="section"></div>
+
+    <%= render partial: 'private_messages/form', locals: {
+      private_conversation: @private_conversation,
+      private_message: @private_message} %>
+  </div>
+
+</div>

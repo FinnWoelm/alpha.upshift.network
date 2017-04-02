@@ -64,12 +64,14 @@ RSpec.describe PrivateConversation, type: :model do
     end
 
     describe ":with_associations" do
-      before { create(:private_conversation) }
-      let(:private_conversation) { PrivateConversation.with_associations.first }
-
-      it "eagerloads messages" do
-        expect(private_conversation.association(:messages)).to be_loaded
+      before do
+        @conversation = create(:private_conversation)
+        @conversation.messages.create(
+          :content => 'hello',
+          :sender => @conversation.sender
+        )
       end
+      let(:private_conversation) { PrivateConversation.with_associations.first }
 
       it "eagerloads participants" do
         expect(private_conversation.association(:participants)).to be_loaded
@@ -110,12 +112,141 @@ RSpec.describe PrivateConversation, type: :model do
 
     end
 
+    describe ":for_user" do
+
+      let(:current_user) { create(:user) }
+      let!(:conversations_with_user) {
+        create_list(:private_conversation, 3, sender: current_user) +
+        create_list(:private_conversation, 3, recipient: current_user)
+      }
+      let!(:conversations_without_user) {
+        create_list(:private_conversation, 3)
+      }
+
+      it "returns conversations that the user is a participant in" do
+        ids_of_conversations = PrivateConversation.for_user(current_user).map(&:id)
+        conversations_with_user.each do |conversation|
+          expect(ids_of_conversations).to include conversation.id
+        end
+      end
+
+      it "does not return conversations that the user is not a participant in" do
+        ids_of_conversations = PrivateConversation.for_user(current_user).pluck(:id)
+        conversations_without_user.each do |conversation|
+          expect(ids_of_conversations).not_to include conversation.id
+        end
+      end
+
+      it "sorts conversations by most recent activity first" do
+        conversations = PrivateConversation.for_user(current_user)
+        expect(conversations[0].updated_at).to be > conversations[1].updated_at
+        expect(conversations[1].updated_at).to be > conversations[2].updated_at
+        expect(conversations[2].updated_at).to be > conversations[3].updated_at
+        expect(conversations[3].updated_at).to be > conversations[4].updated_at
+      end
+    end
+
+    describe ":order_by_updated_at" do
+
+      it "calls reorder with the passed order" do
+        expect(PrivateConversation).to receive(:reorder).with(:updated_at => :asc)
+        PrivateConversation.order_by_updated_at("asc")
+      end
+
+      context "when argument is not passed" do
+
+        it "does not change the scope" do
+          expect(PrivateConversation).not_to receive(:reorder)
+          PrivateConversation.order_by_updated_at(nil)
+        end
+      end
+    end
+
+    describe ":updated_after" do
+
+      let(:conversations) { create_list(:private_conversation, 5) }
+      let!(:msg1) { create(:private_message, :conversation => conversations[0]) }
+      let!(:msg2) { create(:private_message, :conversation => conversations[1]) }
+
+      it "returns conversations created after conversation 3" do
+        expect(PrivateConversation.updated_after(conversations[2].created_at.exact).map(&:id)).
+          to include conversations[3].id
+        expect(PrivateConversation.updated_after(conversations[2].created_at.exact).map(&:id)).
+          to include conversations[4].id
+        expect(PrivateConversation.updated_after(conversations[2].created_at.exact).map(&:id)).
+          not_to include conversations[2].id
+      end
+
+      context "when min_updated_at is not passed" do
+
+        it "does not change the scope" do
+          expect(PrivateConversation.all.updated_after(nil).map(&:id)).
+            to eq PrivateConversation.all.map(&:id)
+        end
+      end
+    end
+
+    describe ":with_params" do
+
+      it "calls updated_after" do
+        time = Time.now
+        expect(PrivateConversation).
+          to receive(:updated_after).with(time).and_call_original
+        PrivateConversation.with_params(:updated_after => time)
+      end
+
+      it "calls order_by_updated_at" do
+        expect(PrivateConversation).
+          to receive(:order_by_updated_at).with("asc").and_call_original
+        PrivateConversation.with_params(:order => "asc")
+      end
+    end
+
+    describe ":with_unread_message_count_for" do
+
+      let(:current_user) { create(:user) }
+      let(:conversation) { create(:private_conversation, :sender => current_user) }
+      let(:participantship_of_current_user) {
+        current_user.participantships_in_private_conversations.first
+      }
+
+      before do
+        create_list(:private_message, 5, :conversation => conversation)
+      end
+
+      context "when read_at is nil" do
+
+        before do
+          participantship_of_current_user.update_attributes(:read_at => nil)
+        end
+
+        it "sets unread_message_count to 5" do
+          expect(
+            PrivateConversation.with_unread_message_count_for(current_user).
+            first.unread_message_count
+          ).to eq 5
+        end
+      end
+
+      context "when read_at equals created_at of last message" do
+
+        before do
+          participantship_of_current_user.update_attributes(:read_at => Time.now)
+        end
+
+        it "sets unread_message_count to 0" do
+          expect(
+            PrivateConversation.with_unread_message_count_for(current_user).
+            first.unread_message_count
+          ).to eq 0
+        end
+      end
+    end
   end
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:sender).on(:create) }
     it { is_expected.to validate_presence_of(:recipient).on(:create) }
-    it { is_expected.to validate_presence_of(:messages).on(:create) }
     it { is_expected.to validate_length_of(:participantships).
           with_message("needs exactly two conversation participants")
     }
@@ -137,6 +268,7 @@ RSpec.describe PrivateConversation, type: :model do
 
       it { is_expected.to receive(:cast_recipient_to_user) }
       it { is_expected.to receive(:add_sender_and_recipient_as_participants) }
+
     end
   end
 
@@ -252,6 +384,19 @@ RSpec.describe PrivateConversation, type: :model do
           }
         allow(participantship).
           to receive(:read_at) { Time.now }
+      }
+
+      it "does not touch read_at of participant's participantship" do
+        expect(participantship).not_to receive(:touch).with(:read_at)
+      end
+    end
+
+    context "when there are no messages" do
+      before {
+        allow(private_conversation).
+          to receive_message_chain(:messages, :first, :present?) { false }
+        allow(participantship).
+          to receive(:read_at) { Time.now - 1.minute }
       }
 
       it "does not touch read_at of participant's participantship" do

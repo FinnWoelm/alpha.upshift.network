@@ -1,0 +1,72 @@
+body.c-private_conversations, body.c-private_messages {
+
+  // Formatting of messages in conversation
+  &.a-show, &.a-create {
+    div.private_message {
+
+      // Message sent by user
+      &.sent {
+        text-align: right;
+
+        div.dot {
+          right: .5rem;
+        }
+
+        div.sender {
+          // @extend .push-s11;
+          left: 91.66667%;
+          position: relative;
+        }
+      }
+
+      // Message received by user
+      &.received {
+        text-align: left;
+
+        div.dot {
+          left: .5rem;
+        }
+      }
+
+      // Sender icon
+      div.sender {
+        img {
+          width: 50px;
+          margin: auto;
+          border-radius: 10px;
+          overflow: hidden;
+          display: block;
+        }
+      }
+
+      // The message
+      div.message {
+        position: relative;
+
+        div.dot {
+          position: absolute;
+          top: .75rem;
+          width: 10px;
+          height: 10px;
+          background-color: inherit;
+          border-radius: 10px;
+        }
+
+        div.content {
+          background-color: inherit;
+          display: inline-block;
+          padding: 5px 10px;
+          border-radius: 3px;
+
+          p:first-of-type {
+            margin-top: 0px;
+          }
+
+          p:last-of-type {
+            margin-bottom: 0px;
+          }
+        }
+      }
+    }
+  }
+}

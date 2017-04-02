@@ -1,0 +1,36 @@
+<div class="head">
+
+  <%= image_tag "dawn.jpg", class: 'responsive-img' %>
+
+  <%= link_to private_conversations_home_path, class: 'title waves-light waves-effect' do %>
+    Conversations
+  <% end %>
+
+</div>
+
+<div class="content">
+
+  <%= nav_link(
+    ("<div class='participants left'>" +
+        image_tag("community/add.png", class: 'responsive-img') +
+      "</div>
+      <div>
+        <span class='line'>
+          New conversation...
+        </span>
+        <span class='line content'>
+          Start a conversation with a friend.
+        </span>
+      </div>").html_safe,
+      new_private_conversation_path,
+      nil,
+      "new_conversation multiple_lines two"
+    ) %>
+
+    <div class="private_conversation_previews" data-updated-at="<%= conversations[0].present? ? conversations[0].updated_at.exact : Time.zone.now.exact %>">
+      <% conversations.each do |conversation| %>
+        <%= nav_link_conversation_preview(conversation) %>
+      <% end %>
+    </div>
+
+</div>
