@@ -9,7 +9,7 @@ class PrivateConversationsController < ApplicationController
     if ['show'].include?(action_name)
       'fullscreen'
     elsif ['index', 'new', 'create'].include?(action_name)
-      'fluid_with_side_nav'
+      'with_sidenav'
     end
   }
 
@@ -71,7 +71,7 @@ class PrivateConversationsController < ApplicationController
 
   # GET /conversation/:username
   def show
-    render('error', status: 404, layout: 'fluid_with_side_nav') and return unless @private_conversation
+    render('error', status: 404, layout: 'with_sidenav') and return unless @private_conversation
 
     @private_conversation.mark_read_for @current_user
 

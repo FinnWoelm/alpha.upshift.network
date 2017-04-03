@@ -2,7 +2,7 @@ class Democracy::CommunitiesController < ApplicationController
   before_action :authorize
   before_action :set_community, only: :show
 
-  layout "fluid_with_side_nav"
+  layout "with_sidenav"
 
   # GET /communities
   def index

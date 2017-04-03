@@ -6,7 +6,7 @@ class PrivateMessagesController < ApplicationController
 
   # POST /conversation/:private_conversation_id/message/
   def create
-    render('error', status: 404, layout: 'fluid_with_side_nav') and return unless @private_conversation
+    render('error', status: 404, layout: 'with_sidenav') and return unless @private_conversation
 
     @private_message = @private_conversation.messages.build(private_message_params)
 
@@ -33,7 +33,7 @@ class PrivateMessagesController < ApplicationController
 
   # GET /conversation/:private_conversation_id/messages/refresh.js
   def refresh
-    render(:error, status: 404, layout: 'fluid_with_side_nav') and return unless @private_conversation
+    render(:error, status: 404, layout: 'with_sidenav') and return unless @private_conversation
 
     @private_messages =
       @private_conversation.messages.
