@@ -5,13 +5,7 @@ class PrivateConversationsController < ApplicationController
   before_action :set_conversation, only: :show
   before_action :get_recent_conversations_for_sidenav, only: [:show, :new]
 
-  layout Proc.new{
-    if ['show'].include?(action_name)
-      'fullscreen'
-    elsif ['index', 'new', 'create'].include?(action_name)
-      'with_sidenav'
-    end
-  }
+  layout 'fullscreen', only: [:show]
 
   # GET /conversations
   def index
@@ -71,7 +65,7 @@ class PrivateConversationsController < ApplicationController
 
   # GET /conversation/:username
   def show
-    render('error', status: 404, layout: 'with_sidenav') and return unless @private_conversation
+    render('error', status: 404, layout: 'errors') and return unless @private_conversation
 
     @private_conversation.mark_read_for @current_user
 

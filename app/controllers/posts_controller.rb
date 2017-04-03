@@ -6,9 +6,9 @@ class PostsController < ApplicationController
 
   layout Proc.new{
     if @current_user
-      'with_sidenav'
-    else
       'application'
+    else
+      'without_sidenav'
     end
   }
 

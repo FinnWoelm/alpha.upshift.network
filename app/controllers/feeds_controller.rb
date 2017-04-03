@@ -1,8 +1,6 @@
 class FeedsController < ApplicationController
   before_action :authorize
 
-  layout 'with_sidenav'
-
   # GET /
   def show
 

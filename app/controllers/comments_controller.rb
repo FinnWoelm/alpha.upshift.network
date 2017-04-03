@@ -4,8 +4,6 @@ class CommentsController < ApplicationController
   before_action :set_commentable_object, only: :create
   before_action :set_comment, only: [:destroy]
 
-  layout 'with_sidenav'
-
   # POST /object/:object_id/comment/:id
   def create
 
