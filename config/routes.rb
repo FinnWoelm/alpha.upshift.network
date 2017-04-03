@@ -72,11 +72,12 @@ Rails.application.routes.draw do
   # get 'feed', to: 'feeds#show', as: :feed
 
   ### Democracy
-  scope module: 'democracy', shallow: true do
-    resources :communities, only: [:index, :show], module: 'community' do
-      resources :decisions, only: [:index, :show, :new, :create]
-    end
-  end
+  ### Disabled while we're focusing on completion of MVP
+  # scope module: 'democracy', shallow: true do
+  #   resources :communities, only: [:index, :show], module: 'community' do
+  #     resources :decisions, only: [:index, :show, :new, :create]
+  #   end
+  # end
 
   # Profiles -- this must be last
   get '/:username', to: 'profiles#show', as: :profile
