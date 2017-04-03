@@ -2,6 +2,8 @@ class FriendshipRequestsController < ApplicationController
   before_action :authorize
   before_action :set_friendship_request, only: [:destroy]
 
+  layout 'with_sidenav'
+
   # GET /friend-requests
   def index
     @friendship_requests = @current_user.friendship_requests_received.includes(:sender)

@@ -4,6 +4,14 @@ class PostsController < ApplicationController
   before_action :set_post_with_assocations, only: [:show]
   before_action :set_post_without_associations, only: [:destroy]
 
+  layout Proc.new{
+    if @current_user
+      'with_sidenav'
+    else
+      'application'
+    end
+  }
+
   # GET /post/1
   def show
     render('error', status: 404, layout: 'errors') and return unless @post and @post.readable_by?(@current_user)
