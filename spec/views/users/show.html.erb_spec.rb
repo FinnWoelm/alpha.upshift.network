@@ -32,6 +32,11 @@ RSpec.describe "users/show", type: :view do
     expect(posts_to_check[1].content).to appear_before(posts_to_check[0].content)
   end
 
+  it "shows a button for starting a private conversation" do
+    render
+    expect(rendered).to have_selector("button", text: "Message")
+  end
+
   context "No friendship request has been sent" do
     it "has an add friend button" do
       render

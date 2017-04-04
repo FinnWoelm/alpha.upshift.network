@@ -26,6 +26,19 @@ module UsersHelper
 
   end
 
+  # show a button if current user can message the profile's user
+  def message_action
+
+    # do not show anything if user is not signed in
+    return unless @current_user
+
+    # do not show anything if user is on their own profile
+    return if @user.id == @current_user.id
+
+    render partial: "users/message_button", locals: {recipient: @user}
+
+  end
+
   # shows form to write new post
   def write_post_action
 
