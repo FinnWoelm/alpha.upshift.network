@@ -3,6 +3,8 @@ class ProfilesController < ApplicationController
   before_action :current_user, only: [:show]
   before_action :set_profile, only: [:show]
 
+  layout 'without_sidenav'
+
   # GET /:username
   def show
     render('error', status: 404, layout: 'errors') and return unless @profile and @profile.viewable_by?(@current_user)

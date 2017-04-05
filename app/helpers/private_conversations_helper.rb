@@ -63,9 +63,10 @@ module PrivateConversationsHelper
     nav_link(
       nav_text,
       link_to_private_conversation(conversation),
-      nil,
-      "preview_conversation multiple_lines two",
-      {conversation_id: conversation.id, updated_at: conversation.updated_at.exact}
+      {
+        :classes => "preview_conversation multiple_lines two",
+        :data => {conversation_id: conversation.id, updated_at: conversation.updated_at.exact}
+      }
     )
   end
 

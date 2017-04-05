@@ -44,3 +44,6 @@ bower.json
 
 # Ignore Paperclip attachments
 /public/system/*
+
+# Ignore original artwork
+/original_images/*

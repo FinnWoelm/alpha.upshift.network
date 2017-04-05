@@ -4,6 +4,14 @@ class RegistrationsController < ApplicationController
 
   layout "static_info_message", only: [:confirm]
 
+  layout Proc.new{
+    if ['confirm'].include?(action_name)
+      'static_info_message'
+    else
+      'without_sidenav'
+    end
+  }
+
   def new
     @user = User.new
   end

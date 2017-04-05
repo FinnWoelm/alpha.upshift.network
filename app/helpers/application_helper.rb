@@ -15,16 +15,32 @@ module ApplicationHelper
     render :partial => "likes/unlike_#{style}", locals: {object: object}
   end
 
-  # creates a link with text for a given path, highlighting nav element if active
-  def nav_link link_text, link_path, link_controller = nil, link_classes = nil, link_data = nil
-    if link_controller
-      is_active = (controller.controller_path == link_controller)
+  ### nav_link ###
+  # Creates a link with text for a given path, highlighting nav element if
+  # active.
+  #
+  # The following options exist:
+  # controller: If a controller is specified, then the link will be marked if
+  #             the current page is rendered by that controller
+  # classes: Add css classes to the link
+  # data: Add data-attribute to the link
+  # icon: Add an icon to the link
+  def nav_link text, path, options
+    if options[:controller]
+      is_active = (controller.controller_path == options[:controller])
     else
-      is_active = current_page?(link_path)
+      is_active = current_page?(path)
     end
-    link_to link_text, link_path,
-      class: "waves-effect " + (is_active ? 'active' : '') + (link_classes ? " #{link_classes}" : ""),
-      :data => link_data
+
+    if options[:icon]
+      text = "<i class='material-icons'>#{options[:icon]}</i>".html_safe + text
+    end
+
+    "<li>".html_safe +
+    link_to(text, path,
+      class: "waves-effect" + (is_active ? ' active' : '') + (options[:classes] ? " #{options[:classes]}" : ""),
+      :data => options[:data]) +
+    "</li>".html_safe
   end
 
   # infinity_scroll loads the next page of records automatically when the

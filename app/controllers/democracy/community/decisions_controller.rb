@@ -4,8 +4,6 @@ class Democracy::Community::DecisionsController < ApplicationController
   before_action :set_community
   before_action :set_vote_of_user, only: :show
 
-  layout "fluid_with_side_nav"
-
   # GET /communities/ID/decisions
   def index
     @decisions = @community.decisions

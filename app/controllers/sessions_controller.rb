@@ -1,5 +1,7 @@
 class SessionsController < ApplicationController
 
+  layout 'without_sidenav'
+
   # GET /login
   def new
   end
