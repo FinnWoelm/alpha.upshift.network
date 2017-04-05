@@ -1,11 +1,18 @@
 $background_image: "<%= asset_path 'dawn.jpg' %>";
 
+body.c-static.a-home {
+  nav#main_navigation {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
 #static_home {
 
   // wrap everything for exact positioning
   position: absolute;
   top:0px;
   width:100%;
+  z-index: -1;
 
   // the central call to action that is the first thing the user sees
   #call_to_action {
