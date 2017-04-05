@@ -2,56 +2,65 @@ div#desktop_side_navigation, ul#mobile_navigation {
 
   background-color: white;
 
-  div.head {
+  a.head {
+    padding: 24px 16px;
+    position: relative;
+    display: block;
+    height: unset !important;
+    background-color: black;
+    border-bottom: 1px solid #e0e0e0;
 
-    $back_button_height: 36px;
-
-    a.title {
-      color: white;
-      position: relative;top: -48px;
-      background-color: rgba(0,0,0,.5);
-      color: white;
-      font-weight: bold;
-      margin-bottom: -48px;
+    .background {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      z-index: -1;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      transition: 0.3s all;
     }
 
-    a.title:hover, a.title:focus,
-    a.back:hover, a.back:focus {
-      background-color: rgba(0,0,0,0.8);
-    }
-
-    a.back + img {
-      position: relative;
-      top: - $back_button_height;
-      margin-bottom: - $back_button_height;
-    }
-
-    a.back {
-      position: relative;
-      background-color: #01000299;
-      color: white;
-      height: $back_button_height;
-      padding: 0px 16px;
-      line-height: $back_button_height;
-      z-index: 2;
-      display: block;
-    }
-
-    a.back i {
-      line-height: $back_button_height;
-      height: $back_button_height;
-      margin-right: 16px;
-      float: left;
-    }
-
-    // needs to be block, otherwise there is spacing on the bottom
     img {
+      height: 64px;
+      width: 64px;
       display: block;
+      margin-bottom: 16px;
+      border-radius: 5px;
+    }
+
+    span {
+      font-size: 14px;
+      line-height: 24px;
+      display: block;
+      padding-bottom: 0px;
+      text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.5), 0 0 3px black, 0 4px 5px rgba(0, 0, 0, 0.14), 0 1px 10px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.3);
+
+      &.title {
+        font-size: 16px;
+        font-weight: 800;
+      }
+
+      &.subtitle {
+        font-style: cursive;
+      }
+    }
+
+    &:hover, &:focus {
+      div {
+        opacity: .85;
+      }
     }
 
   }
 
-  div.content, div.head {
+  li:not(.head-wrapper) {
+
+    div.divider {
+      margin: 0px;
+    }
 
     p {
       color: rgba(0,0,0,0.54);
@@ -79,6 +88,9 @@ div#desktop_side_navigation, ul#mobile_navigation {
     a.active {
       background: $primary-color;
       color: white;
+      & > i {
+        color: inherit !important;
+      }
     }
 
     a.multiple_lines {
@@ -143,5 +155,15 @@ div#desktop_side_navigation {
     left: 0px;
     z-index: 90;
     overflow-y: auto;
+  }
+}
+
+// fix icons on desktop_side_navigation
+div#desktop_side_navigation {
+  li > a > i {
+    line-height: 48px;
+    height: 48px;
+    margin: 0px 16px 0px 0px;
+    float: left;
   }
 }

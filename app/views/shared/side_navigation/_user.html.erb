@@ -1,18 +1,15 @@
-<div class="head">
+<%= render partial: "shared/side_navigation/head",
+  locals: {
+    link_destination: profile_path(@current_user),
+    background:       asset_path('dawn.jpg'),
+    image:            @current_user.profile_picture.url,
+    title:            @current_user.name
+  }
+%>
 
-  <%= image_tag "dawn.jpg", class: 'responsive-img' %>
+<%= nav_link "Friend Requests", friendship_requests_received_path, {:icon => "person_add"} %>
 
-  <%= link_to profile_path(@current_user), class: 'title waves-light waves-effect' do %>
-    <%= @current_user.name %>
-  <% end %>
-
-</div>
-
-<div class="content">
-
-  <%#
-  # Communities/Decision-Making is disabled while we're focusing on completion
-  # of MVP
-  = nav_link "<span class='content'>Communities</span>".html_safe, communities_path %>
-
-</div>
+<%#
+# Communities/Decision-Making is disabled while we're focusing on completion
+# of MVP
+= nav_link "<span class='content'>Communities</span>".html_safe, communities_path %>
