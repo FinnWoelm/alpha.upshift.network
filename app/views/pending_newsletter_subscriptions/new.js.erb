@@ -1,5 +1,15 @@
-$("div#create_subscription_awaiting_response").slideUp();
-$("form#create_subscription .errors").html('');
-$("form#create_subscription .errors").append(
-  "Please check the form and try again.");
-$("form#create_subscription").slideDown();
+validator = new FormValidator("#create_subscription", "pending_newsletter_subscription")
+validator.clear_errors()
+
+<%
+@pending_newsletter_subscription.errors.messages.each do |field_name, error_messages|
+
+  error_messages.each do |error_message|
+%>
+
+validator.add_error("<%= escape_javascript field_name.to_s %>", "<%= escape_javascript error_message %>")
+
+<%
+  end
+end
+%>
