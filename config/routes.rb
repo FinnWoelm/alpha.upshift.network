@@ -80,7 +80,8 @@ Rails.application.routes.draw do
   # end
 
   # Profiles -- this must be last
-  get '/:username', to: 'profiles#show', as: :profile
+  get '/:username', to: 'profiles#show', as: :profile,
+    constraints: { :username =>  /[a-zA-Z0-9]{1}[a-zA-Z0-9_]{1,24}[a-zA-Z0-9]{1}/}
 
   # we need to route people based on whether or not they are logged in
   root 'feeds#show', constraints: AuthenticationConstraint.new, as: :feed
