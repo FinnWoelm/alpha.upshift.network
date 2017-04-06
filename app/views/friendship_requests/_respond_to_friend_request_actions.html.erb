@@ -8,7 +8,8 @@
       <div class="card-action white-text light_border">
           <%= render partial: "friendship_requests/accept_friendship_request_button", locals: { user: sender } %>
           <%= link_to reject_friendship_request_path(sender), class: 'with_icon', method: :delete, data: { confirm: 'Are you sure?' } do %>
-            <%= material_icon.cancel %> Reject
+            <i class="mdi mdi-account-reject"></i>
+            Reject
           <% end %>
       </div>
     </div>

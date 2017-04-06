@@ -14,7 +14,7 @@
         <%= records.try(:pagination_link_text, direction, :initial, default_initial_link_text) || default_initial_link_text %>
       </span>
       <span class="loading-text">
-        <%= material_icon.autorenew.css_class('spin loading-indicator left') %>
+        <%= render partial: "shared/loading_indicator" %>
         <%= records.try(:pagination_link_text, direction, :loading, default_loading_link_text) || default_loading_link_text %>
       </span>
       <span class="error-text">

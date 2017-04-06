@@ -37,8 +37,6 @@ gem "figaro", '~> 1.1'
 
 # MaterializeCSS (http://materializecss.com/)
 gem 'materialize-sass', '~> 0.97'
-# Material Icons (https://design.google.com/icons/)
-gem 'material_icons'
 
 # New Relic for performance analysis
 gem 'newrelic_rpm', '~> 3.16'
