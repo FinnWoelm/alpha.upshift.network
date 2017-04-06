@@ -25,11 +25,22 @@ module ApplicationHelper
   # classes: Add css classes to the link
   # data: Add data-attribute to the link
   # icon: Add an icon to the link
+  # wrap_text: wrap the nav text into a span that prevents overflow and line
+  #            wrapping if the nav text exceeds the width of the side nav
   def nav_link text, path, options
+
+    options.reverse_update({
+      :wrap_text => true
+    })
+
     if options[:controller]
       is_active = (controller.controller_path == options[:controller])
     else
       is_active = current_page?(path)
+    end
+
+    if options[:wrap_text]
+      text = "<span class='content'>".html_safe + text + "</span>".html_safe
     end
 
     if options[:icon]
