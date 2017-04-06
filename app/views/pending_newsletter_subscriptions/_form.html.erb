@@ -1,7 +1,8 @@
 <div class="row">
   <%= form_for(
         @pending_newsletter_subscription,
-        html: { id: 'create_subscription', class: 'col s12'}, remote: true
+        html: { id: 'create_subscription', class: 'col s12 ignore-dirty'},
+        remote: true
       ) do |f| %>
 
     <div class="errors red-text">
