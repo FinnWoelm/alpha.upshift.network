@@ -55,7 +55,7 @@ feature 'Like' do
     @post.reload
     expect(@post.likes.size).to eq(1)
     expect(@user.likes.size).to eq(1)
-    expect(page).to have_content("thumb_up 1")
+    expect(page).to have_selector(".post div.actions", text: "1")
   end
 
   def and_i_unlike_the_post
@@ -68,7 +68,7 @@ feature 'Like' do
     @post.reload
     expect(@post.likes.size).to eq(0)
     expect(@user.likes.size).to eq(0)
-    expect(page).to have_content("thumb_up 0")
+    expect(page).not_to have_selector(".post div.actions", text: "1")
   end
 
   def and_i_view_a_post_with_a_comment
@@ -77,8 +77,8 @@ feature 'Like' do
   end
 
   def when_i_like_the_comment
-    within(".comment", match: :first) do
-      click_on "thumb_up"
+    within(".comment .like_button", match: :first) do
+      click_on "0"
     end
   end
 
@@ -86,12 +86,12 @@ feature 'Like' do
     @comment.reload
     expect(@comment.likes.size).to eq(1)
     expect(@user.likes.size).to eq(1)
-    expect(page).to have_content("thumb_up 1")
+    expect(page).to have_selector(".comment .btn-flat", text: "1")
   end
 
   def and_i_unlike_the_comment
-    within(".comment", match: :first) do
-      click_on "thumb_up"
+    within(".comment .unlike_button", match: :first) do
+      click_on "1"
     end
   end
 
@@ -99,7 +99,7 @@ feature 'Like' do
     @comment.reload
     expect(@comment.likes.size).to eq(0)
     expect(@user.likes.size).to eq(0)
-    expect(page).to have_content("thumb_up 0")
+    expect(page).not_to have_selector(".comment .btn-flat", text: "1")
   end
 
 end

@@ -42,11 +42,11 @@ module PrivateConversationsHelper
   def show_conversation_preview private_conversation, length=30
     if private_conversation.most_recent_message
       if private_conversation.most_recent_message.sender_id.eql?(@current_user.id)
-        icon = :call_made
+        icon = "call-made"
       else
-        icon = :call_received
+        icon = "call-received"
       end
-      return material_icon.send(icon).md_18.to_s + " " + truncate(private_conversation.most_recent_message.content, length: length)
+      return "<i class='mdi mdi-#{icon} mdi-18px'></i>".html_safe + " " + truncate(private_conversation.most_recent_message.content, length: length)
     else
       return "No messages yet."
     end

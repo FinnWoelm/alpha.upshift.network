@@ -11,7 +11,7 @@
           <%= image_tag "logo_bold_100p.png" %> Upshift
         <% end %>
         <a id="toggle_mobile_navigation" href="#" data-activates="mobile_navigation" class="button-collapse">
-          <%= material_icon.menu %>
+          <i class="mdi mdi-menu"></i>
         </a>
 
         <ul class="right hide-on-med-and-down">
@@ -20,13 +20,13 @@
 
             <li>
               <%= link_to profile_path(@current_user), class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'My Profile'} do %>
-                <%= material_icon.account_circle %>
+                <i class="mdi mdi-account-circle"></i>
               <% end %>
             </li>
 
             <li>
               <%= link_to private_conversations_home_path, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'Conversations'} do %>
-                <%= material_icon.chat_bubble %>
+                <i class="mdi mdi-message"></i>
                 <% if @current_user.unread_private_conversations.size > 0 %>
                   <span class="white red-text z-depth-1 badge">
                     <%= @current_user.unread_private_conversations.size %>
@@ -37,7 +37,7 @@
 
             <li>
               <%= link_to logout_path, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'Logout'} do %>
-                <%= material_icon.power_settings_new %>
+                <i class="mdi mdi-power"></i>
               <% end %>
             </li>
 
@@ -45,7 +45,7 @@
 
             <li>
               <%= link_to login_path do %>
-                <i class="material-icons right">power_settings_new</i>
+                <i class="mdi mdi-power right"></i>
                 Login
               <% end %>
             </li>
@@ -63,7 +63,7 @@
 
             <li>
               <%= link_to profile_path(@current_user) do %>
-                <%= material_icon.account_circle %>
+                <i class="mdi mdi-account-circle"></i>
                 <span class="content">
                   My Profile
                 </span>
@@ -80,7 +80,7 @@
                   </span>
                 <% end %>
 
-                <%= material_icon.chat_bubble %>
+                <i class="mdi mdi-message"></i>
                 <span class="content">
                   Conversations
                 </span>
@@ -89,7 +89,7 @@
 
             <li>
               <%= link_to logout_path do %>
-                <%= material_icon.power_settings_new %>
+                <i class="mdi mdi-power"></i>
                 <span class="content">
                   Logout
                 </span>
@@ -99,7 +99,7 @@
           <% else %>
 
             <%= nav_link "Home",  root_path,  {:icon => "home"} %>
-            <%= nav_link "Login", login_path, {:icon => "power_settings_new"} %>
+            <%= nav_link "Login", login_path, {:icon => "power"} %>
 
           <% end %>
         </ul>

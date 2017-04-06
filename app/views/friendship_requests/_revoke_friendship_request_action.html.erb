@@ -1,8 +1,10 @@
 <%= link_to reject_friendship_request_path(recipient), class: 'waves-effect waves-light btn sliding', method: :delete, data: { confirm: 'Are you sure?' } do %>
   <span>
-    <%= material_icon.call_made.css_class('left') %> Friend Request Sent
+    <i class="mdi mdi-call-made left"></i>
+    Friend Request Sent
   </span>
   <span>
-    <%= material_icon.cancel.css_class('left') %> Revoke Request
+    <i class="mdi mdi-cancel left"></i>
+    Revoke Request
   </span>
 <% end %>

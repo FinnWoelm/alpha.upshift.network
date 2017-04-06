@@ -33,7 +33,7 @@ module ApplicationHelper
     end
 
     if options[:icon]
-      text = "<i class='material-icons'>#{options[:icon]}</i>".html_safe + text
+      text = "<i class='mdi mdi-#{options[:icon]}'></i>".html_safe + text
     end
 
     "<li>".html_safe +
