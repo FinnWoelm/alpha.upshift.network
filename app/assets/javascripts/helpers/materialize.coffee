@@ -9,7 +9,7 @@
 $(document).on 'turbolinks:load', ->
 
   # dirty form tracking on all forms
-  $('form').areYouSure()
+  $('form:not(.ignore-dirty)').areYouSure()
 
   $(".material-tooltip").remove()
   $(".tooltipped").each ->

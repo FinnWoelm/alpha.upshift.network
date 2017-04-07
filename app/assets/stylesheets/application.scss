@@ -311,6 +311,11 @@ form label + ul.errors {
   display: block;
 }
 
+// FORMS: List of errors when there is an icon prefix
+form i.prefix ~ ul.errors {
+  margin-left: 3rem;
+}
+
 // FIXES
 
 // FIXES: parallax has a white space on the left
