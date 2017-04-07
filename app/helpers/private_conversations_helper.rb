@@ -65,7 +65,8 @@ module PrivateConversationsHelper
       link_to_private_conversation(conversation),
       {
         :classes => "preview_conversation multiple_lines two",
-        :data => {conversation_id: conversation.id, updated_at: conversation.updated_at.exact}
+        :data => {conversation_id: conversation.id, updated_at: conversation.updated_at.exact},
+        :wrap_text => false
       }
     )
   end
