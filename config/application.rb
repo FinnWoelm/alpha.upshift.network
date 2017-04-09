@@ -30,5 +30,8 @@ module UpshiftNetwork
     # use our own error handling
     config.exceptions_app = self.routes
 
+    # set paperclip defaults: remove (strip) exif data on uploaded attachmens
+    config.paperclip_defaults = { convert_options: {all: "-strip"} }
+
   end
 end
