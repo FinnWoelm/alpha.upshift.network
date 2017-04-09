@@ -498,4 +498,22 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "Profile Picture" do
+
+    it "strips exif metadata from uploaded image" do
+      image_with_exif_data = "#{Rails.root}/spec/support/fixtures/community/user/image_with_exif_data.jpg"
+      exif_data = %x{identify -verbose #{image_with_exif_data}}
+      expect(exif_data).to match(/exif:/)
+
+      user.profile_picture = File.new(image_with_exif_data)
+      user.save
+      uploaded_image = user.profile_picture.path
+
+      exif_data = %x{identify -verbose #{uploaded_image}}
+
+      expect(exif_data).not_to match(/exif:/)
+    end
+
+  end
+
 end
