@@ -10,7 +10,7 @@ class FriendshipRequestsController < ApplicationController
   # POST /friendship-request/:username
   def create
     friendship_request = FriendshipRequest.new(:sender => @current_user)
-    friendship_request.recipient = User.includes(:profile).find_by_username(params[:username])
+    friendship_request.recipient = User.find_by_username(params[:username])
 
     if friendship_request.save
       redirect_to profile_path(friendship_request.recipient), notice: 'Friendship request was successfully sent.'

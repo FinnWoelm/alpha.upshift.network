@@ -73,11 +73,11 @@ RSpec.describe FriendshipRequest, type: :model do
     end
 
     it "checks whether the recipient profile is viewable by the sender" do
-      expect(recipient.profile).to receive(:viewable_by?).with(sender)
+      expect(recipient).to receive(:viewable_by?).with(sender)
     end
 
     context "when sender cannot see recipient" do
-      before { allow(recipient.profile).to receive(:viewable_by?) { false } }
+      before { allow(recipient).to receive(:viewable_by?) { false } }
 
       it "adds an error message" do
         expect(friendship_request.errors[:base]).to receive(:<<).
@@ -86,7 +86,7 @@ RSpec.describe FriendshipRequest, type: :model do
     end
 
     context "when sender can see recipient" do
-      before { allow(recipient.profile).to receive(:viewable_by?) { true } }
+      before { allow(recipient).to receive(:viewable_by?) { true } }
 
       it "does not add an error message" do
         expect(friendship_request.errors[:base]).not_to receive(:<<)

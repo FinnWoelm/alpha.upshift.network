@@ -65,20 +65,18 @@ RSpec.describe Post, type: :model do
 
     context "when calling the function" do
       let(:author_of_post) { instance_double(User) }
-      let(:profile_of_author) { instance_double(Profile) }
       after { post.send(:readable_by?, user) }
 
       it "checks whether author's profile is viewable by user" do
         expect(post).to receive(:author) { author_of_post }
-        expect(author_of_post).to receive(:profile) { profile_of_author }
-        expect(profile_of_author).to receive(:viewable_by?).with(user)
+        expect(author_of_post).to receive(:viewable_by?).with(user)
       end
     end
 
     context "when user cannot view profile" do
       before do
         allow(post).
-          to receive_message_chain(:author, :profile, :viewable_by?) {false}
+          to receive_message_chain(:author, :viewable_by?) {false}
       end
 
       it "returns false" do
@@ -89,7 +87,7 @@ RSpec.describe Post, type: :model do
     context "when user can view profile" do
       before do
         allow(post).
-          to receive_message_chain(:author, :profile, :viewable_by?) {true}
+          to receive_message_chain(:author, :viewable_by?) {true}
       end
 
       it "returns true" do

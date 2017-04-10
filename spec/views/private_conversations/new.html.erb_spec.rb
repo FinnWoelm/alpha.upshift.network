@@ -34,7 +34,7 @@ RSpec.describe "private_conversations/new.html.erb", type: :view do
     end
 
     it "shows error if recipient profile is private" do
-      recipient.profile.is_private!
+      recipient.is_private!
       private_conversation.valid?
 
       render

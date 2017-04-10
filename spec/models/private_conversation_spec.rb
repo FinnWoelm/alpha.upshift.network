@@ -538,15 +538,13 @@ RSpec.describe PrivateConversation, type: :model do
     after { private_conversation.send(:recipient_can_be_messaged_by_sender) }
 
     it "checks whether recipient profile is viewable by sender" do
-      recipient_profile = instance_double(Profile)
-      expect(recipient).to receive(:profile) { recipient_profile }
-      expect(recipient_profile).to receive(:viewable_by?).with(sender)
+      expect(recipient).to receive(:viewable_by?).with(sender)
     end
 
     context "when recipient profile is viewable by sender" do
       before {
         allow(recipient).
-          to receive_message_chain(:profile, :viewable_by?) { true }
+          to receive(:viewable_by?) { true }
       }
 
       it "does not add an error message" do
@@ -557,7 +555,7 @@ RSpec.describe PrivateConversation, type: :model do
     context "when recipient profile is not viewable by sender" do
       before {
         allow(recipient).
-          to receive_message_chain(:profile, :viewable_by?) { false }
+          to receive(:viewable_by?) { false }
       }
 
       it "adds an error message" do

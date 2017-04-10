@@ -63,9 +63,10 @@ Friendship.create(:initiator => alice, :acceptor => dennis)
     :name => "user#{i}",
     :email => "user#{i}@upshift.network",
     :confirmed_registration => true,
-    :color_scheme => Color.color_options.sample
+    :color_scheme => Color.color_options.sample,
+    :visibility => :is_network_only
   )
-  Profile.create(:user => u, :visibility => :is_network_only)
+  Profile.create(:user => u)
   conversation = PrivateConversation.new(:sender => alice, :recipient => u)
   conversation.messages.build(:content => "initial message", :sender => alice)
   conversation.save
