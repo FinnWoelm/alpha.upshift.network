@@ -6,8 +6,8 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-# Clear old Paperclip attachments
-FileUtils.rm_rf(Dir["#{Rails.root}/public/system/#{Rails.env}/[^.]*"])
+# Clear old Paperclip attachments: user images
+FileUtils.rm_rf(Dir["#{Rails.root}/public/users"])
 
 # Create some users
 alice = User.create(
