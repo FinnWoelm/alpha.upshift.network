@@ -75,6 +75,9 @@ class User < ApplicationRecord
     dependent: :destroy
   has_many :friends_made, :through => :friendships_accepted, :source => :initiator
 
+  # # Accessors
+  enum visibility: [ :is_private, :is_network_only, :is_public ]
+
   # # Validations
   validates :profile, presence: true
 
@@ -297,6 +300,28 @@ class User < ApplicationRecord
         "CONFIRMATION_PATH" => registration_confirmation_path
       }
     )
+  end
+
+  # whether the user is visible to a given viewer
+  def viewable_by? viewer
+
+    # public profile can be seen by everyone
+    return true if self.is_public?
+
+    # public viewers cannot see beyond this!
+    return false if viewer.nil?
+
+    # network user: own profile
+    return true if viewer.id == self.id
+
+    # network user: network profile
+    return true if self.is_network_only?
+
+    # network user: friend's profile
+    return true if self.is_private? and viewer.has_friendship_with?(self)
+
+    # other cases: false
+    return false
   end
 
   # # Class Methods

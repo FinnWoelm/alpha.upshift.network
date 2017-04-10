@@ -19,7 +19,7 @@ class FriendshipRequest < ApplicationRecord
 
   private
     def recipient_profile_must_be_viewable_by_sender
-      unless recipient.profile.viewable_by?(sender)
+      unless recipient.viewable_by?(sender)
         errors[:base] << "User does not exist or profile is private"
       end
     end
