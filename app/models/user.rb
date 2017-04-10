@@ -6,9 +6,16 @@ class User < ApplicationRecord
       medium: ["100x100#", :jpg]
     },
     :default_style => :medium,
-    :url => "/system/:rails_env/users/:param/profile_picture/:style.:extension",
-    :path => ":rails_root/public/system/:rails_env/users/:param/profile_picture/:style.:extension",
-    :default_url => "/system/:rails_env/users/:param/profile_picture/:style.jpg"
+    :url =>
+      Rails.configuration.attachment_storage_location +
+      "users/:param/profile_picture/:style.:extension",
+    :path =>
+      ":rails_root/public" +
+      Rails.configuration.attachment_storage_location +
+      "users/:param/profile_picture/:style.:extension",
+    :default_url =>
+      Rails.configuration.attachment_storage_location +
+      "users/:param/profile_picture/:style.jpg"
 
   include Rails.application.routes.url_helpers
 
@@ -154,6 +161,7 @@ class User < ApplicationRecord
   #
   # ## After destroy:
   # ## blacklist_username
+  # ## delete_attachment_folder
 
   # before_validation :create_profile_if_not_exists, on: :create
 
@@ -165,6 +173,9 @@ class User < ApplicationRecord
 
   # blacklist username (to prevent re-assignment)
   after_destroy :blacklist_username
+
+  # delete folder containing attachments of this user
+  after_destroy :delete_attachment_folder
 
   # destroy the original profile picture (b/c it is not needed)
   after_save :destroy_original_profile_picture,
@@ -303,6 +314,15 @@ class User < ApplicationRecord
     # blacklists the user's username (to prevent future re-assignment)
     def blacklist_username
       Helper::BlacklistedUsername.create(:username => self.username)
+    end
+
+    # deletes the folder of attachments belonging to this user
+    def delete_attachment_folder
+      FileUtils.remove_dir(
+        "public" +
+        self.profile_picture.url.split(self.username).first +
+        self.username
+      )
     end
 
     # destroy the original profile picture (b/c it is not needed)
