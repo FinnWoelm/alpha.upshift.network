@@ -154,6 +154,7 @@ RSpec.describe User, type: :model do
       after { user.destroy }
 
       it { is_expected.to receive(:blacklist_username) }
+      it { is_expected.to receive(:delete_attachment_folder) }
     end
 
     describe "after save" do
@@ -474,6 +475,21 @@ RSpec.describe User, type: :model do
       user.send(:blacklist_username)
       expect(Helper::BlacklistedUsername.exists?(username: "tom_and_jerry")).to be_truthy
     end
+  end
+
+  describe "#delete_attachment_folder" do
+
+    let!(:user) { create(:user) }
+    let(:path_to_attachment_folder) do
+      "public#{user.profile_picture.url.split(user.username).first}#{user.username}"
+    end
+
+    it "deletes the folder of attachments belonging to the user" do
+      expect(Dir.exists?(path_to_attachment_folder)).to be true
+      user.send(:delete_attachment_folder)
+      expect(Dir.exists?(path_to_attachment_folder)).to be false
+    end
+
   end
 
   describe "destroy_original_profile_picture" do
