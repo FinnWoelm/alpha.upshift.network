@@ -32,6 +32,7 @@ module UpshiftNetwork
 
     # set paperclip defaults: remove (strip) exif data on uploaded attachmens
     config.paperclip_defaults = { convert_options: {all: "-strip"} }
+    config.attachment_storage_location = "/"
 
   end
 end

@@ -6,9 +6,16 @@ class User < ApplicationRecord
       medium: ["100x100#", :jpg]
     },
     :default_style => :medium,
-    :url => "/system/:rails_env/users/:param/profile_picture/:style.:extension",
-    :path => ":rails_root/public/system/:rails_env/users/:param/profile_picture/:style.:extension",
-    :default_url => "/system/:rails_env/users/:param/profile_picture/:style.jpg"
+    :url =>
+      Rails.configuration.attachment_storage_location +
+      "users/:param/profile_picture/:style.:extension",
+    :path =>
+      ":rails_root/public" +
+      Rails.configuration.attachment_storage_location +
+      "users/:param/profile_picture/:style.:extension",
+    :default_url =>
+      Rails.configuration.attachment_storage_location +
+      "users/:param/profile_picture/:style.jpg"
 
   include Rails.application.routes.url_helpers
 

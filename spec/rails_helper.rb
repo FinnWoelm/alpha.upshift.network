@@ -37,8 +37,10 @@ Capybara.javascript_driver = :poltergeist
 # of increasing the boot-up time by auto-requiring all files in the support
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
-Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
-#require Rails.root.join('spec/support/database_cleaner.rb')
+Dir[Rails.root.join('spec/support/matchers/*.rb')].each { |f| require f }
+require Rails.root.join("spec", "support", "database_cleaner.rb")
+require Rails.root.join("spec", "support", "test_helper.rb")
+require Rails.root.join("spec", "support", "paperclip", "init.rb")
 
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
