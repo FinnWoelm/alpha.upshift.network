@@ -19,10 +19,10 @@ alice = User.create(
   :color_scheme => Color.color_options.sample
 )
 
-bob = User.create(
-  :name => "Bob",
-  :username => "bob",
-  :email => "bob@upshift.network",
+brian = User.create(
+  :name => "Brian",
+  :username => "brian",
+  :email => "brian@upshift.network",
   :password => "password",
   :confirmed_registration => true,
   :color_scheme => Color.color_options.sample
@@ -46,12 +46,12 @@ dennis = User.create(
   :color_scheme => Color.color_options.sample
 )
 
-[alice, bob, carla, dennis].each do |user|
+[alice, brian, carla, dennis].each do |user|
   Profile.create(:user => user)
 end
 
 # Create Friendships between users
-Friendship.create(:initiator => alice, :acceptor => bob)
+Friendship.create(:initiator => alice, :acceptor => brian)
 Friendship.create(:initiator => alice, :acceptor => carla)
 Friendship.create(:initiator => alice, :acceptor => dennis)
 
