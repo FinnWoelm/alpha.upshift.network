@@ -3,14 +3,36 @@
 
     <div class="post z-depth-1">
 
-      <%# PROFILE PICTURE %>
-      <div class="author_image z-depth-1 grey">
-        <%= image_tag @current_user.profile_picture.url %>
-      </div>
+      <div class="author_profile_wrapper">
+        <%# AUTHOR %>
+        <div class="author_wrapper single_line">
+          <%# AUTHOR PICTURE %>
+          <div class="user_image z-depth-1 gray">
+            <%= image_tag @current_user.profile_picture.url %>
+          </div>
 
-      <%# AUTHOR NAME %>
-      <div class="author_name single_line prevent_overflow z-depth-1 <%= @current_user.color_scheme_with_font_color %>">
-        <%= @current_user.name %>
+          <%# AUTHOR NAME %>
+          <div class="name_badge single_line prevent_overflow z-depth-1 <%= @current_user.color_scheme_with_font_color %>">
+            <%= @current_user.name %>
+          </div>
+        </div><%
+
+        if post.profile_owner and @current_user.id != post.profile_owner.id
+          %><div class="profile_owner_wrapper single_line">
+
+            <i class="mdi mdi-chevron-right mdi-24px gray-text"></i>
+
+            <%# PROFILE OWNER PICTURE %>
+            <div class="user_image z-depth-1 gray">
+              <%= image_tag post.profile_owner.profile_picture.url %>
+            </div>
+
+            <%# PROFILE OWNER NAME %>
+            <div class="name_badge single_line prevent_overflow z-depth-1 <%= post.profile_owner.color_scheme_with_font_color %>">
+                <%= post.profile_owner.name %>
+            </div>
+          </div>
+        <% end %>
       </div>
 
       <%# CONTENT %>

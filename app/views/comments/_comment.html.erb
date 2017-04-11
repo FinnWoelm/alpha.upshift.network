@@ -2,10 +2,8 @@
 
   <div class="meta">
     <%# PROFILE PICTURE %>
-    <%= link_to profile_path comment.author do %>
-      <div class="author_image z-depth-1">
-        <%= image_tag comment.author.profile_picture.url %>
-      </div>
+    <%= link_to profile_path(comment.author), class: "user_image z-depth-1 gray" do %>
+      <%= image_tag comment.author.profile_picture.url %>
     <% end %>
 
   </div>

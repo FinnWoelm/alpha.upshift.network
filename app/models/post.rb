@@ -11,7 +11,7 @@ class Post < ApplicationRecord
   scope :most_recent_first,
     -> { order('posts.created_at DESC') }
   scope :with_associations,
-    -> { includes(:comments).includes(:author).includes(:likes) }
+    -> { includes(:comments).includes(:author).includes(:likes).includes(:profile => [:user]) }
 
   # # Validations
   validates :author, presence: true
