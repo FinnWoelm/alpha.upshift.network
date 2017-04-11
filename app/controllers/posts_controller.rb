@@ -29,7 +29,15 @@ class PostsController < ApplicationController
     @post.author = @current_user
 
     if @post.save
-      redirect_back fallback_location: @post, notice: 'Post was successfully created.'
+      referrer = Rails.application.routes.recognize_path(request.referrer)
+      notice = 'Post was successfully created'
+
+      # do not redirect_back if we're coming from post#new
+      if referrer[:controller] == "posts"
+        redirect_to @post, notice: notice
+      else
+        redirect_back fallback_location: @post, notice: notice
+      end
     else
       render :new
     end
