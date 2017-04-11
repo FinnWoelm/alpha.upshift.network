@@ -17,6 +17,8 @@
       <div class="row content no_margin">
         <%= form_for post, class: "col s12"  do |f| %>
 
+          <%= f.hidden_field :profile_owner %>
+
           <div class="row no_margin_bottom">
             <div class="input-field col s12">
               <%= f.text_area :content, class: "materialize-textarea" %>

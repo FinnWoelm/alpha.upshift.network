@@ -10,6 +10,7 @@ RSpec.describe Profile, type: :model do
 
   describe "associations" do
     it { is_expected.to belong_to(:user).dependent(false).inverse_of(:profile) }
+    it { is_expected.to have_many(:posts).dependent(:destroy) }
   end
 
   describe "validations" do

@@ -20,6 +20,7 @@ RSpec.describe Post, type: :model do
 
   describe "associations" do
     it { is_expected.to belong_to(:author).dependent(false).class_name('User') }
+    it { is_expected.to belong_to(:profile).dependent(false) }
     it { is_expected.to have_many(:comments).dependent(:destroy) }
   end
 
@@ -56,8 +57,15 @@ RSpec.describe Post, type: :model do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:author) }
+    it { is_expected.to validate_presence_of(:profile) }
     it { is_expected.to validate_presence_of(:content) }
     it { is_expected.to validate_length_of(:content).is_at_most(5000) }
+    it { is_expected.to validate_length_of(:content).is_at_most(5000) }
+
+    context "custom validations" do
+      after { post.valid? }
+      it { is_expected.to receive(:author_can_post_to_profile) }
+    end
   end
 
   describe "#readable_by?" do
@@ -120,6 +128,38 @@ RSpec.describe Post, type: :model do
 
       it "returns true" do
         is_expected.to be_deletable_by(user)
+      end
+    end
+
+  end
+
+  describe "#profile_owner=" do
+    let(:profile_owner) { create(:user) }
+
+    it "sets the profile" do
+      post.profile_owner = profile_owner
+      expect(post.profile.id).to eq(profile_owner.profile.id)
+    end
+  end
+
+  describe "#author_can_post_to_profile" do
+    after { post.send(:author_can_post_to_profile) }
+    let(:profile_owner) { post.profile_owner }
+
+    context "when author can view profile owner" do
+      before { allow(profile_owner).to receive(:viewable_by?) {true} }
+
+      it "does not add an error message" do
+        expect(post.errors[:profile]).not_to receive(:<<)
+      end
+    end
+
+    context "when author cannot view profile owner" do
+      before { allow(profile_owner).to receive(:viewable_by?) {false} }
+
+      it "adds an error message" do
+        expect(post.errors[:profile]).to receive(:<<).
+          with("does not exist or is private")
       end
     end
 

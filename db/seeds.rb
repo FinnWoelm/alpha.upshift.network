@@ -83,7 +83,8 @@ end
 
 # Create some posts
 100.times do |i|
-  Post.create(:author => User.order("RANDOM()").first, :content => "Post #{i}\nLorem Ipsum Dolorem")
+  author = User.order("RANDOM()").includes(:profile).first
+  Post.create(:author => author, :content => "Post #{i}\nLorem Ipsum Dolorem", :profile => author.profile)
 end
 
 ### Democracy

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170410092254) do
+ActiveRecord::Schema.define(version: 20170411005229) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,8 +115,10 @@ ActiveRecord::Schema.define(version: 20170410092254) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.integer  "likes_count"
+    t.integer  "profile_id"
     t.index ["author_id"], name: "index_posts_on_author_id", using: :btree
     t.index ["created_at"], name: "index_posts_on_created_at", using: :btree
+    t.index ["profile_id"], name: "index_posts_on_profile_id", using: :btree
   end
 
   create_table "private_conversations", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -184,6 +186,7 @@ ActiveRecord::Schema.define(version: 20170410092254) do
   add_foreign_key "likes", "users", column: "liker_id"
   add_foreign_key "participantship_in_private_conversations", "private_conversations"
   add_foreign_key "participantship_in_private_conversations", "users", column: "participant_id"
+  add_foreign_key "posts", "profiles"
   add_foreign_key "posts", "users", column: "author_id"
   add_foreign_key "private_messages", "private_conversations"
   add_foreign_key "private_messages", "users", column: "sender_id"

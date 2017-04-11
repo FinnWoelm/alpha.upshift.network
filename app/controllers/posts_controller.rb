@@ -19,7 +19,7 @@ class PostsController < ApplicationController
 
   # GET /post/new
   def new
-    @post = Post.new
+    @post = Post.new(:profile_owner => @current_user)
   end
 
 
@@ -53,6 +53,6 @@ class PostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
-      params.require(:post).permit(:content)
+      params.require(:post).permit(:content, :profile_owner)
     end
 end

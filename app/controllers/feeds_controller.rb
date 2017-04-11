@@ -14,7 +14,7 @@ class FeedsController < ApplicationController
         where(:author_id => friend_ids).limit(30)
 
     # create new post
-    @post = Post.new
+    @post = Post.new(:profile_owner => @current_user)
 
   end
 end

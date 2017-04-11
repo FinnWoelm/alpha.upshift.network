@@ -10,7 +10,7 @@ class ProfilesController < ApplicationController
     render('error', status: 404, layout: 'errors') and return unless @profile and @user.viewable_by?(@current_user)
 
     @posts = @user.posts.most_recent_first.with_associations
-    @post = Post.new
+    @post = Post.new(:profile_owner => @current_user)
   end
 
   private
