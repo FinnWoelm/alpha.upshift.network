@@ -6,9 +6,9 @@
   <%= link_to link_destination, class: 'head waves-light waves-effect' do %>
     <div class="background" style="background-image: url(<%= background %>);"></div>
     <%= image_tag image, class: 'circle z-depth-2' %>
-    <span class="white-text title"><%= title %></span>
+    <span class="white-text title single_line prevent_overflow"><%= title %></span>
     <% if subtitle %>
-      <span class="white-text subtitle"><%= subtitle %></span>
+      <span class="white-text subtitle single_line prevent_overflow"><%= subtitle %></span>
     <% end %>
   <% end %>
 </li>

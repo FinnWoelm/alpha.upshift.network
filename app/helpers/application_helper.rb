@@ -40,7 +40,7 @@ module ApplicationHelper
     end
 
     if options[:wrap_text]
-      text = "<span class='content'>".html_safe + text + "</span>".html_safe
+      text = "<div class='single_line prevent_overflow'>".html_safe + text + "</div>".html_safe
     end
 
     if options[:icon]
