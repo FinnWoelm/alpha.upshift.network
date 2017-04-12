@@ -163,6 +163,21 @@ nav ul:not(.side-nav) li a i+span.badge {
 }
 
 
+// TEXT
+
+// TEXT: apply white-space 'nowrap'
+.single_line {
+  white-space: nowrap;
+}
+
+// TEXT: prevent_overflow
+.prevent_overflow {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
 // ELEMENTS
 
 // PAGE HEADING: a page heading below the navigation
