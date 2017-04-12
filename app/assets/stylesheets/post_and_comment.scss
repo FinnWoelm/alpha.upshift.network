@@ -108,9 +108,12 @@ div.comments-wrapper {
     }
 
     div.timestamp {
-      line-height: 36px;
-      vertical-align: middle;
-      margin-top: -10px;
+      margin-left: 10px;
+    }
+
+    div.timestamp, .author_name {
+      margin-top: -3px;
+      display: block;
     }
 
     div.new_comment_form {

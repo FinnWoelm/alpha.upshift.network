@@ -11,12 +11,17 @@
 
     <div class="with_padding">
 
-      <div class="right">
+      <%# TIMESTAMP %>
+      <div class="timestamp right">
         now
       </div>
-      <span><strong>
-        <%= @current_user.name %>
-      </strong></span>
+
+      <%# AUTHOR NAME %>
+      <div class="author_name single_line prevent_overflow">
+        <strong>
+          <%= @current_user.name %>
+        </strong>
+      </div>
 
       <div class="row new_comment_form no_margin_bottom">
         <%= form_for comment,

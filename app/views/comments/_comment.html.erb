@@ -42,7 +42,7 @@
       </div>
 
       <%# AUTHOR NAME %>
-      <%= link_to profile_path comment.author do %>
+      <%= link_to profile_path(comment.author), class: 'author_name single_line prevent_overflow', title: "#{comment.author.name}" do %>
         <strong>
         <%= comment.author.name %>
         </strong>
