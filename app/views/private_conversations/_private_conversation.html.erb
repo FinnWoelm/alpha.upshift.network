@@ -34,9 +34,6 @@
       </div>
       <div class="col s10 m10 l11">
 
-        <strong>
-          <%= list_participants private_conversation.participants %>
-        </strong>
         <span class='unread_message_count badge'>
           <% if private_conversation.unread_message_count and private_conversation.unread_message_count > 0 %>
             <%= private_conversation.unread_message_count.to_s %>
@@ -45,9 +42,15 @@
           <% end %>
         </span>
 
-        <br/>
-        <%= show_conversation_preview private_conversation, 250 %>
+        <div class="single_line prevent_overflow">
+          <strong>
+            <%= list_participants private_conversation.participants %>
+          </strong>
+        </div>
 
+        <div>
+          <%= show_conversation_preview private_conversation, 250 %>
+        </div>
       </div>
     </div>
   <% end %>

@@ -12,15 +12,18 @@
     image_tag("community/add.png", class: 'responsive-img') +
   "</div>
   <div>
-    <span class='line'>
+    <span class='line prevent_overflow'>
       New conversation...
     </span>
-    <span class='line content'>
+    <span class='line content prevent_overflow'>
       Start a conversation with a friend.
     </span>
   </div>").html_safe,
   new_private_conversation_path,
-  {:classes => "new_conversation multiple_lines two" }
+  {
+    :classes => "new_conversation multiple_lines two",
+    :wrap_text => false
+  }
 ) %>
 
 <div class="private_conversation_previews" data-updated-at="<%= conversations[0].present? ? conversations[0].updated_at.exact : Time.zone.now.exact %>">

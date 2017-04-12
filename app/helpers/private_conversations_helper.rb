@@ -39,7 +39,7 @@ module PrivateConversationsHelper
   end
 
   # shows a preview of the conversation by showing its first messages
-  def show_conversation_preview private_conversation, length=30
+  def show_conversation_preview private_conversation, length=50
     if private_conversation.most_recent_message
       if private_conversation.most_recent_message.sender_id.eql?(@current_user.id)
         icon = "call-made"
