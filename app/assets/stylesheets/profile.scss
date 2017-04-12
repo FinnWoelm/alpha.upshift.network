@@ -46,6 +46,7 @@ div#profile_banner {
       @media #{$media_query} {
         left: $picture_size;
         top: $picture_size / 3;
+        max-width: calc(100% - #{$picture_size});
       }
     }
 
