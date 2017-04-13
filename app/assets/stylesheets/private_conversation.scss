@@ -63,6 +63,10 @@ body.c-private_conversations, body.c-private_messages {
   &.a-show, &.a-new, &.a-create {
     @media #{$large-and-up} {
 
+      div.page_heading h3 {
+        white-space: nowrap;
+      }
+
       div#compose_message {
         position: fixed;
         background: white;
@@ -80,7 +84,7 @@ body.c-private_conversations, body.c-private_messages {
       }
 
       div#chat_body {
-        margin-top: 180px;
+        margin-top: 177px;
         margin-bottom: 200px;
       }
 

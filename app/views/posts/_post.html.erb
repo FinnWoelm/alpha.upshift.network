@@ -34,7 +34,7 @@
 
       <%# AUTHOR NAME %>
       <%= link_to profile_path post.author do %>
-        <div class="author_name z-depth-1 <%= post.author.color_scheme_with_font_color %>">
+        <div class="author_name single_line prevent_overflow z-depth-1 <%= post.author.color_scheme_with_font_color %>" title="<%= post.author.name %>">
           <%= post.author.name %>
         </div>
       <% end %>

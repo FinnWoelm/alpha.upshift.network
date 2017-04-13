@@ -4,18 +4,14 @@
     <div class="post z-depth-1">
 
       <%# PROFILE PICTURE %>
-      <%= link_to profile_path @current_user do %>
-        <div class="author_image z-depth-1 grey">
-          <%= image_tag @current_user.profile_picture.url %>
-        </div>
-      <% end %>
+      <div class="author_image z-depth-1 grey">
+        <%= image_tag @current_user.profile_picture.url %>
+      </div>
 
       <%# AUTHOR NAME %>
-      <%= link_to profile_path @current_user do %>
-        <div class="author_name z-depth-1 <%= @current_user.color_scheme_with_font_color %>">
-          <%= @current_user.name %>
-        </div>
-      <% end %>
+      <div class="author_name single_line prevent_overflow z-depth-1 <%= @current_user.color_scheme_with_font_color %>">
+        <%= @current_user.name %>
+      </div>
 
       <%# CONTENT %>
       <div class="row content no_margin">

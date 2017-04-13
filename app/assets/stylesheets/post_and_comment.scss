@@ -36,6 +36,7 @@ div.post-wrapper {
       border-radius: 5px;
       border-top-left-radius: 0px;
       border-bottom-left-radius: 0px;
+      max-width: calc(100% - 70px);
     }
 
     div.content {
@@ -108,9 +109,12 @@ div.comments-wrapper {
     }
 
     div.timestamp {
-      line-height: 36px;
-      vertical-align: middle;
-      margin-top: -10px;
+      margin-left: 10px;
+    }
+
+    div.timestamp, .author_name {
+      margin-top: -3px;
+      display: block;
     }
 
     div.new_comment_form {

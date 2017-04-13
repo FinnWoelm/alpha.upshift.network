@@ -13,9 +13,9 @@
       <%= image_tag @profile.user.profile_picture.url(:large) %>
     </div>
 
-    <div class="user_name z-depth-3 <%= @profile.user.color_scheme_with_font_color %> center-align">
-      <h4 class="hide-on-small-only"><%= @profile.user.name %></h4>
-      <h6 class="hide-on-med-and-up"><%= @profile.user.name %></h6>
+    <div class="user_name z-depth-3 <%= @profile.user.color_scheme_with_font_color %> center-align" title="<%= @profile.user.name %>">
+      <h4 class="hide-on-small-only single_line prevent_overflow"><%= @profile.user.name %></h4>
+      <h6 class="hide-on-med-and-up single_line prevent_overflow"><%= @profile.user.name %></h6>
     </div>
   </div>
 
