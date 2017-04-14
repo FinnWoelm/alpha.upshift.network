@@ -42,7 +42,6 @@ RSpec.describe Friendship, type: :model do
             to eq([])
         end
       end
-
     end
   end
 
@@ -63,6 +62,17 @@ RSpec.describe Friendship, type: :model do
       after { friendship.save }
 
       it { is_expected.to receive(:destroy_friendship_requests) }
+    end
+  end
+
+  describe ".friends_ids_for" do
+    let!(:user) { create(:user) }
+    let!(:friends_found) { create_list(:friendship, 3, :initiator => user) }
+    let!(:friends_made) { create_list(:friendship, 3, :acceptor => user) }
+    let(:ids_of_friends) { friends_found.pluck(:acceptor_id) + friends_made.pluck(:initiator_id) }
+
+    it "returns IDs of both friends made and found" do
+      expect(Friendship.friends_ids_for(user)).to match_array(ids_of_friends)
     end
   end
 

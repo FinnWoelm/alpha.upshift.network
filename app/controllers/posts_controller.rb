@@ -14,7 +14,7 @@ class PostsController < ApplicationController
 
   # GET /post/1
   def show
-    render('error', status: 404, layout: 'errors') and return unless @post and @post.readable_by?(@current_user)
+    render('error', status: 404, layout: 'errors') and return unless @post
   end
 
   # GET /post/new
@@ -52,11 +52,11 @@ class PostsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post_without_associations
-      @post = Post.find_by id: params[:id]
+      @post = Post.find_by_id(params[:id])
     end
 
     def set_post_with_assocations
-      @post = Post.with_associations.find_by id: params[:id]
+      @post = Post.readable_by_user(@current_user).with_associations.find_by_id(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

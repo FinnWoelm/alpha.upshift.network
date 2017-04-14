@@ -88,8 +88,8 @@ end
     (
       [author] +
       author.friends +
-      User.where(:visibility => :is_public).or(
-        User.where(:visibility => :is_network_only)
+      User.where(:visibility => :public).or(
+        User.where(:visibility => :network)
       )
     ).sample.profile
   Post.create(

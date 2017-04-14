@@ -8,10 +8,35 @@ class Post < ApplicationRecord
   # the profile to which the post has been made
   belongs_to :profile
 
-  scope :most_recent_first,
-    -> { order('posts.created_at DESC') }
-  scope :with_associations,
-    -> { includes(:comments).includes(:author).includes(:likes).includes(:profile => [:user]) }
+  # # Scopes
+  # returns posts ordered by date of creation (most recent first)
+  scope :most_recent_first, -> {
+    order('posts.created_at DESC')
+  }
+
+  # returns posts where author and profile_owner are visible to the user
+  scope :readable_by_user, -> (user) {
+    joins("INNER JOIN users AS authors ON authors.id = posts.author_id").
+    joins(:profile).
+    joins("INNER JOIN users AS profile_owners ON profile_owners.id = profiles.user_id").
+    where("authors.id = :user_id OR profile_owners.id = :user_id", {
+      :user_id => user ? user.id : -1
+      }).
+    or(
+      Post.
+      joins("INNER JOIN users AS authors ON authors.id = posts.author_id").
+      joins(:profile).
+      joins("INNER JOIN users AS profile_owners ON profile_owners.id = profiles.user_id").
+      merge( User.viewable_by_user(user, "authors")).
+      merge( User.viewable_by_user(user, "profile_owners"))
+    )
+  }
+
+  # returns posts with default associations needed for showing post
+  scope :with_associations, -> {
+    includes(:comments).includes(:author).includes(:likes).
+    includes(:profile => [:user])
+  }
 
   # # Validations
   validates :author, presence: true
@@ -22,7 +47,10 @@ class Post < ApplicationRecord
     if: "author.present? and profile.present?"
 
   def readable_by? user
-    !! self.author.viewable_by?(user)
+    if user
+      return true if (user.id == self.author.id or user.id == self.profile_owner.id)
+    end
+    !! (self.author.viewable_by?(user) and self.profile_owner.viewable_by?(user))
   end
 
   # whether the post can be deleted by a given user

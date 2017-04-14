@@ -77,6 +77,40 @@ class User < ApplicationRecord
 
   # # Accessors
   enum visibility: [ :private, :network, :public ], _suffix: true
+  attr_accessor(:friends_ids)
+
+  # # Scopes
+
+  # returns only users visible to 'user'
+  scope :viewable_by_user, -> (user, join_table_users_name = "users") do
+    where(
+      "\"#{join_table_users_name}\".visibility = :public or " +
+      "\"#{join_table_users_name}\".visibility = :network or " +
+      "(\"#{join_table_users_name}\".visibility = :private and " +
+      "\"#{join_table_users_name}\".id IN (:friend_ids))",
+    {
+      :join_table_users_name  => join_table_users_name,
+      :public => User.visibilities["public"],
+      :network => user ? User.visibilities["network"] : -1,
+      :private => user ? User.visibilities["private"] : -1,
+      :friend_ids => user ? user.friends_ids + [user.id] : []
+    })
+  end
+
+  # returns users along with ids of their friends (made & found)
+  scope :with_friends_ids, -> do
+    joins(
+      "LEFT OUTER JOIN friendships ON friendships.acceptor_id = users.id OR " +
+      "friendships.initiator_id = users.id").
+    merge(
+      User.select(
+        "users.*, array_agg(
+          CASE friendships.acceptor_id
+            WHEN users.id THEN friendships.initiator_id
+            ELSE friendships.acceptor_id
+          END) friends_ids")).
+    group("users.id")
+  end
 
   # # Validations
   validates :profile, presence: true
@@ -146,6 +180,9 @@ class User < ApplicationRecord
 
   # # Callbacks
   #
+  # ## After find:
+  # ## set friends_ids
+  #
   # ## Before create:
   # ### set_profile_picture_updated_at (if profile_picture_updated_at is nil)
   #
@@ -179,6 +216,9 @@ class User < ApplicationRecord
 
   # delete folder containing attachments of this user
   after_destroy :delete_attachment_folder
+
+  # set friends_ids after finding records in database
+  after_find { |user| user.friends_ids = user["friends_ids"] }
 
   # destroy the original profile picture (b/c it is not needed)
   after_save :destroy_original_profile_picture,
@@ -218,6 +258,10 @@ class User < ApplicationRecord
 
   def friends
     friends_found + friends_made
+  end
+
+  def friends_ids
+    @friend_ids ||= Friendship.friends_ids_for(self)
   end
 
   # generate fallback profile picture for user (using Avatarly)

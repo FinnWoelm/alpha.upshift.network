@@ -35,6 +35,43 @@ RSpec.describe Post, type: :model do
 
     end
 
+    describe ":readable_by_user" do
+      let(:user) { create(:user) }
+
+      after { Post.readable_by_user(user) }
+
+      it "merges User.viewable_by_user for authors and for profile_owners" do
+        expect(User).
+          to receive(:viewable_by_user).with(user, "authors").and_call_original
+        expect(User).
+          to receive(:viewable_by_user).with(user, "profile_owners").and_call_original
+      end
+
+      context "when user is author" do
+        let!(:post) { create(:post, :profile_owner => create(:user)) }
+        before do
+          post.author.private_visibility!
+          post.profile_owner.private_visibility!
+        end
+
+        it "returns true" do
+          expect(Post.readable_by_user(post.author)).to include(post)
+        end
+      end
+
+      context "when user is profile owner" do
+        let!(:post) { create(:post, :profile_owner => create(:user)) }
+        before do
+          post.author.private_visibility!
+          post.profile_owner.private_visibility!
+        end
+
+        it "returns true" do
+          expect(Post.readable_by_user(post.profile_owner)).to include(post)
+        end
+      end
+    end
+
     describe ":with_associations" do
       before { create(:post) }
       let(:post) { Post.with_associations.first }
@@ -50,9 +87,7 @@ RSpec.describe Post, type: :model do
       it "eagerloads likes" do
         expect(post.association(:likes)).to be_loaded
       end
-
     end
-
   end
 
   describe "validations" do
@@ -69,22 +104,13 @@ RSpec.describe Post, type: :model do
   end
 
   describe "#readable_by?" do
-    let(:user) { build_stubbed(:user) }
+    let(:post) { create(:post) }
+    let(:user) { nil }
 
-    context "when calling the function" do
-      let(:author_of_post) { instance_double(User) }
-      after { post.send(:readable_by?, user) }
-
-      it "checks whether author's profile is viewable by user" do
-        expect(post).to receive(:author) { author_of_post }
-        expect(author_of_post).to receive(:viewable_by?).with(user)
-      end
-    end
-
-    context "when user cannot view profile" do
+    context "when user cannot view author" do
       before do
-        allow(post).
-          to receive_message_chain(:author, :viewable_by?) {false}
+        allow(post).to receive_message_chain(:author, :viewable_by?) {false}
+        allow(post).to receive_message_chain(:profile_owner, :viewable_by?) {true}
       end
 
       it "returns false" do
@@ -92,10 +118,47 @@ RSpec.describe Post, type: :model do
       end
     end
 
-    context "when user can view profile" do
+    context "when user cannot view profile_owner" do
       before do
-        allow(post).
-          to receive_message_chain(:author, :viewable_by?) {true}
+        allow(post.author).to receive(:viewable_by?) {true}
+        allow(post.profile_owner).to receive(:viewable_by?) {false}
+      end
+
+      it "returns false" do
+        is_expected.not_to be_readable_by(user)
+      end
+    end
+
+    context "when user can view author and profile_owner" do
+      before do
+        allow(post.author).to receive(:viewable_by?) {true}
+        allow(post.profile_owner).to receive(:viewable_by?) {true}
+      end
+
+      it "returns true" do
+        is_expected.to be_readable_by(user)
+      end
+    end
+
+    context "when user is author" do
+      let(:user) { post.author }
+
+      before do
+        allow(post.author).to receive(:viewable_by?) {true}
+        allow(post.profile_owner).to receive(:viewable_by?) {false}
+      end
+
+      it "returns true" do
+        expect(post).to be_readable_by(user)
+      end
+    end
+
+    context "when user is profile_owner" do
+      let(:user) { post.profile_owner }
+
+      before do
+        allow(post.author).to receive(:viewable_by?) {false}
+        allow(post.profile_owner).to receive(:viewable_by?) {true}
       end
 
       it "returns true" do
