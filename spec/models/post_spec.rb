@@ -35,6 +35,29 @@ RSpec.describe Post, type: :model do
 
     end
 
+    describe ":posts_made_and_received" do
+
+      let(:user) { create(:user) }
+      let(:posts_made) { create_list(:post, 3, :author => user) }
+      let(:posts_received) { create_list(:post, 3, :profile_owner => user) }
+      let(:unrelated_posts) { create_list(:post, 3) }
+
+      it "returns posts made by user" do
+        expect(Post.made_and_received_by_user(user)).
+          to include *posts_made
+      end
+
+      it "returns posts posted to user" do
+        expect(Post.made_and_received_by_user(user)).
+          to include *posts_received
+      end
+
+      it "does not return posts unrelated to user" do
+        expect(Post.made_and_received_by_user(user)).
+          not_to include *unrelated_posts
+      end
+    end
+
     describe ":readable_by_user" do
       let(:user) { create(:user) }
 

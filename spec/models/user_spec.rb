@@ -15,11 +15,14 @@ RSpec.describe User, type: :model do
   describe "associations" do
     it { is_expected.to have_one(:profile).dependent(:destroy).
       inverse_of(:user)}
-    it { is_expected.to have_many(:posts).dependent(:destroy).
-      with_foreign_key("author_id")}
+
+    it { is_expected.to have_many(:posts_made).class_name("Post").
+      dependent(:destroy).with_foreign_key("author_id") }
+    it { is_expected.to have_many(:posts_received).through(:profile).
+      source(:posts) }
+
     it { is_expected.to have_many(:comments).dependent(:destroy).
       with_foreign_key("author_id")}
-
     it { is_expected.to have_many(:likes).dependent(:destroy).
       with_foreign_key("liker_id")}
 
@@ -438,6 +441,16 @@ RSpec.describe User, type: :model do
       user.generate_fallback_profile_picture
       expect(FileTest.exist?(path_to_file)).to be_truthy
     end
+  end
+
+  describe "#posts_made_and_received" do
+
+    it "delegates to Post.made_and_received_by_user" do
+      posts = double(ActiveRecord::Relation)
+      expect(Post).to receive(:made_and_received_by_user).with(user).and_return(posts)
+      expect(user.posts_made_and_received).to eq posts
+    end
+
   end
 
   describe "#unread_private_conversations" do

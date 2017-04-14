@@ -27,10 +27,7 @@ feature 'Profile' do
     click_button "Post"
 
     # then I should have posted on the other user's profile
-    post = @user.posts.first
-    expect(post.author.id).to eq(@user.id)
-    expect(post.profile.id).to eq(@another_user.id)
-    #expect(page).to have_content(@my_post_content)
+    expect(page).to have_content(@my_post_content)
   end
 
   def given_i_am_logged_in_as_a_user

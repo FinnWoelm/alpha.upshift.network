@@ -14,6 +14,11 @@ class Post < ApplicationRecord
     order('posts.created_at DESC')
   }
 
+  # return posts made and received by a given user
+  scope :made_and_received_by_user, -> (user) {
+    where(author: user).or(Post.where(profile: user.profile))
+  }
+
   # returns posts where author and profile_owner are visible to the user
   scope :readable_by_user, -> (user) {
     joins("INNER JOIN users AS authors ON authors.id = posts.author_id").

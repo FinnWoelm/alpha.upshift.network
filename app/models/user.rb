@@ -28,7 +28,9 @@ class User < ApplicationRecord
   has_one :profile, inverse_of: :user, dependent: :destroy
 
   # ## Posts
-  has_many :posts, :foreign_key => "author_id", dependent: :destroy
+  has_many :posts_made, :class_name => "Post", :foreign_key => "author_id",
+    dependent: :destroy
+  has_many :posts_received, :through => :profile, :source => :posts
 
   # ## Comments
   has_many :comments, :foreign_key => "author_id", dependent: :destroy
@@ -319,6 +321,11 @@ class User < ApplicationRecord
   # checks whether this user has sent a friend request to another user
   def has_sent_friend_request_to? user
     friendship_requests_sent.exists?(recipient_id: user.id)
+  end
+
+  # returns post made and received by this user
+  def posts_made_and_received
+    Post.made_and_received_by_user(self)
   end
 
   # when printing the record to the screen

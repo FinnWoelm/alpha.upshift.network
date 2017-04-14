@@ -22,7 +22,7 @@ RSpec.describe "profiles/show", type: :view do
     posts_to_check = []
     5.times { posts_to_check << create(:post, :author => current_user) }
 
-    assign(:posts, current_user.posts.most_recent_first.with_associations)
+    assign(:posts, current_user.posts_made_and_received.most_recent_first.with_associations)
 
     render
 
