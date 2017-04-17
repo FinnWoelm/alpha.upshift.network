@@ -8,7 +8,7 @@ FactoryGirl.define do
     color_scheme { Color.color_options.sample }
     last_seen_at nil
     confirmed_registration true
-    visibility { "is_network_only" }
+    visibility { :network }
 
     after(:build, :stub) { |user| user.build_profile(attributes_for(:profile)) }
 

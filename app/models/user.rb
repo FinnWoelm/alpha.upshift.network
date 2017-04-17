@@ -76,7 +76,7 @@ class User < ApplicationRecord
   has_many :friends_made, :through => :friendships_accepted, :source => :initiator
 
   # # Accessors
-  enum visibility: [ :is_private, :is_network_only, :is_public ]
+  enum visibility: [ :private, :network, :public ], _suffix: true
 
   # # Validations
   validates :profile, presence: true
@@ -306,7 +306,7 @@ class User < ApplicationRecord
   def viewable_by? viewer
 
     # public profile can be seen by everyone
-    return true if self.is_public?
+    return true if self.public_visibility?
 
     # public viewers cannot see beyond this!
     return false if viewer.nil?
@@ -315,10 +315,10 @@ class User < ApplicationRecord
     return true if viewer.id == self.id
 
     # network user: network profile
-    return true if self.is_network_only?
+    return true if self.network_visibility?
 
     # network user: friend's profile
-    return true if self.is_private? and viewer.has_friendship_with?(self)
+    return true if self.private_visibility? and viewer.has_friendship_with?(self)
 
     # other cases: false
     return false
@@ -382,6 +382,6 @@ class User < ApplicationRecord
 
   # protected
   # def create_profile_if_not_exists
-  #   self.profile ||= Profile.new(:visibility => "is_network_only")
+  #   self.profile ||= Profile.new(:visibility => "network")
   # end
 end
