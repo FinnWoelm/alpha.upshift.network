@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe PostsController, type: :controller do
+RSpec.describe PostsController do
 
   let(:current_user) { create(:user) }
   let(:sign_user_in) { @request.session['user_id'] = current_user.id }

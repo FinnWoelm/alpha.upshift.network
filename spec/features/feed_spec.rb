@@ -8,11 +8,29 @@ feature 'Feed' do
     then_i_should_see_my_feed
   end
 
-  scenario 'User sees posts from friends and self' do
+  scenario 'User sees posts from their own network (friends and self)' do
     given_i_am_logged_in_as_a_user
-    when_there_are_posts_from_friends_and_myself
+    when_there_are_posts_from_and_to_my_network
     and_i_am_seeing_my_feed
     then_i_should_see_the_posts
+  end
+
+  scenario 'User does not see posts from friends to non-friends' do
+    given_i_am_logged_in_as_a_user
+
+    # when_there_are_posts_from_friends_to_non_friends
+    create_list(:friendship, 2, initiator: @user)
+    @user.friends_found.find_each {|f| create_list(:post, 3, :author => f) }
+
+    # and_i_am_seeing_my_feed
+    visit feed_path
+
+    # then_i_should_not_see_the_posts
+    @user.friends_found.find_each do |friend|
+      friend.posts_made.find_each do |post|
+        expect(page).not_to have_content(post.content)
+      end
+    end
   end
 
   def given_i_am_a_user
@@ -38,7 +56,7 @@ feature 'Feed' do
     click_button 'Login'
   end
 
-  def when_there_are_posts_from_friends_and_myself
+  def when_there_are_posts_from_and_to_my_network
     friends_and_myself = [@user]
     create_list(:friendship, 5, initiator: @user)
 
@@ -46,8 +64,13 @@ feature 'Feed' do
 
     @posts = []
 
-    30.times do
-      @posts << create(:post, author: friends_and_myself.sample)
+    10.times do
+      @posts <<
+        create(
+          :post,
+          :author => friends_and_myself.sample,
+          :profile_owner => friends_and_myself.sample
+        )
     end
   end
 

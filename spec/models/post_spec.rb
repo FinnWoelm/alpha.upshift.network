@@ -26,6 +26,81 @@ RSpec.describe Post, type: :model do
 
   describe "scopes" do
 
+    describe ":from_and_to_network_of_user" do
+      let!(:user) { create(:user) }
+      let(:network_of_user) do
+        3.times do
+          new_user = create(:user)
+          User.all.find_each do |user|
+            create(:friendship, :initiator => user, :acceptor => new_user)
+          end
+        end
+        user.friends
+      end
+      let(:posts) { [] }
+
+      it "returns posts made and received within user's network" do
+        3.times do
+          posts <<
+            create(
+              :post,
+              :author => network_of_user.sample,
+              :profile_owner => network_of_user.sample
+            )
+        end
+        expect(Post.from_and_to_network_of_user(user)).
+          to include *posts
+      end
+
+      it "does not return posts made outside user's network" do
+        3.times do
+          posts <<
+            create(
+              :post,
+              :profile_owner => network_of_user.sample
+            )
+        end
+        expect(Post.from_and_to_network_of_user(user)).
+          not_to include *posts
+      end
+
+      it "does not return posts received outside user's network" do
+        3.times do
+          posts <<
+            create(
+              :post,
+              :author => network_of_user.sample
+            )
+        end
+        expect(Post.from_and_to_network_of_user(user)).
+          not_to include *posts
+      end
+
+      it "returns posts made to user" do
+        3.times do
+          posts <<
+            create(
+              :post,
+              :author => user
+            )
+        end
+        expect(Post.from_and_to_network_of_user(user)).
+          to include *posts
+      end
+
+      it "returns post made by user" do
+        3.times do
+          posts <<
+            create(
+              :post,
+              :profile_owner => user
+            )
+        end
+        expect(Post.from_and_to_network_of_user(user)).
+          to include *posts
+      end
+    end
+
     describe ":most_recent_first" do
       after { Post.most_recent_first }
 
@@ -36,7 +111,6 @@ RSpec.describe Post, type: :model do
     end
 
     describe ":posts_made_and_received" do
-
       let(:user) { create(:user) }
       let(:posts_made) { create_list(:post, 3, :author => user) }
       let(:posts_received) { create_list(:post, 3, :profile_owner => user) }

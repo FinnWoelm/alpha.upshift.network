@@ -9,6 +9,21 @@ class Post < ApplicationRecord
   belongs_to :profile
 
   # # Scopes
+  # returns posts made by friends/user and sent to friends/user
+  scope :from_and_to_network_of_user, -> (user) {
+    joins(:profile).
+    where(
+      "posts.author_id = :user_id or " +
+      "profiles.user_id = :user_id or " +
+      "(posts.author_id IN (:friends_ids) AND " +
+      "profiles.user_id IN (:friends_ids))",
+      {
+        :user_id => user.id,
+        :friends_ids => user.friends_ids
+      }
+    )
+  }
+
   # returns posts ordered by date of creation (most recent first)
   scope :most_recent_first, -> {
     order('posts.created_at DESC')
