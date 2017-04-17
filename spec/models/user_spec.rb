@@ -15,11 +15,14 @@ RSpec.describe User, type: :model do
   describe "associations" do
     it { is_expected.to have_one(:profile).dependent(:destroy).
       inverse_of(:user)}
-    it { is_expected.to have_many(:posts).dependent(:destroy).
-      with_foreign_key("author_id")}
+
+    it { is_expected.to have_many(:posts_made).class_name("Post").
+      dependent(:destroy).with_foreign_key("author_id") }
+    it { is_expected.to have_many(:posts_received).through(:profile).
+      source(:posts) }
+
     it { is_expected.to have_many(:comments).dependent(:destroy).
       with_foreign_key("author_id")}
-
     it { is_expected.to have_many(:likes).dependent(:destroy).
       with_foreign_key("liker_id")}
 
@@ -60,6 +63,69 @@ RSpec.describe User, type: :model do
       is_expected.to define_enum_for(:visibility).
         with([:private, :network, :public])
     }
+  end
+
+  describe "scopes" do
+
+    describe ":viewable_by_user" do
+
+      let(:user) { create(:user, :visibility => "private") }
+      let(:public_users) { create_list(:user, 3, :visibility => "public") }
+      let(:in_network_users) { create_list(:user, 3, :visibility => "network") }
+      let(:private_users) { create_list(:user, 3, :visibility => "private") }
+      let(:private_users_who_are_not_friends) { private_users }
+      let(:private_users_who_are_friends) { create_list(:friendship, 3, initiator: user).map(&:acceptor) }
+
+      context "when user is not logged in" do
+        let(:user) {nil}
+
+        it "returns public users" do
+          expect(User.viewable_by_user(user)).to include *public_users
+        end
+
+        it "does not return in-network users" do
+          expect(User.viewable_by_user(user)).not_to include *in_network_users
+        end
+
+        it "does not return private users" do
+          expect(User.viewable_by_user(user)).not_to include *private_users
+        end
+      end
+
+      context "when user is logged in" do
+
+        it "returns public users" do
+          expect(User.viewable_by_user(user)).to include *public_users
+        end
+
+        it "returns in-network users" do
+          expect(User.viewable_by_user(user)).to include *in_network_users
+        end
+
+        it "returns private users who are my friends" do
+          expect(User.viewable_by_user(user)).to include *private_users_who_are_friends
+        end
+
+        it "does not return private users who are not my friends" do
+          expect(User.viewable_by_user(user)).not_to include *private_users_who_are_not_friends
+        end
+
+        it "returns myself" do
+          expect(User.viewable_by_user(user)).to include user
+        end
+      end
+    end
+
+    describe ":with_friends_ids" do
+
+      before { create_list(:friendship, 5) }
+
+      it "returns User records with friends_ids that match Friendship.friends_ids_for" do
+        User.with_friends_ids.find_each do |user|
+          expect(user.friends_ids).to match_array(Friendship.friends_ids_for(user))
+        end
+      end
+    end
   end
 
   describe "validations" do
@@ -375,6 +441,16 @@ RSpec.describe User, type: :model do
       user.generate_fallback_profile_picture
       expect(FileTest.exist?(path_to_file)).to be_truthy
     end
+  end
+
+  describe "#posts_made_and_received" do
+
+    it "delegates to Post.made_and_received_by_user" do
+      posts = double(ActiveRecord::Relation)
+      expect(Post).to receive(:made_and_received_by_user).with(user).and_return(posts)
+      expect(user.posts_made_and_received).to eq posts
+    end
+
   end
 
   describe "#unread_private_conversations" do

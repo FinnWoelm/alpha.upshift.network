@@ -5,7 +5,7 @@
 
       <%# DELETE POST %>
       <% if post.deletable_by?(@current_user) %>
-        <div class="administrative-actions right">
+        <div class="administrative-actions">
           <!-- Dropdown Trigger -->
           <%= link_to '#',
                 class: "dropdown-button btn-flat tooltipped",
@@ -25,19 +25,41 @@
         </div>
       <% end %>
 
-      <%# PROFILE PICTURE %>
-      <%= link_to profile_path post.author do %>
-        <div class="author_image z-depth-1 grey">
-          <%= image_tag post.author.profile_picture.url %>
-        </div>
-      <% end %>
+      <div class="author_profile_wrapper">
+        <%# AUTHOR %>
+        <div class="author_wrapper single_line">
+          <%# AUTHOR PICTURE %>
+          <%= link_to profile_path(post.author), class: "user_image z-depth-1 gray" do %>
+            <%= image_tag post.author.profile_picture.url %>
+          <% end %>
 
-      <%# AUTHOR NAME %>
-      <%= link_to profile_path post.author do %>
-        <div class="author_name single_line prevent_overflow z-depth-1 <%= post.author.color_scheme_with_font_color %>" title="<%= post.author.name %>">
-          <%= post.author.name %>
-        </div>
-      <% end %>
+          <%# AUTHOR NAME %>
+          <%= link_to profile_path(post.author),
+                class: "name_badge single_line prevent_overflow z-depth-1 #{post.author.color_scheme_with_font_color}",
+                title: "#{post.author.name}" do %>
+              <%= post.author.name %>
+          <% end %>
+        </div><%
+
+        if post.author.id != post.profile_owner.id
+          %><div class="profile_owner_wrapper single_line">
+
+            <i class="mdi mdi-chevron-right mdi-24px gray-text"></i>
+
+            <%# PROFILE OWNER PICTURE %>
+            <%= link_to profile_path(post.profile_owner), class: "user_image z-depth-1 gray" do %>
+              <%= image_tag post.profile_owner.profile_picture.url %>
+            <% end %>
+
+            <%# PROFILE OWNER NAME %>
+            <%= link_to profile_path(post.profile_owner),
+                  class: "name_badge single_line prevent_overflow z-depth-1 #{post.profile_owner.color_scheme_with_font_color}",
+                  title: "#{post.profile_owner.name}" do %>
+                <%= post.profile_owner.name %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
 
       <%# CONTENT %>
       <div class="content">

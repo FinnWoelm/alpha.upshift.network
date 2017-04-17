@@ -83,7 +83,19 @@ end
 
 # Create some posts
 100.times do |i|
-  Post.create(:author => User.order("RANDOM()").first, :content => "Post #{i}\nLorem Ipsum Dolorem")
+  author = User.order("RANDOM()").first
+  profile =
+    (
+      [author] +
+      author.friends +
+      User.where(:visibility => :public).or(
+        User.where(:visibility => :network)
+      )
+    ).sample.profile
+  Post.create(
+    :author => author,
+    :content => "Post #{i}\nLorem Ipsum Dolorem",
+    :profile => profile)
 end
 
 ### Democracy

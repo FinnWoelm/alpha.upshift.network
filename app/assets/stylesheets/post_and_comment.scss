@@ -1,6 +1,6 @@
 div.post, div.comment {
 
-  div.author_image img {
+  .user_image img {
     width: 100%;
     border-radius: inherit;
   }
@@ -12,43 +12,136 @@ div.post-wrapper {
   margin-bottom: 60px;
 
   div.post {
+
+    // VARIABLES FOR POSTS
+
+    // width and height of profile picture of author
+    $author_image_size: 60px;
+
+    // width and height of profile picture of profile owner (recipient of post)
+    $profile_owner_image_size: 40px;
+
+    // width of the icon for toggling administrative actions
+    $administrative_actions_icon_width: 40px;
+
+    // width of the arrow icon used in front of the profile owner
+    $directional_icon_width: 24px;
+
+    // the vertical spacing between author and profile owner (if they are on
+    // separate lines)
+    $vertical_spacing_between_author_and_profile_owner: 10px;
+
+    // line_height for the name badge
+    $name_badge_line_height: 22.5px;
+
+    // how many pixels the profile picture is positioned above the name badge
+    $profile_picture_name_badge_offset: 5px;
+
     position: relative;
     z-index: 20;
-    // fix positioning b/c of author image
-    margin-left: 30px;
+    margin-left: $author_image_size / 2; // fix positioning b/c of author image
 
-    div.author_image {
-      position: absolute;
-      top: -15px;
-      left: -30px;
-      height: 60px;
-      width: 60px;
-      border-radius: 5px;
-      z-index: 5;
+    div.author_profile_wrapper {
+
+      // set widths & max-widths so that overflows work correctly
+      width: 100%;
+      .author_wrapper, .profile_owner_wrapper { max-width: 100%; }
+
+      // prevent administrative actions icon from being overlapped
+      padding-right: $administrative_actions_icon_width;
+
+      // inline-block wrappers and name_badges and float images and icon
+      .author_wrapper, .profile_owner_wrapper, .name_badge { display: inline-block; }
+      .user_image, i.mdi { float: left; }
+
+
+      // position all text elements, so that they are vertically centered on top
+      // border of post
+      .name_badge, i.mdi {
+        position: relative;
+        top: - $name_badge_line_height/2;
+        height: $name_badge_line_height;
+        line-height: $name_badge_line_height;
+      }
+
+      // add padding and border-radius to name badges
+      .name_badge {
+        padding: 0px 10px;
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px;
+      }
+
+      // position images above text and add border-radius
+      .user_image {
+        position: relative;
+        top: - ($name_badge_line_height/2 + $profile_picture_name_badge_offset);
+        z-index: 5;
+        border-radius: 5px;
+      }
     }
 
-    div.author_name {
-      position: absolute;
-      top: -10px;
-      left: 30px;
-      display: inline-block;
-      padding: 0px 10px;
-      border-radius: 5px;
-      border-top-left-radius: 0px;
-      border-bottom-left-radius: 0px;
-      max-width: calc(100% - 70px);
+    // styles specific to the author
+    div.author_wrapper {
+      margin-right: - $author_image_size/2;
+      margin-bottom: - $vertical_spacing_between_author_and_profile_owner;
+
+      .user_image {
+        margin-right: - $author_image_size / 2;
+        left: - $author_image_size / 2;
+
+        // set the correct dimensions for profile picture
+        height: $author_image_size;
+        width: $author_image_size;
+
+        // negative margin-bottom, so that vertical spacing between author and
+        // profile owner is correct
+        margin-bottom: - ($author_image_size - ($name_badge_line_height/2 + $profile_picture_name_badge_offset)*2 - $vertical_spacing_between_author_and_profile_owner);
+      }
+
+      // adjust max-width of name badge for author's profile picture
+      .name_badge {
+        max-width: calc(100% - #{$author_image_size/2});
+      }
+    }
+
+    // styles specific to the profile owner
+    div.profile_owner_wrapper {
+      position: relative;
+      height: $name_badge_line_height;
+      margin-left: $author_image_size/2;
+
+      // set the correct dimensions for profile picture
+      .user_image {
+        height: $profile_owner_image_size;
+        width: $profile_owner_image_size;
+      }
+
+      // adjust max-width of name badge for author's profile picture, icon, and
+      // profile_owner's profile picture,
+      .name_badge {
+        max-width: calc(100% - #{$author_image_size/2 + $directional_icon_width + $profile_owner_image_size});
+        margin-right: $administrative_actions_icon_width;
+      }
     }
 
     div.content {
-      padding: 35px 30px 20px 50px;
+      padding: 0px 30px 10px 50px;
       background-color: white;
       border-bottom: 1px solid color("grey", "lighten-3");
     }
 
-    div.administrative-actions .dropdown-button {
-      padding: 0px;
-      margin-right: 10px;
-      margin-left: 10px;
+    div.administrative-actions {
+
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      z-index: 100;
+
+      .dropdown-button {
+        padding: 0px;
+        margin-right: 10px;
+        margin-left: 10px;
+      }
     }
 
     div.timestamp {
@@ -72,13 +165,13 @@ div.comments-wrapper {
       position: absolute;
       top: 0px;
       left: 0px;
+      padding: 10px;
     }
 
-    div.author_image {
-      margin: 10px;
+    .user_image {
+      display: block;
       height: 40px;
       width: 40px;
-      background-color: gray;
       border-radius: 3px;
     }
 

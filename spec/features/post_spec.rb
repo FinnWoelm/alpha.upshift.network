@@ -38,7 +38,7 @@ feature 'Post' do
   end
 
   def then_i_should_have_a_post_on_my_profile
-    expect(@user.posts.size).to eq(1)
+    expect(@user.posts_made.size).to eq(1)
     expect(page).to have_content(@my_post_content)
   end
 
@@ -47,7 +47,7 @@ feature 'Post' do
   end
 
   def then_i_should_not_have_a_post_on_my_profile
-    expect(@user.posts.size).to eq(0)
+    expect(@user.posts_made.size).to eq(0)
     expect(page).not_to have_content(@my_post_content)
   end
 
@@ -56,7 +56,7 @@ feature 'Post' do
   end
 
   def then_i_should_see_the_post_on_a_separate_page
-    expect(page).to have_current_path(post_path(@user.posts.first))
+    expect(page).to have_current_path(post_path(@user.posts_made.first))
     expect(page).to have_content(@my_post_content)
   end
 
