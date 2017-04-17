@@ -69,7 +69,7 @@
       <div class="actions row no_margin_bottom">
 
         <%# LIKE & UNLIKE %>
-        <div class="col s12 m6">
+        <div class="col s12 m6 no_padding">
         <% if post.likable_by?(@current_user) %>
           <%= like_action post, "sliding" %>
         <% elsif post.unlikable_by?(@current_user) %>
@@ -78,7 +78,7 @@
         </div>
 
         <%# TIMESTAMP %>
-        <div class="col s12 m6 right-align">
+        <div class="col s12 m6 right-align no_padding">
           <%= link_to render_timestamp(post.created_at), post, class: "btn-flat waves-effect waves-red tooltipped", data: {position: 'bottom', delay: '50', tooltip: "Show post on a separate page"} %>
         </div>
       </div>
