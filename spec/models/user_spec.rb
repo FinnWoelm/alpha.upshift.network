@@ -58,7 +58,7 @@ RSpec.describe User, type: :model do
   describe "accessors" do
     it {
       is_expected.to define_enum_for(:visibility).
-        with([:is_private, :is_network_only, :is_public])
+        with([:private, :network, :public])
     }
   end
 
@@ -419,7 +419,7 @@ RSpec.describe User, type: :model do
     let(:friend) { create(:friendship, initiator: user, acceptor: create(:user)).acceptor }
 
     context "when visibility is public" do
-      before { user.is_public! }
+      before { user.public_visibility! }
 
       it "is viewable by anonymous users" do
         is_expected.to be_viewable_by anonymous_user
@@ -435,8 +435,8 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context "when visibility is network-only" do
-      before { user.is_network_only! }
+    context "when visibility is network" do
+      before { user.network_visibility! }
 
       it "is not viewable by anonymous users" do
         is_expected.not_to be_viewable_by anonymous_user
@@ -452,8 +452,8 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context "when visibility is network-only" do
-      before { user.is_private! }
+    context "when visibility is private" do
+      before { user.private_visibility! }
 
       it "is not viewable by anonymous users" do
         is_expected.not_to be_viewable_by anonymous_user

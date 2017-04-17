@@ -33,8 +33,8 @@ RSpec.describe "private_conversations/new.html.erb", type: :view do
       expect(rendered).to have_text("does not exist or their profile is private")
     end
 
-    it "shows error if recipient profile is private" do
-      recipient.is_private!
+    it "shows error if recipient's visibility is private" do
+      recipient.private_visibility!
       private_conversation.valid?
 
       render
