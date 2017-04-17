@@ -138,9 +138,8 @@ div.post-wrapper {
       z-index: 100;
 
       .dropdown-button {
-        padding: 0px;
-        margin-right: 10px;
-        margin-left: 10px;
+        padding: 0px 10px;
+        margin: 0px;
       }
     }
 
@@ -196,9 +195,8 @@ div.comments-wrapper {
     }
 
     div.administrative-actions .dropdown-button {
-      margin-top: -10px;
-      margin-left: 10px;
-      padding: 0px;
+      margin: -10px -10px 0px 10px;
+      padding: 0px 10px;
     }
 
     div.timestamp {
