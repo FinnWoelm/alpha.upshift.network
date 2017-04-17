@@ -19,3 +19,10 @@
 span.badge {
   height: auto !important;
 }
+
+// icons in dropdowns mess up the dropdown for an unexplained reason
+.dropdown-content li > a > i.mdi {
+  width: unset;
+  margin: 0px 10px 0px 0px;
+  float: none;
+}
