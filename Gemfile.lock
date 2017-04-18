@@ -160,7 +160,7 @@ GEM
       activesupport (>= 3.1.0)
       rack (>= 1.4.0)
       rest-client
-    materialize-sass (0.97.8)
+    materialize-sass (0.98.2)
       sass (~> 3.3)
     method_source (0.8.2)
     mime-types (3.1)
@@ -265,7 +265,7 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    sass (3.4.22)
+    sass (3.4.23)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
       sass (~> 3.1)

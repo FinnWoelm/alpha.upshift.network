@@ -14,3 +14,8 @@
 .blue-gray-text {
   @extend .blue-grey-text;
 }
+
+// show badges only when they have content
+span.badge {
+  height: auto !important;
+}
