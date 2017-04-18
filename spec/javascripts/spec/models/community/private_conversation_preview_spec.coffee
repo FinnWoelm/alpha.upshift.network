@@ -19,7 +19,7 @@ describe 'Model: PrivateConversationPreview', ->
       updated_at = ExactDate.parse(
           $("div.private_conversation_previews").attr("data-updated-at")
         ).add(ExactDate.HOUR)
-      html_of_preview = "<div class='preview_conversation' data-conversation-id='#{conversation_id}'>some preview content</div>"
+      html_of_preview = "<li><div class='preview_conversation' data-conversation-id='#{conversation_id}'>some preview content</div></li>"
 
     it "adds preview to the top", ->
       PrivateConversationPreview.add conversation_id, updated_at.to_s(), html_of_preview, false
@@ -60,22 +60,22 @@ describe 'Model: PrivateConversationPreview', ->
       describe "when updated_at of existing preview is less or equally recent than updated_at of new one", ->
 
         beforeEach ->
-          PrivateConversationPreview.add conversation_id, updated_at.to_s(), "<div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.to_s()}'>OLD CONTENT</div>", false
+          PrivateConversationPreview.add conversation_id, updated_at.to_s(), "<li><div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.to_s()}'>OLD CONTENT</div></li>", false
 
         it "deletes the existing content", ->
           expect($(".preview_conversation[data-conversation-id='#{conversation_id}']").length).toEqual 1
-          PrivateConversationPreview.add conversation_id, updated_at.to_s(), "<div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.to_s()}'>NEW CONTENT</div>", false
+          PrivateConversationPreview.add conversation_id, updated_at.to_s(), "<li><div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.to_s()}'>NEW CONTENT</div></li>", false
           expect($(".preview_conversation[data-conversation-id='#{conversation_id}']").length).toEqual 1
           expect($(".preview_conversation:eq(0)").html()).toEqual "NEW CONTENT"
 
       describe "when updated_at of existing preview is more_recent than updated_at of new one", ->
 
         beforeEach ->
-          PrivateConversationPreview.add conversation_id, updated_at.add(ExactDate.MICROSECOND).to_s(), "<div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.add(ExactDate.MICROSECOND).to_s()}'>OLD CONTENT</div>", false
+          PrivateConversationPreview.add conversation_id, updated_at.add(ExactDate.MICROSECOND).to_s(), "<li><div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.add(ExactDate.MICROSECOND).to_s()}'>OLD CONTENT</div></li>", false
 
         it "does not delete the existing preview (it does nothing)", ->
           expect($(".preview_conversation[data-conversation-id='#{conversation_id}']").length).toEqual 1
-          PrivateConversationPreview.add conversation_id, updated_at.to_s(), "<div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.to_s()}'>NEW CONTENT</div>", false
+          PrivateConversationPreview.add conversation_id, updated_at.to_s(), "<li><div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.to_s()}'>NEW CONTENT</div></li>", false
           expect($(".preview_conversation[data-conversation-id='#{conversation_id}']").length).toEqual 1
           expect($(".preview_conversation:eq(0)").html()).toEqual "OLD CONTENT"
 
@@ -92,7 +92,7 @@ describe 'Model: PrivateConversationPreview', ->
       updated_at = ExactDate.parse(
           $("div.preview_conversation").last().attr("data-updated-at")
         ).add(-ExactDate.HOUR)
-      html_of_preview = "<div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.to_s()}'>some preview content</div>"
+      html_of_preview = "<li><div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.to_s()}'>some preview content</div></li>"
 
     it "adds preview to the bottom", ->
       PrivateConversationPreview.add_previous_conversation conversation_id, updated_at.to_s(), html_of_preview
@@ -102,7 +102,7 @@ describe 'Model: PrivateConversationPreview', ->
     describe "when conversation already exists with an equal or more recent timestamp", ->
 
       beforeEach ->
-        html_of_preview = "<div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.add(ExactDate.MICROSECOND).to_s()}'>old preview content</div>"
+        html_of_preview = "<li><div class='preview_conversation' data-conversation-id='#{conversation_id}' data-updated-at='#{updated_at.add(ExactDate.MICROSECOND).to_s()}'>old preview content</div></li>"
         PrivateConversationPreview.add_previous_conversation conversation_id, updated_at.add(ExactDate.MICROSECOND).to_s(), html_of_preview
 
       it "does not add preview", ->

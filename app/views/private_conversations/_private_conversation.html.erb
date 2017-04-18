@@ -1,58 +1,59 @@
-<div class="preview_conversation" data-conversation-id="<%= private_conversation.id %>" data-updated-at="<%= private_conversation.updated_at.exact %>">
+<li>
+  <div class="preview_conversation" data-conversation-id="<%= private_conversation.id %>" data-updated-at="<%= private_conversation.updated_at.exact %>">
 
-  <%# DELETE CONVERSATION %>
-  <div class="administrative-actions right">
-    <!-- Dropdown Trigger -->
-    <%= link_to '#',
-          class: "dropdown-button btn-flat tooltipped",
-          data: {
-            activates: "dropdown-#{private_conversation.id}",
-            position: 'left', delay: '50', tooltip: 'Show Options'
-          } do %>
-      <i class="mdi mdi-settings"></i>
-    <% end %>
+    <%# DELETE CONVERSATION %>
+    <div class="administrative-actions right">
+      <!-- Dropdown Trigger -->
+      <%= link_to '#',
+            class: "dropdown-button btn-flat tooltipped",
+            data: {
+              activates: "dropdown-#{private_conversation.id}",
+              position: 'left', delay: '50', tooltip: 'Show Options'
+            } do %>
+        <i class="mdi mdi-settings"></i>
+      <% end %>
 
-    <!-- Dropdown Structure -->
-    <ul id='dropdown-<%= private_conversation.id %>' class='dropdown-content'>
-      <li>
-        <%= link_to 'Delete', private_conversation, method: :delete, data: { confirm: 'Are you sure?' } %>
-      </li>
-    </ul>
-  </div>
-
-  <%
-    conversation_partner = get_participants_without_current_user(private_conversation.participants).first
-  %>
-
-  <%# PREVIEW %>
-  <%= link_to link_to_private_conversation(private_conversation), class: 'open_conversation' do %>
-    <div class="row no_margin_bottom">
-      <div class="col s2 m2 l1 center-align">
-        <%= image_tag conversation_partner.profile_picture,
-            class: 'responsive-img ' + conversation_partner.color_scheme_with_font_color,
-            alt:  conversation_partner.name %>
-      </div>
-      <div class="col s10 m10 l11">
-
-        <span class='unread_message_count badge'>
-          <% if private_conversation.unread_message_count and private_conversation.unread_message_count > 0 %>
-            <%= private_conversation.unread_message_count.to_s %>
-          <% elsif private_conversation.participantship_of(@current_user).read_at.nil? %>
-            new
-          <% end %>
-        </span>
-
-        <div class="single_line prevent_overflow">
-          <strong>
-            <%= list_participants private_conversation.participants %>
-          </strong>
-        </div>
-
-        <div>
-          <%= show_conversation_preview private_conversation, 250 %>
-        </div>
-      </div>
+      <!-- Dropdown Structure -->
+      <ul id='dropdown-<%= private_conversation.id %>' class='dropdown-content'>
+        <li>
+          <%= link_to 'Delete', private_conversation, method: :delete, data: { confirm: 'Are you sure?' } %>
+        </li>
+      </ul>
     </div>
-  <% end %>
 
-</div>
+    <%
+      conversation_partner = get_participants_without_current_user(private_conversation.participants).first
+    %>
+
+    <%# PREVIEW %>
+    <%= link_to link_to_private_conversation(private_conversation), class: 'open_conversation' do %>
+      <div class="row no_margin_bottom">
+        <div class="col s2 m2 l1 center-align">
+          <%= image_tag conversation_partner.profile_picture,
+              class: 'responsive-img ' + conversation_partner.color_scheme_with_font_color,
+              alt:  conversation_partner.name %>
+        </div>
+        <div class="col s10 m10 l11">
+
+          <span class='unread_message_count badge'>
+            <% if private_conversation.unread_message_count and private_conversation.unread_message_count > 0 %>
+              <%= private_conversation.unread_message_count.to_s %>
+            <% elsif private_conversation.participantship_of(@current_user).read_at.nil? %>
+              new
+            <% end %>
+          </span>
+
+          <div class="single_line prevent_overflow">
+            <strong>
+              <%= list_participants private_conversation.participants %>
+            </strong>
+          </div>
+
+          <div>
+            <%= show_conversation_preview private_conversation, 250 %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</li>

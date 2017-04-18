@@ -33,14 +33,14 @@ class @PrivateConversationPreview
     return if (new PrivateConversationPreview conversation_id).updated_at.to_f() > ExactDate.parse(updated_at).to_f()
 
     # delete any existing preview with this ID
-    $(".preview_conversation[data-conversation-id='#{conversation_id}']").remove()
+    $(".preview_conversation[data-conversation-id='#{conversation_id}']").parent().remove()
 
     # insert at top
     $("div.private_conversation_previews").prepend html_of_preview
 
     # remove any and all conversation previews that exceed the limit of 10
-    $("#desktop_side_navigation .preview_conversation").slice(10).remove()
-    $("#mobile_navigation .preview_conversation").slice(10).remove()
+    $("#desktop_side_navigation .private_conversation_previews li").slice(10).remove()
+    $("#mobile_navigation .private_conversation_previews li").slice(10).remove()
 
     # highlight the active conversation
     PrivateConversation.get_active_conversation().get_preview().highlight()
