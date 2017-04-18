@@ -5,3 +5,7 @@ PrivateConversationPreview.add_previous_conversation(
   '<%= escape_javascript (render private_conversation) %>'
 )
 <% end %>
+
+# Initialize new toopltips & dropdowns
+Application.init_new_tooltips()
+Application.init_new_dropdowns()

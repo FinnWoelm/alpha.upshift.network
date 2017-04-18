@@ -4,6 +4,8 @@ class @Application
   #
   #/ Static: Public
   #// init_new_tooltips = Initializes new tooltips on the page
+  #// init_new_dropdowns = Initializes new (and unfortunately old) dropdowns
+  #//                      on the page
   #// is_viewport_at_bottom = is the viewport at the bottom of the screen?
   #// jump_to_bottom_of_page = moves viewport to bottom of the site
   #// resize_side_nav_to_full_height = resizes the side navigation to height
@@ -21,6 +23,9 @@ class @Application
     $('.tooltipped').each ->
       if $(@).attr("data-tooltip-id") == undefined
         $(@).tooltip();
+
+  @init_new_dropdowns: ->
+    $('.dropdown-button').dropdown();
 
   @is_viewport_at_bottom: ->
     ($(window).scrollTop() >= $(document).height() - $(window).height())

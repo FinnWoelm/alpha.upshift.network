@@ -42,3 +42,13 @@ describe 'JS-Response: PrivateConversation#refresh', ->
         $(".preview_conversation:eq(3)").attr("data-updated-at")
       ).to_f()
     )
+
+  it "initializes new tooltips", ->
+    spyOn(Application, 'init_new_tooltips')
+    eval(response)
+    expect(Application.init_new_tooltips).toHaveBeenCalled()
+
+  it "initializes new dropdowns", ->
+    spyOn(Application, 'init_new_dropdowns')
+    eval(response)
+    expect(Application.init_new_dropdowns).toHaveBeenCalled()
