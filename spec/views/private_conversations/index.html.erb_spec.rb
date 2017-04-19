@@ -22,7 +22,7 @@ RSpec.describe "private_conversations/index.html.erb", type: :view do
 
   it "has an option to delete the conversation" do
     render
-    assert_select "a", :text => "Delete", :count => 5
+    assert_select "a", :text => "Delete Conversation", :count => 5
   end
 
 end

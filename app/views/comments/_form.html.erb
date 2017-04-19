@@ -9,48 +9,45 @@
 
   <div class="content">
 
-    <div class="with_padding">
-
-      <%# TIMESTAMP %>
-      <div class="timestamp right">
-        now
-      </div>
-
-      <%# AUTHOR NAME %>
-      <div class="author_name single_line prevent_overflow">
-        <strong>
-          <%= @current_user.name %>
-        </strong>
-      </div>
-
-      <div class="row new_comment_form no_margin_bottom">
-        <%= form_for comment,
-          url: comment_path(
-            :commentable_type => comment.commentable_type,
-            :commentable_id => comment.commentable_id),
-          as: :comment,
-          class: "col s12" do |f| %>
-
-          <div class="row no_margin_bottom">
-            <div class="input-field col s12">
-              <%= f.text_area :content, class: "materialize-textarea" %>
-              <%= f.label :content, "What do you think?" %>
-            </div>
-          </div>
-
-
-          <div class="row no_margin_bottom">
-            <div class="col s12">
-              <button class="btn waves-effect waves-light" type="submit" name="action">
-                Comment <i class="mdi mdi-send right"></i>
-              </button>
-            </div>
-          </div>
-
-        <% end %>
-      </div>
-
+    <%# TIMESTAMP %>
+    <div class="timestamp right">
+      now
     </div>
+
+    <%# AUTHOR NAME %>
+    <div class="author_name single_line prevent_overflow">
+      <strong>
+        <%= @current_user.name %>
+      </strong>
+    </div>
+
+    <div class="row new_comment_form no_margin_bottom">
+      <%= form_for comment,
+        url: comment_path(
+          :commentable_type => comment.commentable_type,
+          :commentable_id => comment.commentable_id),
+        as: :comment,
+        class: "col s12" do |f| %>
+
+        <div class="row no_margin_bottom">
+          <div class="input-field col s12">
+            <%= f.text_area :content, class: "materialize-textarea" %>
+            <%= f.label :content, "What do you think?" %>
+          </div>
+        </div>
+
+
+        <div class="row no_margin_bottom">
+          <div class="col s12">
+            <button class="btn waves-effect waves-light" type="submit" name="action">
+              Comment <i class="mdi mdi-send right"></i>
+            </button>
+          </div>
+        </div>
+
+      <% end %>
+    </div>
+
 
   </div>
 

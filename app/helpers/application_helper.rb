@@ -1,5 +1,42 @@
 module ApplicationHelper
 
+  # Renders an options dropdown button that activates the element with the given
+  # id. This is used for the administrative actions button for post, comment,
+  # private conversation, etc...
+  def options_dropdown_button id, &dropdown_content
+
+    options = {
+      # dropdown options
+      :activates => "dropdown-#{id}",
+      :constrainwidth => false,
+      :belowOrigin => true,
+      :alignment => 'right',
+
+      # tooltip options
+      :tooltip => "Show Options",
+      :position => "left",
+      :delay => 50
+    }
+
+    render :partial => "shared/dropdown_button",
+      locals: {
+        classes: "btn-flat tooltipped",
+        data: options,
+        trigger_content: Proc.new{ "<i class='mdi mdi-chevron-down'></i>".html_safe },
+        dropdown_content: dropdown_content
+      }
+  end
+
+  # Renders a dropdown button that accepts the given options and renders the
+  # content inside the drowdown toggle
+  # def drowdown_button options, &content
+  #   link_to '#',
+  #       class: "dropdown-button options[:classes]",
+  #       data: options[:data] do
+  #       &content.call
+  #   end
+  # end
+
   # renders a timestamp
   def render_timestamp timestamp
     "#{time_ago_in_words timestamp} ago"

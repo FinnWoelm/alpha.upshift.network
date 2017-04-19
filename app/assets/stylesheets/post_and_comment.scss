@@ -180,32 +180,28 @@ div.comments-wrapper {
       @extend .white;
     }
 
-    div.content > div.with_padding {
-      padding:10px;
-      padding-bottom: 0px;
-    }
-
-    div.content p {
-      margin-top: 0px;
-      margin-bottom: 0px;
-    }
-
-    div.new_comment_form {
-      padding-left: 10px;
-    }
-
-    div.administrative-actions .dropdown-button {
-      margin: -10px -10px 0px 10px;
+    div.content > p {
+      margin: 0px 0px 5px 0px;
       padding: 0px 10px;
     }
 
-    div.timestamp {
-      margin-left: 10px;
+    div.administrative-actions .dropdown-button {
+      padding: 0px 10px;
     }
 
     div.timestamp, .author_name {
-      margin-top: -3px;
+      line-height: 36px;
+      padding: 0px 10px;
       display: block;
+    }
+
+    a.author_name {
+      transition: 0.3s all;
+
+
+      &:hover, &:active, &:focus {
+        background-color: color("grey", "lighten-3");
+      }
     }
 
     div.new_comment_form {

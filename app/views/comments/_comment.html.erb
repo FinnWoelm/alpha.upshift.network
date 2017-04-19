@@ -10,46 +10,33 @@
 
   <div class="content">
 
-    <div class="with_padding">
-
-      <%# DELETE ACTION %>
-      <% if comment.deletable_by?(@current_user) %>
-        <div class="administrative-actions right">
-          <!-- Dropdown Trigger -->
-          <%= link_to '#',
-                class: "dropdown-button btn-flat tooltipped",
-                data: {
-                  activates: "dropdown-#{comment.id}",
-                  position: 'left', delay: '50', tooltip: 'Show Options'
-                } do %>
-            <i class="mdi mdi-settings"></i>
-          <% end %>
-
-          <!-- Dropdown Structure -->
-          <ul id='dropdown-<%= comment.id %>' class='dropdown-content'>
-            <li>
-              <%= link_to 'Delete Comment', delete_comment_path(comment), method: :delete, data: { confirm: 'Are you sure?' } %>
-            </li>
-          </ul>
-        </div>
-      <% end %>
-
-      <%# TIMESTAMP %>
-      <div class="timestamp right">
-        <%= render_timestamp(comment.created_at) %>
+    <%# DELETE ACTION %>
+    <% if comment.deletable_by?(@current_user) %>
+      <div class="administrative-actions right">
+        <%= options_dropdown_button comment.id do %>
+          <li>
+            <%= link_to delete_comment_path(comment), method: :delete, data: { confirm: 'Are you sure?' } do %>
+              <i class="mdi mdi-delete"></i> Delete Comment
+            <% end %>
+          </li>
+        <% end %>
       </div>
+    <% end %>
 
-      <%# AUTHOR NAME %>
-      <%= link_to profile_path(comment.author), class: 'author_name single_line prevent_overflow', title: "#{comment.author.name}" do %>
-        <strong>
-        <%= comment.author.name %>
-        </strong>
-      <% end %>
-
-      <%# CONTENT %>
-      <%= simple_format h(comment.content) %>
+    <%# TIMESTAMP %>
+    <div class="timestamp right">
+      <%= render_timestamp(comment.created_at) %>
     </div>
 
+    <%# AUTHOR NAME %>
+    <%= link_to profile_path(comment.author), class: 'author_name single_line prevent_overflow black-text', title: "#{comment.author.name}" do %>
+      <strong>
+      <%= comment.author.name %>
+      </strong>
+    <% end %>
+
+    <%# CONTENT %>
+    <%= simple_format h(comment.content) %>
 
     <%# LIKE & UNLIKE %>
     <% if comment.likable_by?(@current_user) %>

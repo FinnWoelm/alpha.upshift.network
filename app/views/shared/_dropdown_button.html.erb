@@ -1,0 +1,6 @@
+<%= content_tag "a", class: "dropdown-button #{classes}", data: data do
+  trigger_content.call
+end %>
+<ul id="<%= data[:activates] %>" class='dropdown-content'>
+  <% dropdown_content.call %>
+</ul>

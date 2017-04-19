@@ -3,22 +3,13 @@
 
     <%# DELETE CONVERSATION %>
     <div class="administrative-actions right">
-      <!-- Dropdown Trigger -->
-      <%= link_to '#',
-            class: "dropdown-button btn-flat tooltipped",
-            data: {
-              activates: "dropdown-#{private_conversation.id}",
-              position: 'left', delay: '50', tooltip: 'Show Options'
-            } do %>
-        <i class="mdi mdi-settings"></i>
-      <% end %>
-
-      <!-- Dropdown Structure -->
-      <ul id='dropdown-<%= private_conversation.id %>' class='dropdown-content'>
+      <%= options_dropdown_button private_conversation.id do %>
         <li>
-          <%= link_to 'Delete', private_conversation, method: :delete, data: { confirm: 'Are you sure?' } %>
+          <%= link_to private_conversation, method: :delete, data: { confirm: 'Are you sure?' } do %>
+            <i class="mdi mdi-delete"></i> Delete Conversation
+          <% end %>
         </li>
-      </ul>
+      <% end %>
     </div>
 
     <%
