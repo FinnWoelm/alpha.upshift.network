@@ -6,10 +6,6 @@ body.c-private_conversations {
 
       border-top: 1px solid rgba(0, 0, 0, .2);
 
-      &:last-of-type {
-        border-bottom: 1px solid rgba(0, 0, 0, .2);
-      }
-
       // color the symbol for the dropdown menu white
       &:hover > div.administrative-actions > a:not(:hover) {
         @extend .white-text;

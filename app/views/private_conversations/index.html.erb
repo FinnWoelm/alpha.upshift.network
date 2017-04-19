@@ -6,7 +6,7 @@
 
 <%= infinity_scroll_fallback @private_conversations %>
 
-<div class="conversation_preview_wrapper">
+<ul class="conversation_preview_wrapper">
   <div class="new_conversation">
     <%= link_to new_private_conversation_path, class: 'open_conversation' do %>
       <div class="row no_margin_bottom">
@@ -28,7 +28,7 @@
   <div class="private_conversation_previews" data-updated-at="<%= @private_conversations[0].try(:updated_at).try(:exact) || Time.zone.now.exact %>">
     <%= render(@private_conversations) %>
   </div>
-</div>
+</ul>
 
 <%= infinity_scroll @private_conversations %>
 
