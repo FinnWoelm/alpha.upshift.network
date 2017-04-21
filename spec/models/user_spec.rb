@@ -55,6 +55,17 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:friends_made).dependent(false).
       through(:friendships_accepted).source(:initiator) }
 
+    it { is_expected.to have_many(:notification_actions).
+      class_name("Notification::Action").dependent(:delete_all).
+      with_foreign_key("actor_id") }
+    it { is_expected.to have_many(:notifications_created).dependent(false).
+      through(:notification_actions).source(:notification) }
+    it { is_expected.to have_many(:notification_subscriptions).
+      class_name("Notification::Subscription").dependent(:delete_all).
+      with_foreign_key("subscriber_id") }
+    it { is_expected.to have_many(:notifications).dependent(false).
+      through(:notification_subscriptions).source(:notification) }
+
   end
 
   describe "accessors" do

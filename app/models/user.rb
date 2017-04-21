@@ -82,6 +82,17 @@ class User < ApplicationRecord
     dependent: :destroy
   has_many :friends_made, :through => :friendships_accepted, :source => :initiator
 
+  # ## Notifications
+  has_many :notification_actions, class_name: "Notification::Action",
+    dependent: :delete_all, foreign_key: "actor_id"
+  has_many :notifications_created, class_name: "Notification",
+    through: :notification_actions, source: :notification
+  has_many :notification_subscriptions, class_name: "Notification::Subscription",
+    dependent: :delete_all, foreign_key: "subscriber_id"
+  has_many :notifications, through: :notification_subscriptions, source: :notification
+
+
+
   # # Accessors
   enum visibility: [ :private, :network, :public ], _suffix: true
   attr_accessor(:friends_ids)
