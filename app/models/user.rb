@@ -6,16 +6,12 @@ class User < ApplicationRecord
       medium: ["100x100#", :jpg]
     },
     :default_style => :medium,
-    :url =>
-      Rails.configuration.attachment_storage_location +
-      "users/:param/profile_picture/:style.:extension",
+    :url => "/:param/profile_picture/:style.:extension",
     :path =>
       ":rails_root" +
       Rails.configuration.attachment_storage_location +
       "users/:param/profile_picture/:style.:extension",
-    :default_url =>
-      Rails.configuration.attachment_storage_location +
-      "users/:param/profile_picture/:style.jpg"
+    :default_url => "/missing_attachment/profile_picture.png"
 
   include Rails.application.routes.url_helpers
 
