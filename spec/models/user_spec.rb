@@ -212,17 +212,7 @@ RSpec.describe User, type: :model do
 
   describe "callbacks" do
 
-    describe "after create" do
-
-      subject(:user) { build(:user) }
-      after { user.save }
-
-      it { is_expected.to receive(:generate_fallback_profile_picture).and_call_original }
-      it { is_expected.to receive(:generate_symlink_for_fallback_profile_picture) }
-    end
-
     describe "after destroy" do
-
       subject!(:user) { create(:user) }
       after { user.destroy }
 
@@ -235,7 +225,7 @@ RSpec.describe User, type: :model do
       subject!(:user) { create(:user) }
       after { user.save }
 
-      context "when profile_picture was updated and set to nil" do
+      context "when profile_picture was updated" do
         before do
           user.profile_picture = nil
           user.save
@@ -249,56 +239,80 @@ RSpec.describe User, type: :model do
       end
     end
 
-    describe "after update (commit)" do
-
-      subject!(:user) { create(:user) }
-
-      after { user.save }
-
-      context "when name was updated" do
-        after { user.name = "Something..." }
-        it { is_expected.to receive(:generate_fallback_profile_picture) }
-      end
-
-      context "when color_scheme was updated" do
-        after { user.color_scheme = Color.color_options.sample }
-        it { is_expected.to receive(:generate_fallback_profile_picture) }
-      end
-
-      context "when profile_picture was updated and set to nil" do
-        before do
-          user.profile_picture = File.new(
-            "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.png"
-          )
-          user.save
-        end
-        after do
-          user.profile_picture = nil
-        end
-        it { is_expected.to receive(:generate_symlink_for_fallback_profile_picture) }
-      end
-    end
-
     describe "before save" do
 
       subject!(:user) { create(:user) }
-      before do
-        allow(user).to receive(:generate_symlink_for_fallback_profile_picture)
-        user.profile_picture_updated_at = nil
-      end
       after { user.save }
 
-      context "when profile_picture_updated_at is nil" do
-        it { is_expected.to receive(:set_profile_picture_updated_at) }
+      context "when options[:auto_generate_profile_picture] is true" do
+        before { user.options[:auto_generate_profile_picture] = true }
+
+        context "when name was updated" do
+          after { user.name = "Something..." }
+          it { is_expected.to receive(:auto_generate_profile_picture) }
+        end
+
+        context "when color_scheme was updated" do
+          after { user.color_scheme = Color.color_options.sample }
+          it { is_expected.to receive(:auto_generate_profile_picture) }
+        end
       end
     end
   end
 
-  describe "#to_param" do
-    it "returns the username" do
-      expect(user.to_param).to eq(user.username)
+  describe "#auto_generate_profile_picture" do
+
+    subject!(:user) { create(:user) }
+
+    it "generates an avatar using Avatarly " do
+      expect(Avatarly).to receive(:generate_avatar).and_call_original
+      user.auto_generate_profile_picture
+    end
+
+    it "passes the user's name" do
+      expect(Avatarly).to receive(:generate_avatar).with(user.name, anything).
+        and_call_original
+      user.auto_generate_profile_picture
+    end
+
+    it "sets size to 250px" do
+      expect(Avatarly).to receive(:generate_avatar).with(
+        anything,
+        hash_including(:size => 250)
+      ).and_call_original
+      user.auto_generate_profile_picture
+    end
+
+    it "passes the user's color_scheme for background_color" do
+      hex_color = Color.convert_to_hex(user.color_scheme)
+      expect(Avatarly).to receive(:generate_avatar).with(
+        anything,
+        hash_including(:background_color => hex_color)
+      ).and_call_original
+      user.auto_generate_profile_picture
+    end
+
+    it "passes the font color for the user's color_scheme for font_color" do
+      hex_color = Color.convert_to_hex(Color.font_color_for(user.color_scheme))
+      expect(Avatarly).to receive(:generate_avatar).with(
+        anything,
+        hash_including(:font_color => hex_color)
+      ).and_call_original
+      user.auto_generate_profile_picture
+    end
+
+    it "sets the avatar as profile picture" do
+      user.profile_picture_via_paperclip = nil
+      user.auto_generate_profile_picture
+      expect(user.profile_picture).to be_present
+    end
+
+    it "enables the :auto_generate_profile_picture option" do
+      user.auto_generate_profile_picture
+      expect(user.options[:auto_generate_profile_picture]).to be true
     end
   end
+
 
   describe "#color_scheme_with_font_color" do
 
@@ -391,58 +405,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#generate_fallback_profile_picture" do
-
-    subject!(:user) { create(:user) }
-
-    it "generates an avatar using Avatarly " do
-      expect(Avatarly).to receive(:generate_avatar).and_return("encoded_image")
-      user.generate_fallback_profile_picture
-    end
-
-    it "passes the user's name" do
-      expect(Avatarly).to receive(:generate_avatar).with(user.name, anything).
-        and_return("encoded_image")
-      user.generate_fallback_profile_picture
-    end
-
-    it "sets size to 250px" do
-      expect(Avatarly).to receive(:generate_avatar).with(
-        anything,
-        hash_including(:size => 250)
-      ).and_return("encoded_image")
-      user.generate_fallback_profile_picture
-    end
-
-    it "passes the user's color_scheme for background_color" do
-      hex_color = Color.convert_to_hex(user.color_scheme)
-      expect(Avatarly).to receive(:generate_avatar).with(
-        anything,
-        hash_including(:background_color => hex_color)
-      ).and_return("encoded_image")
-      user.generate_fallback_profile_picture
-    end
-
-    it "passes the font color for the user's color_scheme for font_color" do
-      hex_color = Color.convert_to_hex(Color.font_color_for(user.color_scheme))
-      expect(Avatarly).to receive(:generate_avatar).with(
-        anything,
-        hash_including(:font_color => hex_color)
-      ).and_return("encoded_image")
-      user.generate_fallback_profile_picture
-    end
-
-    it "saves the file to storage" do
-      path_to_file = "#{Rails.root}/public#{user.profile_picture.url}".rpartition('/').first + "/fallback.jpg"
-      # remove file if it exists
-      if FileTest.exist?(path_to_file)
-        FileUtils.remove_file(path_to_file)
-      end
-      user.generate_fallback_profile_picture
-      expect(FileTest.exist?(path_to_file)).to be_truthy
-    end
-  end
-
   describe "#posts_made_and_received" do
 
     it "delegates to Post.made_and_received_by_user" do
@@ -451,6 +413,84 @@ RSpec.describe User, type: :model do
       expect(user.posts_made_and_received).to eq posts
     end
 
+  end
+
+  describe "#profile_picture=" do
+    let(:picture) do
+      File.new(
+        "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.png"
+        )
+    end
+
+    it "sets the picture via the paperclip setter" do
+      expect(user).
+        to receive(:"profile_picture_via_paperclip=").with(picture)
+      user.profile_picture = picture
+    end
+
+    context "when picture is nil" do
+      let(:picture) { nil }
+
+      it "auto-generates the profile picture" do
+        expect(user).to receive(:auto_generate_profile_picture)
+        user.profile_picture = picture
+      end
+    end
+
+    context "when an invalid picture is passed" do
+      let(:invalid_picture) do
+        "#{Rails.root}/spec/support/fixtures/community/user/profile_picture_that_does_not_exist.png"
+      end
+
+      it "does not change the auto_generate_profile_picture option" do
+        user.options[:auto_generate_profile_picture] = "some random text"
+        user.profile_picture = invalid_picture
+        expect(user.options[:auto_generate_profile_picture]).to match "some random text"
+      end
+    end
+  end
+
+  describe "#to_param" do
+    it "returns the username" do
+      expect(user.to_param).to eq(user.username)
+    end
+  end
+
+  describe "#to_s" do
+    it "returns the username" do
+      expect("#{user}").to eq(user.username)
+    end
+  end
+
+  describe "#send_registration_email" do
+    before { allow(Mailjet::Send).to receive(:create) }
+    after { user.send_registration_email }
+
+    it "calls registration confirmation path" do
+      expect(user).to receive(:registration_confirmation_path)
+    end
+
+    it "sends an email" do
+      registration_confirmation_path = instance_double(String)
+      allow(user).
+        to receive(:registration_confirmation_path).
+        and_return( registration_confirmation_path )
+      expect(Mailjet::Send).to receive(:create).with(
+        "FromEmail": "hello@upshift.network",
+        "FromName": "Upshift Network",
+        "Subject": "Please Confirm Your Registration",
+        "Mj-TemplateID": ENV['USER_REGISTRATION_EMAIL_TEMPLATE_ID'],
+        "Mj-TemplateLanguage": "true",
+        "Mj-trackclick": "1",
+        recipients: [{
+          'Email' => user.email,
+          'Name' => user.name}],
+        vars: {
+          "NAME" => user.name,
+          "CONFIRMATION_PATH" => registration_confirmation_path
+        }
+      )
+    end
   end
 
   describe "#unread_private_conversations" do
@@ -485,7 +525,6 @@ RSpec.describe User, type: :model do
         participantship.update_attributes(read_at: yield(participantship) )
       end
     end
-
   end
 
   describe "#viewable_by?" do
@@ -578,37 +617,6 @@ RSpec.describe User, type: :model do
 
   end
 
-  describe "#send_registration_email" do
-    before { allow(Mailjet::Send).to receive(:create) }
-    after { user.send_registration_email }
-
-    it "calls registration confirmation path" do
-      expect(user).to receive(:registration_confirmation_path)
-    end
-
-    it "sends an email" do
-      registration_confirmation_path = instance_double(String)
-      allow(user).
-        to receive(:registration_confirmation_path).
-        and_return( registration_confirmation_path )
-      expect(Mailjet::Send).to receive(:create).with(
-        "FromEmail": "hello@upshift.network",
-        "FromName": "Upshift Network",
-        "Subject": "Please Confirm Your Registration",
-        "Mj-TemplateID": ENV['USER_REGISTRATION_EMAIL_TEMPLATE_ID'],
-        "Mj-TemplateLanguage": "true",
-        "Mj-trackclick": "1",
-        recipients: [{
-          'Email' => user.email,
-          'Name' => user.name}],
-        vars: {
-          "NAME" => user.name,
-          "CONFIRMATION_PATH" => registration_confirmation_path
-        }
-      )
-    end
-  end
-
   describe "#blacklist_username" do
 
     it "saves the username to the blacklisted usernames" do
@@ -620,9 +628,11 @@ RSpec.describe User, type: :model do
 
   describe "#delete_attachment_folder" do
 
-    let!(:user) { create(:user) }
+    let!(:user) { create(:user_with_picture) }
     let(:path_to_attachment_folder) do
-      "public#{user.profile_picture.url.split(user.username).first}#{user.username}"
+      "#{Rails.root}" +
+      Rails.configuration.attachment_storage_location +
+      "users/#{user.username}"
     end
 
     it "deletes the folder of attachments belonging to the user" do
