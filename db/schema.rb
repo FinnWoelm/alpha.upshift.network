@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170411005229) do
+ActiveRecord::Schema.define(version: 20170422055322) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -160,6 +160,7 @@ ActiveRecord::Schema.define(version: 20170411005229) do
     t.datetime "profile_picture_updated_at"
     t.string   "color_scheme",                 default: "indigo basic", null: false
     t.integer  "visibility",                   default: 0
+    t.text     "options"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["registration_token"], name: "index_users_on_registration_token", unique: true, using: :btree
     t.index ["username"], name: "index_users_on_username", unique: true, using: :btree

@@ -43,9 +43,7 @@ bower.json
 /config/application.yml
 
 # Ignore Paperclip attachments
-/public/system/*
-/public/test/*
-/public/users/*
+/uploads/*
 
 # Ignore original artwork
 /original_images/*
