@@ -3,7 +3,7 @@
 %>
 
 <div class='participants left'>
-  <%= image_tag conversation_partner.profile_picture,
+  <%= image_tag profile_picture(conversation_partner),
       class: 'responsive-img ' + conversation_partner.color_scheme_with_font_color,
       alt:  conversation_partner.name %>
 </div>

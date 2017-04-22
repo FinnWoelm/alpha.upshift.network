@@ -52,6 +52,27 @@ module ApplicationHelper
     render :partial => "likes/unlike_#{style}", locals: {object: object}
   end
 
+  # links to the profile of a given user
+  def link_to_profile user, options = {}, &link_content
+    href = profile_path(user) if user.viewable_by?(@current_user)
+
+    content_tag "a", href: href, class: options[:class], data: options[:data], title: options[:title] do
+      link_content.call
+    end
+  end
+
+  # renders the user's profile picture
+  def profile_picture user, size = nil
+    size ||= user.profile_picture.options[:default_style]
+
+    if user.viewable_by?(@current_user)
+      user.profile_picture.url(size)
+    else
+      "data:image/jpeg;base64," + Base64.encode64(File.read(user.profile_picture.path(size)))
+    end
+  end
+
+
   ### nav_link ###
   # Creates a link with text for a given path, highlighting nav element if
   # active.
