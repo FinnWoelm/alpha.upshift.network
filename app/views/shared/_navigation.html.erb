@@ -19,7 +19,7 @@
           <% if @current_user %>
 
             <li>
-              <%= link_to profile_path(@current_user), class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'My Profile'} do %>
+              <%= link_to_profile @current_user, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'My Profile'} do %>
                 <i class="mdi mdi-account-circle"></i>
               <% end %>
             </li>
@@ -62,7 +62,7 @@
             <li><div class="divider"></div></li>
 
             <li>
-              <%= link_to profile_path(@current_user) do %>
+              <%= link_to_profile @current_user do %>
                 <i class="mdi mdi-account-circle"></i>
                 <span class="content">
                   My Profile
