@@ -2,8 +2,8 @@
 
   <div class="meta">
     <%# PROFILE PICTURE %>
-    <%= link_to profile_path(comment.author), class: "user_image z-depth-1 gray" do %>
-      <%= image_tag comment.author.profile_picture.url %>
+    <%= link_to_profile comment.author, class: "user_image z-depth-1 gray" do %>
+      <%= image_tag profile_picture(comment.author) %>
     <% end %>
 
   </div>
@@ -29,7 +29,7 @@
     </div>
 
     <%# AUTHOR NAME %>
-    <%= link_to profile_path(comment.author), class: 'author_name single_line prevent_overflow black-text', title: "#{comment.author.name}" do %>
+    <%= link_to_profile comment.author, class: 'author_name single_line prevent_overflow black-text', title: "#{comment.author.name}" do %>
       <strong>
       <%= comment.author.name %>
       </strong>
