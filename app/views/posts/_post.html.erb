@@ -20,14 +20,14 @@
         <%# AUTHOR %>
         <div class="author_wrapper single_line">
           <%# AUTHOR PICTURE %>
-          <%= link_to profile_path(post.author), class: "user_image z-depth-1 gray" do %>
-            <%= image_tag post.author.profile_picture.url %>
+          <%= link_to_profile post.author, {class: "user_image z-depth-1 gray"} do %>
+            <%= image_tag profile_picture(post.author) %>
           <% end %>
 
           <%# AUTHOR NAME %>
-          <%= link_to profile_path(post.author),
+          <%= link_to_profile post.author, {
                 class: "name_badge single_line prevent_overflow z-depth-1 #{post.author.color_scheme_with_font_color}",
-                title: "#{post.author.name}" do %>
+                title: "#{post.author.name}" } do %>
               <%= post.author.name %>
           <% end %>
         </div><%
@@ -38,14 +38,14 @@
             <i class="mdi mdi-chevron-right mdi-24px gray-text"></i>
 
             <%# PROFILE OWNER PICTURE %>
-            <%= link_to profile_path(post.profile_owner), class: "user_image z-depth-1 gray" do %>
-              <%= image_tag post.profile_owner.profile_picture.url %>
+            <%= link_to_profile post.profile_owner, class: "user_image z-depth-1 gray" do %>
+              <%= image_tag profile_picture(post.profile_owner) %>
             <% end %>
 
             <%# PROFILE OWNER NAME %>
-            <%= link_to profile_path(post.profile_owner),
+            <%= link_to_profile post.profile_owner, {
                   class: "name_badge single_line prevent_overflow z-depth-1 #{post.profile_owner.color_scheme_with_font_color}",
-                  title: "#{post.profile_owner.name}" do %>
+                  title: "#{post.profile_owner.name}" } do %>
                 <%= post.profile_owner.name %>
             <% end %>
           </div>
