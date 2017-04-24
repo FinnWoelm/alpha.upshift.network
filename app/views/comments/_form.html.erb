@@ -21,7 +21,7 @@
       </strong>
     </div>
 
-    <div class="row new_comment_form no_margin_bottom">
+    <div class="row new_comment_form no_margin">
       <%= form_for comment,
         url: comment_path(
           :commentable_type => comment.commentable_type,
@@ -29,7 +29,7 @@
         as: :comment,
         class: "col s12" do |f| %>
 
-        <div class="row no_margin_bottom">
+        <div class="row no_margin">
           <div class="input-field col s12">
             <%= f.text_area :content, class: "materialize-textarea" %>
             <%= f.label :content, "What do you think?" %>
@@ -37,7 +37,7 @@
         </div>
 
 
-        <div class="row no_margin_bottom">
+        <div class="row no_margin">
           <div class="col s12">
             <button class="btn waves-effect waves-light" type="submit" name="action">
               Comment <i class="mdi mdi-send right"></i>
