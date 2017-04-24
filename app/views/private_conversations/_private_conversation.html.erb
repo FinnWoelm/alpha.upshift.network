@@ -20,7 +20,7 @@
     <%= link_to link_to_private_conversation(private_conversation), class: 'open_conversation' do %>
       <div class="row no_margin_bottom">
         <div class="col s2 m2 l1 center-align">
-          <%= image_tag conversation_partner.profile_picture,
+          <%= image_tag profile_picture(conversation_partner),
               class: 'responsive-img ' + conversation_partner.color_scheme_with_font_color,
               alt:  conversation_partner.name %>
         </div>

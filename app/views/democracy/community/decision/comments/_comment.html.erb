@@ -31,14 +31,14 @@
       </div>
 
       <%# PROFILE PICTURE %>
-      <%= link_to profile_path comment.author do %>
+      <%= link_to_profile comment.author do %>
         <div class="author_image z-depth-1 grey">
-          <%= image_tag comment.author.profile_picture.url %>
+          <%= image_tag profile_picture(comment.author) %>
         </div>
       <% end %>
 
       <%# AUTHOR NAME %>
-      <%= link_to profile_path comment.author do %>
+      <%= link_to_profile comment.author do %>
         <div class="author_name z-depth-1 <%= comment.author.color_scheme_with_font_color %>">
           <%= comment.author.name %>
         </div>

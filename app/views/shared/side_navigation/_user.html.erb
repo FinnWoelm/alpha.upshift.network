@@ -2,7 +2,7 @@
   locals: {
     link_destination: profile_path(@current_user),
     background:       asset_path('dawn.jpg'),
-    image:            @current_user.profile_picture.url,
+    image:            profile_picture(@current_user),
     title:            @current_user.name
   }
 %>

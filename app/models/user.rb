@@ -6,16 +6,12 @@ class User < ApplicationRecord
       medium: ["100x100#", :jpg]
     },
     :default_style => :medium,
-    :url =>
-      Rails.configuration.attachment_storage_location +
-      "users/:param/profile_picture/:style.:extension",
+    :url => "/:param/profile_picture/:style.:extension",
     :path =>
-      ":rails_root/public" +
+      ":rails_root" +
       Rails.configuration.attachment_storage_location +
       "users/:param/profile_picture/:style.:extension",
-    :default_url =>
-      Rails.configuration.attachment_storage_location +
-      "users/:param/profile_picture/:style.jpg"
+    :default_url => "/missing_attachment/profile_picture.png"
 
   include Rails.application.routes.url_helpers
 
@@ -80,6 +76,11 @@ class User < ApplicationRecord
   # # Accessors
   enum visibility: [ :private, :network, :public ], _suffix: true
   attr_accessor(:friends_ids)
+  serialize :options, Hash
+
+  # alias the Paperclip setter, so that we can extend it with custom calls
+  alias_method 'profile_picture_via_paperclip=', 'profile_picture='
+
 
   # # Scopes
 
@@ -183,35 +184,18 @@ class User < ApplicationRecord
   # # Callbacks
   #
   # ## After find:
-  # ## set friends_ids
+  # ### set friends_ids
   #
-  # ## Before create:
-  # ### set_profile_picture_updated_at (if profile_picture_updated_at is nil)
+  # ## Before save:
+  # ### auto_generate_profile_picture (if name or color was changed and
+  # ###                               auto-generation is on)
   #
-  # ## After create:
-  # ### generate_fallback_profile_picture
-  # ### generate_symlink_for_fallback_profile_picture
+  # ## After save:
   # ### destroy_original_profile_picture (if profile picture was added)
-  #
-  # ## Before update:
-  # ### set_profile_picture_updated_at (if profile_picture_updated_at is nil)
-  #
-  # ## After update:
-  # ### generate_fallback_profile_picture (if name or color scheme have changed)
-  # ### destroy_original_profile_picture (if profile picture was added)
-  # ### generate_symlink_for_fallback_profile_picture (if profile_picture was removed)
   #
   # ## After destroy:
-  # ## blacklist_username
-  # ## delete_attachment_folder
-
-  # before_validation :create_profile_if_not_exists, on: :create
-
-  # create fallback profile_picture
-  after_create :generate_fallback_profile_picture
-
-  # create symlinks for fallback profile_picture
-  after_create :generate_symlink_for_fallback_profile_picture
+  # ### blacklist_username
+  # ### delete_attachment_folder
 
   # blacklist username (to prevent re-assignment)
   after_destroy :blacklist_username
@@ -224,38 +208,35 @@ class User < ApplicationRecord
 
   # destroy the original profile picture (b/c it is not needed)
   after_save :destroy_original_profile_picture,
-    if: "profile_picture_updated_at_changed? and profile_picture.present?"
+    if: "profile_picture_updated_at_changed?"
 
-  # re-generate fallback profile picture whenever name or color_scheme changes
-  after_update :generate_fallback_profile_picture,
-    if: "name_changed? or color_scheme_changed?"
+  # auto generate profile picture when name or color_scheme changes
+  before_save :auto_generate_profile_picture,
+    if: "(options[:auto_generate_profile_picture] and (name_changed? or color_scheme_changed?))"
 
-  # create symlinks if profile_picture is removed
-  after_update_commit :generate_symlink_for_fallback_profile_picture,
-    if: "previous_changes.key? 'profile_picture_updated_at' and !profile_picture.present?"
+  # generate fallback profile picture for user (using Avatarly)
+  def auto_generate_profile_picture
+    # create profile picture
+    self.profile_picture =
+      "data:image/jpeg;base64," + Base64.encode64(
+      Avatarly.generate_avatar(
+        name,
+        {
+          :size =>  250,
+          :background_color => Color.convert_to_hex(color_scheme),
+          :font_color => Color.convert_to_hex(Color.font_color_for(color_scheme)),
+          :format => 'jpg'
+        }
+      )
+    )
 
-  # set profile_picture_updated_at if it's nil
-  before_save :set_profile_picture_updated_at,
-    if: "profile_picture_updated_at.nil?"
-
-
-
-  # We want to always use username in routes
-  def to_param
-    username
+    # set auto-generation to true
+    options[:auto_generate_profile_picture] = true
   end
 
   # returns both color_scheme and the font color for the color_scheme
   def color_scheme_with_font_color
     "#{color_scheme} #{Color.font_color_for(color_scheme)}"
-  end
-
-  # gets unread conversations
-  def unread_private_conversations
-    private_conversations.most_recent_activity_first.
-      where('private_conversations.updated_at > participantship_in_private_conversations.read_at ' +
-      'OR ' +
-      'participantship_in_private_conversations.read_at IS NULL')
   end
 
   def friends
@@ -264,48 +245,6 @@ class User < ApplicationRecord
 
   def friends_ids
     @friend_ids ||= Friendship.friends_ids_for(self)
-  end
-
-  # generate fallback profile picture for user (using Avatarly)
-  def generate_fallback_profile_picture
-
-    # create profile picture
-    fallback_profile_picture = Avatarly.generate_avatar(
-      name,
-      {
-        :size =>  250,
-        :background_color => Color.convert_to_hex(color_scheme),
-        :font_color => Color.convert_to_hex(Color.font_color_for(color_scheme)),
-        :format => 'jpg'
-      }
-    )
-
-    # create directory if not exists
-    FileUtils::mkdir_p "#{Rails.root}/public#{profile_picture.url}".rpartition('/').first
-
-    # save file
-    File.open("#{Rails.root}/public#{profile_picture.url}".rpartition('/').first + "/fallback.jpg", 'wb+') do |f|
-      f.write fallback_profile_picture
-    end
-
-    if !profile_picture.present?
-      touch :profile_picture_updated_at
-    end
-  end
-
-  # create a symlink to the user's fallback profile picture
-  def generate_symlink_for_fallback_profile_picture
-    begin
-      profile_picture.options[:styles].keys.each do |key|
-        # create a symlink for each style of profile picture: medium, large, ...
-        File.symlink(
-          "#{Rails.root}/public#{profile_picture.url}".rpartition('/').first + "/fallback.jpg",
-          "#{Rails.root}/public#{profile_picture.url}".rpartition('/').first + "/#{key.to_s}.jpg"
-        )
-      end
-    rescue Errno::EEXIST => error
-      puts error
-    end
   end
 
   # checks whether this user is friends with another user
@@ -326,6 +265,28 @@ class User < ApplicationRecord
   # returns post made and received by this user
   def posts_made_and_received
     Post.made_and_received_by_user(self)
+  end
+
+  # set the profile picture (delegate to Paperclip + custom calls)
+  def profile_picture=(picture)
+
+    # delegate to the Paperclip setter; abort if error is encountered
+    begin
+      self.profile_picture_via_paperclip = picture
+    rescue => e
+      return logger.error e.message
+    end
+
+    # set auto-generation to false
+    options[:auto_generate_profile_picture] = false
+
+    # generate the fallback profile picture
+    auto_generate_profile_picture if picture.nil?
+  end
+
+  # We want to always use username in routes
+  def to_param
+    username
   end
 
   # when printing the record to the screen
@@ -351,6 +312,14 @@ class User < ApplicationRecord
         "CONFIRMATION_PATH" => registration_confirmation_path
       }
     )
+  end
+
+  # gets unread conversations
+  def unread_private_conversations
+    private_conversations.most_recent_activity_first.
+      where('private_conversations.updated_at > participantship_in_private_conversations.read_at ' +
+      'OR ' +
+      'participantship_in_private_conversations.read_at IS NULL')
   end
 
   # whether the user is visible to a given viewer
@@ -394,11 +363,15 @@ class User < ApplicationRecord
 
     # deletes the folder of attachments belonging to this user
     def delete_attachment_folder
-      FileUtils.remove_dir(
-        "public" +
-        self.profile_picture.url.split(self.username).first +
-        self.username
-      )
+      path_to_attachment =
+        Paperclip::Interpolations.interpolate(
+          self.profile_picture.options[:path],
+          self.profile_picture,
+          "medium"
+        )
+      path_to_folder =
+        File.expand_path("..", File.dirname(path_to_attachment))
+      FileUtils.remove_dir(path_to_folder) if Dir.exists?(path_to_folder)
     end
 
     # destroy the original profile picture (b/c it is not needed)
@@ -414,11 +387,6 @@ class User < ApplicationRecord
       )
     end
 
-    # sets profile_picture_updated_at to now
-    def set_profile_picture_updated_at
-      self.profile_picture_updated_at = Time.now
-    end
-
     def username_cannot_be_a_dictionary_word
       if Helper::Dictionary.exists? self.username
         errors.add(:username, "is not available")
@@ -430,9 +398,4 @@ class User < ApplicationRecord
         errors.add(:username, "is not available")
       end
     end
-
-  # protected
-  # def create_profile_if_not_exists
-  #   self.profile ||= Profile.new(:visibility => "network")
-  # end
 end

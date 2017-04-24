@@ -7,10 +7,10 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # Clear old Paperclip attachments: user images
-FileUtils.rm_rf(Dir["#{Rails.root}/public/users"])
+FileUtils.rm_rf(Dir["#{Rails.root}/uploads/users"])
 
 # Create some users
-alice = User.create(
+alice = User.new(
   :name => "Alice",
   :username => "alice",
   :email => "alice@upshift.network",
@@ -19,7 +19,7 @@ alice = User.create(
   :color_scheme => Color.color_options.sample
 )
 
-brian = User.create(
+brian = User.new(
   :name => "Brian",
   :username => "brian",
   :email => "brian@upshift.network",
@@ -28,7 +28,7 @@ brian = User.create(
   :color_scheme => Color.color_options.sample
 )
 
-carla = User.create(
+carla = User.new(
   :name => "Carla",
   :username => "carla",
   :email => "carla@upshift.network",
@@ -37,7 +37,7 @@ carla = User.create(
   :color_scheme => Color.color_options.sample
 )
 
-dennis = User.create(
+dennis = User.new(
   :name => "Dennis",
   :username => "dennis",
   :email => "dennis@upshift.network",
@@ -47,7 +47,9 @@ dennis = User.create(
 )
 
 [alice, brian, carla, dennis].each do |user|
-  Profile.create(:user => user)
+  user.build_profile
+  user.auto_generate_profile_picture
+  user.save
 end
 
 # Create Friendships between users
@@ -57,7 +59,7 @@ Friendship.create(:initiator => alice, :acceptor => dennis)
 
 # Create some private conversations
 20.times do |i|
-  u = User.create(
+  u = User.new(
     :username => "user#{i}",
     :password => "password",
     :name => "user#{i}",
@@ -66,7 +68,9 @@ Friendship.create(:initiator => alice, :acceptor => dennis)
     :color_scheme => Color.color_options.sample,
     :visibility => :network
   )
-  Profile.create(:user => u)
+  u.build_profile
+  u.auto_generate_profile_picture
+  u.save
   conversation = PrivateConversation.new(:sender => alice, :recipient => u)
   conversation.messages.build(:content => "initial message", :sender => alice)
   conversation.save
