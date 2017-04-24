@@ -36,7 +36,7 @@ RSpec.describe Notification::Action, type: :model do
 
       it "deletes existing actions for same notification and user" do
         expect{ notification_action.save }.not_to change(Notification::Action, :count)
-        expect(Notification).not_to exist(past_action.id)
+        expect(Notification::Action).not_to exist(past_action.id)
       end
     end
   end
