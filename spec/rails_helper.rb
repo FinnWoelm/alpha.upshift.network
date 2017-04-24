@@ -24,6 +24,12 @@ end
 # set the default JS driver
 require 'capybara/poltergeist'
 Capybara.javascript_driver = :poltergeist
+Capybara.register_driver :poltergeist do |app|
+  options = {
+    phantomjs_options: ['--load-images=no']
+  }
+  Capybara::Poltergeist::Driver.new(app,options)
+end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
