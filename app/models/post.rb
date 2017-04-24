@@ -2,6 +2,7 @@ class Post < ApplicationRecord
 
   include Likable
   include Commentable
+  include Notifying
 
   # the user who wrote the post
   belongs_to :author, :class_name => "User", optional: false
@@ -97,6 +98,57 @@ class Post < ApplicationRecord
       if not recipient.viewable_by? author
         errors.add :recipient, "does not exist or is private"
       end
+    end
+
+    # create notification
+    def create_notification
+
+      # create notification for comments on post
+      comment_notification = Notification.create(
+        :notifier => self,
+        :action_on_notifier => :comment,
+        :timestamps => created_at
+      )
+      # subscribe author to comments on the post
+      comment_notification.subscriptions.create(
+        :subscriber_id => author_id,
+        :reason_for_subscription => :author,
+        :timestamps => created_at
+      )
+
+      if author_id != recipient_id
+
+        # subscribe recipient to comments on the post
+        comment_notification.subscriptions.create(
+          :subscriber_id => recipient_id,
+          :reason_for_subscription => :recipient,
+          :timestamps => created_at
+        )
+
+        # create notification for post
+        post_notification = Notification.create(
+          :notifier => self,
+          :action_on_notifier => :post,
+          :timestamps => created_at
+        )
+
+        # subscribe recipient to post notification
+        post_notification.subscriptions.create(
+          :subscriber_id => recipient_id,
+          :reason_for_subscription => :recipient,
+          :timestamps => created_at
+        )
+
+        # create the post action (must be last!)
+        post_notification.actions.create(
+          :actor_id => author_id,
+          :timestamps => created_at
+        )
+      end
+    end
+
+    def destroy_notification
+      Notification.where(:notifier => self).destroy_all
     end
 
 end

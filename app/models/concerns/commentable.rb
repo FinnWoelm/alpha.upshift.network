@@ -4,7 +4,7 @@ module Commentable
   included do
     has_many :comments,
       -> { includes(:author).includes(:likes) },
-      {as: :commentable, dependent: :destroy}
+      {as: :commentable, dependent: :delete_all}
   end
 
 end
