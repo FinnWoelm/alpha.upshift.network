@@ -5,13 +5,10 @@ class Like < ApplicationRecord
   end
 
   # # Associations
-  belongs_to :liker, :class_name => "User"
-  belongs_to :likable, polymorphic: true, counter_cache: true
+  belongs_to :liker, :class_name => "User", optional: false
+  belongs_to :likable, polymorphic: true, counter_cache: true, optional: false
 
   # # Validations
-  validates :liker, presence: true
-  validates :likable_id, presence: true
-  validates :likable_type, presence: true
   validates :likable_type, inclusion: { in: likable_types,
     message: "%{value} is not a valid likable type" }
 

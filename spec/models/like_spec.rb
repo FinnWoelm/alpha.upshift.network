@@ -14,11 +14,8 @@ RSpec.describe Like, type: :model do
   end
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:liker) }
-    it { is_expected.to validate_presence_of(:likable_id) }
-    it { is_expected.to validate_presence_of(:likable_type) }
-    it { is_expected.to validate_inclusion_of(:likable_type).
-          in_array(["Post", "Comment"]) }
+    it { is_expected.to validate_presence_of(:liker).with_message("must exist") }
+    it { is_expected.to validate_presence_of(:likable).with_message("must exist") }
 
     context "custom validations" do
       after { like.valid? }
