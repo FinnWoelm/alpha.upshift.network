@@ -10,25 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170422055322) do
+ActiveRecord::Schema.define(version: 20170426065228) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "citext"
   enable_extension "uuid-ossp"
 
-  create_table "comments", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+  create_table "comments", force: :cascade do |t|
     t.integer  "author_id"
-    t.uuid     "commentable_id"
-    t.string   "content"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-    t.integer  "likes_count"
+    t.string   "commentable_id"
     t.string   "commentable_type"
+    t.string   "content"
+    t.integer  "likes_count",      default: 0
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.index ["author_id"], name: "index_comments_on_author_id", using: :btree
-    t.index ["commentable_id"], name: "index_comments_on_commentable_id", using: :btree
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id", using: :btree
-    t.index ["created_at"], name: "index_comments_on_created_at", using: :btree
   end
 
   create_table "democracy_communities", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -79,7 +77,7 @@ ActiveRecord::Schema.define(version: 20170422055322) do
 
   create_table "likes", force: :cascade do |t|
     t.integer  "liker_id"
-    t.uuid     "likable_id"
+    t.string   "likable_id"
     t.string   "likable_type"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false

@@ -19,12 +19,8 @@ RSpec.describe Comment, type: :model do
   end
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:author) }
-    it { is_expected.to validate_presence_of(:commentable_type) }
-    it { is_expected.to validate_presence_of(:commentable_id) }
-    # gives error: wrong constant name shoulda-matchers test string
-    # it { is_expected.to validate_inclusion_of(:commentable_type).
-    #      in_array(['Post', 'Democracy::Community::Decision']) }
+    it { is_expected.to validate_presence_of(:author).with_message("must exist") }
+    it { is_expected.to validate_presence_of(:commentable).with_message("must exist") }
 
     it { is_expected.to validate_presence_of(:content) }
     it { is_expected.to validate_length_of(:content).is_at_most(1000) }
