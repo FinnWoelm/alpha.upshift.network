@@ -76,13 +76,33 @@ div.col.main {
 }
 
 // COLOR: applies primary color as text
-.primary_color_text {
+.primary_color_text,
+.text-primary-color {
   color: $primary-color !important;
 }
 
 // COLOR: applies highlight color (secondary color)
 .highlight-text {
   color: $secondary-color !important;
+}
+
+// DROPDOWN
+
+// DROPDOWN: Apply styling to forms and links in dropdown
+.dropdown-content li > a,
+.dropdown-content li > form > button[type="submit"] {
+  font-size: 16px;
+  display: block;
+  line-height: 22px;
+  padding: 14px 16px;
+}
+
+// DROPDOWN: Mask submit buttons in forms
+.dropdown-content li > form > button[type="submit"] {
+  outline: none;
+  box-shadow: none;
+  border: none;
+  background: inherit;
 }
 
 // NAVIGATION
@@ -223,14 +243,6 @@ body.fullscreen div.page_heading {
 
 
 // ANCHORS & LINKS
-
-// ANCHOR: position button correctly
-a.with_icon > i.mdi,
-button.as_link.with_icon > i.mdi {
-  position: relative;
-  top: 5px;
-  margin-top: -7px;
-}
 
 // BUTTONS
 

@@ -13,7 +13,7 @@
     <%# DELETE ACTION %>
     <% if comment.deletable_by?(@current_user) %>
       <div class="administrative-actions right">
-        <%= options_dropdown_button comment.id do %>
+        <%= options_dropdown_button comment do %>
           <li>
             <%= link_to delete_comment_path(comment), method: :delete, data: { confirm: 'Are you sure?' } do %>
               <i class="mdi mdi-delete"></i> Delete Comment

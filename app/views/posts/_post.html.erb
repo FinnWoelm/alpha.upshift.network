@@ -6,7 +6,7 @@
       <%# DELETE POST %>
       <% if post.deletable_by?(@current_user) %>
         <div class="administrative-actions">
-          <%= options_dropdown_button post.id do %>
+          <%= options_dropdown_button post do %>
             <li>
               <%= link_to (post), method: :delete, data: { confirm: 'Are you sure?' } do %>
                 <i class="mdi mdi-delete"></i> Delete Post

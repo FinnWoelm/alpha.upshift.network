@@ -17,7 +17,8 @@
           </div>
           <div class="user_name z-depth-3 <%= @user.color_scheme_with_font_color %> center-align" title="<%= @user.name %>">
             <div class="heading single_line prevent_overflow">
-              <strong><%= @user.name %></strong></div>
+              <strong><%= @user.name %></strong>
+            </div>
           </div>
           <div class="content white">
             <div class="bio">
@@ -25,6 +26,11 @@
                 Placeholder for bio.
               </p>
             </div>
+            <% if @current_user %>
+            <div class="actions">
+              <%= friendship_actions %>
+            </div>
+            <% end %>
           </div>
         </div>
       </div>
@@ -34,8 +40,6 @@
 </div>
 
 <div class="container">
-
-<%= friendship_actions %>
 
 <%= write_post_action %>
 

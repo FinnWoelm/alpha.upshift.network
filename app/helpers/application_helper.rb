@@ -3,39 +3,65 @@ module ApplicationHelper
   # Renders an options dropdown button that activates the element with the given
   # id. This is used for the administrative actions button for post, comment,
   # private conversation, etc...
-  def options_dropdown_button id, &dropdown_content
-
-    options = {
-      # dropdown options
-      :activates => "dropdown-#{id}",
-      :constrainwidth => false,
-      :belowOrigin => true,
-      :alignment => 'right',
-
-      # tooltip options
-      :tooltip => "Show Options",
-      :position => "left",
-      :delay => 50
-    }
-
-    render :partial => "shared/dropdown_button",
-      locals: {
-        classes: "btn-flat tooltipped",
-        data: options,
-        trigger_content: Proc.new{ "<i class='mdi mdi-chevron-down'></i>".html_safe },
-        dropdown_content: dropdown_content
-      }
+  def options_dropdown_button object, &dropdown_content
+    dropdown_button(
+      "#{object.model_name.to_s.downcase}-#{object.id}",
+      {
+        :dropdown => {
+          :constrainwidth => false,
+          :belowOrigin => true,
+          :alignment => 'right',
+        },
+        :trigger => {
+          :class => "btn-flat",
+          :content => "<i class='mdi mdi-chevron-down'></i>".html_safe
+        },
+        :tooltip => {
+          :tooltip => "Show Options",
+          :position => "left",
+          :delay => 50
+        }
+      },
+      &dropdown_content
+    )
   end
 
   # Renders a dropdown button that accepts the given options and renders the
   # content inside the drowdown toggle
-  # def drowdown_button options, &content
-  #   link_to '#',
-  #       class: "dropdown-button options[:classes]",
-  #       data: options[:data] do
-  #       &content.call
-  #   end
-  # end
+  def dropdown_button identifier, options, &dropdown_content
+
+    options.reverse_update({
+      :dropdown => {},
+      :trigger => {},
+      :tooltip => {}
+    })
+
+    identifier ||= "r#{Random.rand.to_s[2..-1]}"
+
+    options[:dropdown].reverse_update({
+      :activates => "dropdown-#{identifier}",
+      :constrainwidth => false,
+      :belowOrigin => true,
+      :alignment => 'left',
+      :hover => false
+    })
+
+    if options[:tooltip][:tooltip].present?
+      options[:tooltip].reverse_update({
+        :position => "right",
+        :delay => 50
+      })
+      (options[:trigger][:class] += " tooltipped")
+    end
+
+    render :partial => "shared/dropdown_button",
+      locals: {
+        classes: options[:trigger][:class],
+        data: options[:dropdown].update(options[:tooltip]),
+        trigger_content: Proc.new{ options[:trigger][:content] },
+        dropdown_content: dropdown_content
+      }
+  end
 
   # renders a timestamp
   def render_timestamp timestamp

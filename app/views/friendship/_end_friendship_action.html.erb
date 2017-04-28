@@ -1,9 +1,21 @@
-<%= link_to end_friendship_path(friend), class: 'waves-effect waves-light btn sliding', method: :delete, data: { confirm: 'Are you sure?' } do %>
-  <span>
-    <i class="mdi mdi-account-check left"></i> Friends
-  </span>
-  <span>
-    <i class="mdi mdi-account-remove left"></i>
-    Unfriend
-  </span>
-<% end %>
+<div class="friendship_action action_wrapper">
+
+  <%= dropdown_button(
+  "friendship-#{friend.username}",
+  {
+    :trigger => {
+      class: "waves-effect waves-light btn",
+      content: '<i class="mdi mdi-account-check left"></i> Friends'.html_safe
+    },
+  }) do %>
+    <li>
+      <%= form_tag(end_friendship_path(friend), method: :delete, data: { confirm: "Are you sure you want to end your friendship with #{friend.name}?"}) do %>
+        <button type="submit" class="text-primary-color" name="action">
+          <i class="mdi mdi-account-remove left"></i>
+          End Friendship
+        </button>
+      <% end %>
+    </li>
+  <% end %>
+
+</div>

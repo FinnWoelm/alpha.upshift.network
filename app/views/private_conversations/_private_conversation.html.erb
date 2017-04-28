@@ -3,7 +3,7 @@
 
     <%# DELETE CONVERSATION %>
     <div class="administrative-actions right">
-      <%= options_dropdown_button private_conversation.id do %>
+      <%= options_dropdown_button private_conversation do %>
         <li>
           <%= link_to private_conversation, method: :delete, data: { confirm: 'Are you sure?' } do %>
             <i class="mdi mdi-delete"></i> Delete Conversation

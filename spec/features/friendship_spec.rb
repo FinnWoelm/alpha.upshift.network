@@ -28,7 +28,7 @@ feature 'Friendship' do
   end
 
   def and_i_end_the_friendship
-    click_link 'Unfriend'
+    click_on 'End Friendship'
   end
 
   def then_we_should_not_be_friends

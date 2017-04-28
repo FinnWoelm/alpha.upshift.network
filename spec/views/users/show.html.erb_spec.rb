@@ -35,7 +35,7 @@ RSpec.describe "users/show", type: :view do
   context "No friendship request has been sent" do
     it "has an add friend button" do
       render
-      expect(rendered).to have_selector("button", text: "Send Friend Request", count: 1)
+      expect(rendered).to have_selector("button", text: "Add Friend", count: 1)
     end
   end
 
@@ -43,7 +43,7 @@ RSpec.describe "users/show", type: :view do
     it "has a revoke friend request button" do
       create(:friendship_request, :recipient => user, :sender => current_user)
       render
-      expect(rendered).to have_selector("a", text: "Revoke Request", count: 1)
+      expect(rendered).to have_selector("button", text: "Cancel Friend Request", count: 1)
     end
   end
 
@@ -55,11 +55,11 @@ RSpec.describe "users/show", type: :view do
 
     it "has an accept friend request button" do
       render
-      expect(rendered).to have_selector("button", text: "Accept", count: 1)
+      expect(rendered).to have_selector("button", text: "Accept Friend Request", count: 1)
     end
     it "has a reject friend request button" do
       render
-      expect(rendered).to have_selector("a", text: "Reject", count: 1)
+      expect(rendered).to have_selector("button", text: "Reject Friend Request", count: 1)
     end
   end
 
@@ -67,7 +67,7 @@ RSpec.describe "users/show", type: :view do
     it "has an unfriend button" do
       create(:friendship, :initiator => user, :acceptor => current_user)
       render
-      expect(rendered).to have_selector("a", text: "Unfriend", count: 1)
+      expect(rendered).to have_selector("button", text: "End Friendship", count: 1)
     end
   end
 
