@@ -1,64 +1,109 @@
 div#profile_banner {
 
-  $profile_picture_size: ($small-and-down: 80px, $medium-and-up: 150px);
+  $profile_picture_size: ($small-and-down: 80px, $medium-and-up: 115px, $large-and-up: 150px);
+  $profile_banner_size: ($small-and-down: 200px, $medium-and-up: 275px, $large-and-up: 350px);
 
   display: block;
 
+  div.parallax-container {
+    @each $media_query, $banner_size in $profile_banner_size {
+      @media #{$media_query} {
+        height: $banner_size
+      }
+    }
+  }
+
   div.user_meta {
     position: relative;
-    height: 100px;
+    top: -30px;
 
-    @each $media_query, $picture_size in $profile_picture_size {
-      @media #{$media_query} {
-        top: - $picture_size / 2;
+    div.wrapper {
+      position: relative;
+      margin-left: 30px;
+    }
+
+    div.profile_picture {
+
+      position: absolute;
+      border-radius: 8px;
+      z-index: 99;
+      @each $media_query, $picture_size in $profile_picture_size {
+        @media #{$media_query} {
+          width: $picture_size;
+          height: $picture_size;
+          top: - $picture_size / 2;
+          left: - $picture_size / 2;
+        }
+      }
+
+      img {
+        border-radius: inherit;
+        @extend .responsive-img;
+        width: 100%;
+      }
+
+    }
+
+    div.user_name {
+      z-index: 0;
+      position: absolute;
+      display: inline-block;
+      padding: 0px 10px;
+      border-radius: 5px;
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+
+      @each $media_query, $picture_size in $profile_picture_size {
+        @media #{$media_query} {
+          left: $picture_size / 2;
+          top: - $picture_size / 4;
+          max-width: calc(100% - #{$picture_size/2} - 40px);
+        }
+      }
+
+      // resize user name text depending on screen size
+      .heading {
+        font-weight: 400;
+        line-height: 110%;
+
+        @media #{$small-and-down} {
+          // matches h6
+          font-size: 1rem;
+          margin: 0.5rem 0 0.4rem 0;
+        }
+        @media #{$medium-and-up} {
+          // matches h5
+          font-size: 1.64rem;
+          margin: 0.82rem 0 0.656rem 0;
+        }
+        @media #{$large-and-up} {
+          // matches h4
+          font-size: 2.28rem;
+          margin: 1.14rem 0 0.912rem 0;
+        }
+      }
+    }
+
+    div.content {
+
+      padding: 40px 30px 20px 100px;
+      min-height: 100px;
+
+      @media #{$small-and-down} {
+        padding: 20px 20px 20px 50px;
+      }
+
+      div.actions > div {
+        display: inline-block;
+        margin-right: 20px;
+        margin-top: 10px;
+        margin-bottom: 10px;
       }
     }
   }
 
-  div.user_meta img {
-    border-radius: 8px;
-    @extend .z-depth-2;
-    @extend .responsive-img;
+}
 
-    @each $media_query, $picture_size in $profile_picture_size {
-      @media #{$media_query} {
-        width: $picture_size;
-      }
-    }
-  }
-
-  div.profile_picture {
-    display: inline-block;
-    position: absolute;
-    z-index: 99;
-  }
-
-  div.user_name {
-    z-index: 0;
-    position: absolute;
-    display: inline-block;
-    padding: 0px 10px;
-    border-radius: 5px;
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-
-    @each $media_query, $picture_size in $profile_picture_size {
-      @media #{$media_query} {
-        left: $picture_size;
-        top: $picture_size / 3;
-        max-width: calc(100% - #{$picture_size});
-      }
-    }
-
-    // @media #{$small-and-down} {
-    //   $line_height: 15px;
-    //   left: 80px;
-    //   top: $profile_picture_size.map-get('small') / 2;// - $profile_name_line_height.map-get('small');
-    // }
-    // @media #{$medium-and-up} {
-    //   left: 150px;
-    //   top: $profile_picture_size.map-get('large') / 2;// - $profile_name_line_height.map-get('large')
-    // }
-  }
-
+div.card {
+  margin-left: 30px;
 }

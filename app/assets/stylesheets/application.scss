@@ -63,16 +63,6 @@ $input-focus-color: color("grey", "darken-4") !default;
   padding-right: 0px !important;
 }
 
-// GENERAL: limit parallax height to 300px
-.parallax-container {
-  height: 300px;
-}
-
-// GENERAL: limit parallax height to 300px
-.parallax-container {
-  height: 300px;
-}
-
 // GENERAL: main content z-index is lower than side nav
 div.col.main {
   z-index: 5;
@@ -300,7 +290,8 @@ a.btn-small {
 // CARDS
 
 // CARDS: render forms as links
-.card .card-action > form {
+.card .card-action > form,
+.card .card-action > div.action_wrapper > form {
 
   display: inline-block;
   margin-right: 20px;
@@ -314,6 +305,12 @@ a.btn-small {
       color: #ffd8a6;
     }
   }
+}
+
+// CARDS: if there are wrappers around actions, make sure to treat them as
+//        inline blocks
+.card .card-action > div.action_wrapper {
+  display: inline-block;
 }
 
 // CARDS: light border

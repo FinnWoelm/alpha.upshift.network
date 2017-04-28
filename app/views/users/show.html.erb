@@ -9,13 +9,25 @@
   </div>
 
   <div class="user_meta container">
-    <div class="profile_picture">
-      <%= image_tag profile_picture(@user, :large) %>
-    </div>
-
-    <div class="user_name z-depth-3 <%= @user.color_scheme_with_font_color %> center-align" title="<%= @user.name %>">
-      <h4 class="hide-on-small-only single_line prevent_overflow"><%= @user.name %></h4>
-      <h6 class="hide-on-med-and-up single_line prevent_overflow"><%= @user.name %></h6>
+    <div class="row">
+      <div class="col s12">
+        <div class="wrapper z-depth-2">
+          <div class="profile_picture z-depth-2 grey">
+            <%= image_tag profile_picture(@user, :large) %>
+          </div>
+          <div class="user_name z-depth-3 <%= @user.color_scheme_with_font_color %> center-align" title="<%= @user.name %>">
+            <div class="heading single_line prevent_overflow">
+              <strong><%= @user.name %></strong></div>
+          </div>
+          <div class="content white">
+            <div class="bio">
+              <p>
+                Placeholder for bio.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
