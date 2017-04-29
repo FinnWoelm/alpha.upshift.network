@@ -16,7 +16,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
-  <body class="<%= 'c-' + controller_path.gsub('/', '-') %> <%= 'a-' + action_name %><%= ((fixed and fluid) ? ' fullscreen' : '') %>">
+  <body class="<%=
+    'c-' + controller_path.gsub('/', '-') %> <%= 'a-' + action_name %><%= ((fixed and fluid) ? ' fullscreen' : '')
+    %> <%=
+    set_color_scheme(@color_scheme)
+    %>">
 
     <div id="toast-container" data-turbolinks-permanent></div>
 

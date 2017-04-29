@@ -14,6 +14,7 @@ $input-focus-color: color("grey", "darken-4") !default;
 @import "integrations/material_design_icons/materialdesignicons";
 
 // App Stylesheets
+@import "color_scheme";
 @import "infinity_scroll";
 @import "side_navigation";
 @import "static";
@@ -68,25 +69,12 @@ div.col.main {
   z-index: 5;
 }
 
-// COLOR
-
-// COLOR: applies primary color as background
-.primary_color {
-  background-color: $primary-color !important;
-}
-
-// COLOR: applies primary color as text
-.primary_color_text,
-.text-primary-color {
-  color: $primary-color !important;
-}
-
-// COLOR: applies highlight color (secondary color)
-.highlight-text {
-  color: $secondary-color !important;
-}
-
 // DROPDOWN
+
+// DROPDOWN: Text should always be black
+.dropdown-content li > a {
+  color: $off-black;
+}
 
 // DROPDOWN: Apply styling to forms and links in dropdown
 .dropdown-content li > a,

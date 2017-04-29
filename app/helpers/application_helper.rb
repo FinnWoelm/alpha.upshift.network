@@ -172,4 +172,14 @@ module ApplicationHelper
             }
   end
 
+  # sets the color scheme on the body class
+  def set_color_scheme scheme
+    scheme ||= "red basic" # default scheme
+    # rainbow scheme:
+    # scheme ||= Color.rainbow_colors.sample + " darken-2"
+    scheme += " " + Color.font_color_for(scheme)
+    "color-scheme " +
+      scheme.split(" ").map {|color| "primary-#{color}"}.join(" ")
+  end
+
 end

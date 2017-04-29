@@ -31,6 +31,11 @@ class Color
       }.flatten
     end
 
+    # contains all the colors of a rainbow
+    def rainbow_colors
+      ["red", "purple", "indigo", "light-blue", "green", "light-green", "orange"]
+    end
+
     # contains all the colors as an array of hashes
     def colors
       {

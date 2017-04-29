@@ -1,0 +1,64 @@
+// add support for gray and blue gray
+$colors: map_merge($colors, ("gray": map_get($colors, "grey")));
+$colors: map_merge($colors, ("blue-gray": map_get($colors, "blue-grey")));
+
+
+// support for shades?
+
+// set up color schemes
+body.color-scheme {
+
+  @each $color_name, $color in $colors {
+    @each $color_type, $color_value in $color {
+      @if $color_type == "base" {
+        &.primary-#{$color_name} {
+          .primary-color { background-color: $color_value !important; }
+          .highlight-color-text { color: $color_value !important; }
+        }
+      }
+      @else if $color_name != "shades" {
+        &.primary-#{$color_name}.primary-#{$color_type} {
+          .primary-color { background-color: $color_value !important; }
+          .highlight-color-text { color: $color_value !important; }
+        }
+      }
+    }
+  }
+
+  // mapping shades
+  @each $color, $color_value in $shades {
+    &.primary-#{$color} {
+      .primary-color { background-color: $color_value !important; }
+      .highlight-color-text { color: $color_value !important; }
+    }
+  }
+
+  // mapping our two text colors: black and white
+  &.primary-black-text .primary-color-text {
+    color: #000000;
+  }
+  &.primary-white-text .primary-color-text {
+    color: #FFFFFF;
+  }
+}
+
+// TEXT: Increase color contrast
+.text-color-contrast {
+  text-shadow:
+    0px 0px 2px rgba(0,0,0,0.5),
+    0 2px 2px rgba(0, 0, 0, 0.14),
+    0 1px 5px rgba(0, 0, 0, 0.12),
+    0 3px 1px rgba(0, 0, 0, 0.2);
+}
+// NAVIGATION: Invert color of logo if black text
+body.color-scheme.primary-black-text nav a.brand-logo img {
+  filter: invert(1);
+  -webkit-filter: invert(1);
+  -moz-filter: invert(1);
+  -o-filter: invert(1);
+  -ms-filter: invert(1);
+}
+// NAVIGATION: Brand inherits color
+nav a.brand-logo { color: inherit; }
+// NAVIGATION: Icons inherit color
+nav ul a, nav a { color: inherit; }

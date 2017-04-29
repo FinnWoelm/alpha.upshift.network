@@ -93,5 +93,13 @@ RSpec.describe UsersController do
         expect(assigns(:post).recipient).to eq user
       end
     end
+
+    context "@color_scheme" do
+      before { perform_action }
+
+      it "sets it according to user's color scheme" do
+        expect(assigns(:color_scheme)).to eq user.color_scheme
+      end
+    end
   end
 end

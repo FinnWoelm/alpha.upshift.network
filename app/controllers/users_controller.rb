@@ -17,6 +17,7 @@ class UsersController < ApplicationController
       with_associations.
       paginate_with_anchor(:page => params[:page], :anchor => params[:anchor], :anchor_column => :created_at, :anchor_orientation => :less_than)
     @post = Post.new(:recipient => @user)
+    @color_scheme = @user.color_scheme
   end
 
   private
