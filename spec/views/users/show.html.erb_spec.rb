@@ -10,7 +10,7 @@ RSpec.describe "users/show", type: :view do
     assign(:current_user, current_user)
     assign(:user, user)
     assign(:post, build(:post, :recipient => user))
-    assign(:posts, [])
+    assign(:posts, Post.paginate(:page => 1))
   end
 
   it "renders user's name" do
@@ -23,6 +23,8 @@ RSpec.describe "users/show", type: :view do
     5.times { posts_to_check << create(:post, :author => current_user) }
 
     assign(:posts, current_user.posts_made_and_received.most_recent_first.with_associations)
+    allow_any_instance_of(ApplicationHelper).to receive(:infinity_scroll_fallback).and_return(nil)
+    allow_any_instance_of(ApplicationHelper).to receive(:infinity_scroll).and_return(nil)
 
     render
 

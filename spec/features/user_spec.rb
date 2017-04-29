@@ -30,6 +30,28 @@ feature 'User' do
     expect(page).to have_content(@my_post_content)
   end
 
+  context "When user scrolls to bottom of profile (infinity scroll)" do
+    scenario 'User can see older posts', :js => true do
+      given_i_am_logged_in_as_a_user
+
+      # and there is a user with more posts than fit on a page
+      @another_user = create(:user)
+      create_list(:post_to_self, Post.per_page+1, :author => @another_user)
+
+      # when I visit their profile
+      visit @another_user
+
+      # then I should see as many posts as are shown per page
+      expect(page).to have_selector(".post-wrapper:not(.post_form)", count: Post.per_page)
+
+      # when I scroll to the bottom
+      page.driver.scroll_to(0, 10000)
+
+      # then I should see as many conversations as are shown per page + 1
+      expect(page).to have_selector(".post-wrapper:not(.post_form)", count: Post.per_page+1)
+    end
+  end
+
   def given_i_am_logged_in_as_a_user
     @user = create(:user)
     visit login_path

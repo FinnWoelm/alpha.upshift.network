@@ -44,4 +44,8 @@
 
 <%= write_post_action %>
 
+<%= infinity_scroll_fallback @posts %>
+
 <%= render(@posts) || no_posts_yet_message %>
+
+<%= infinity_scroll @posts %>

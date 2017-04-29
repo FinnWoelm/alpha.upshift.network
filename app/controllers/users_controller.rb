@@ -14,7 +14,8 @@ class UsersController < ApplicationController
       posts_made_and_received.
       readable_by_user(@current_user).
       most_recent_first.
-      with_associations
+      with_associations.
+      paginate_with_anchor(:page => params[:page], :anchor => params[:anchor], :anchor_column => :created_at, :anchor_orientation => :less_than)
     @post = Post.new(:recipient => @user)
   end
 

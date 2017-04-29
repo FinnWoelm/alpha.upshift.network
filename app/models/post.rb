@@ -55,6 +55,9 @@ class Post < ApplicationRecord
     includes(:recipient)
   }
 
+  # # Pagination
+  self.per_page = 10
+
   # # Accessors
   attr_accessor :recipient_username
 
