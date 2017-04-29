@@ -20,7 +20,7 @@
 
             <li>
               <%= link_to_profile @current_user, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'My Profile'} do %>
-                <i class="mdi mdi-account-circle"></i>
+                <%= image_tag profile_picture(@current_user), class: "img-responsive circle" %>
               <% end %>
             </li>
 
@@ -28,7 +28,7 @@
               <%= link_to private_conversations_home_path, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'Conversations'} do %>
                 <i class="mdi mdi-message"></i>
                 <% if @current_user.unread_private_conversations.size > 0 %>
-                  <span class="white red-text z-depth-1 badge">
+                  <span class="white black-text z-depth-1 badge">
                     <%= @current_user.unread_private_conversations.size %>
                   </span>
                 <% end %>
@@ -63,7 +63,7 @@
 
             <li>
               <%= link_to_profile @current_user do %>
-                <i class="mdi mdi-account-circle"></i>
+                <%= image_tag profile_picture(@current_user), class: "img-responsive circle left" %>
                 <span class="content">
                   My Profile
                 </span>
@@ -75,7 +75,7 @@
 
                 <%# unread conversations indicator %>
                 <% if @current_user.unread_private_conversations.size > 0 %>
-                  <span class="red white-text badge">
+                  <span class="primary-color-text primary-color badge">
                     <%= @current_user.unread_private_conversations.size %>
                   </span>
                 <% end %>

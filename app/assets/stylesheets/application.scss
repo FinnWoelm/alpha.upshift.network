@@ -129,10 +129,15 @@ nav .brand-logo img {
 }
 
 // NAVIGATION: force 48px high icons on side nav
-nav ul.side-nav li a > i.mdi {
-  line-height: 48px;
-  height: 48px;
-  margin: 0px 16px 0px 0px;
+nav ul.side-nav li:not(.head-wrapper) a {
+  & > i.mdi, & > img {
+    line-height: 48px;
+    height: 48px;
+    margin: 0px 16px 0px 0px;
+  }
+  & > img {
+    padding: 12px 0px;
+  }
 }
 
 // NAVIGATION: 64px tall on desktop
@@ -140,12 +145,33 @@ nav ul:not(.side-nav) li {
   height: 64px;
 }
 
+// NAVIGATION: pad the icons
+nav ul:not(.side-nav) li a {
+
+  padding: 20px 15px;
+  line-height: 24px;
+
+  i.mdi, img {
+    display: block;
+    line-height: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    text-shadow: 0 8px 17px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+
+    img {
+      box-shadow: 0 8px 17px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+    }
+  }
+}
+
 // NAVIGATION: Badges on icons
 nav ul:not(.side-nav) li a i+span.badge {
   display: block;
   float: right;
   position: relative;
-  top: -55px;
+  top: -35px;
   left: 10px;
   line-height: 1;
   padding: 3px 5px;
