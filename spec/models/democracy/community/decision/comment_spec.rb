@@ -1,1 +1,1 @@
-require 'models/comment_spec.rb'
+# require 'models/comment_spec.rb'

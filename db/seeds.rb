@@ -47,7 +47,6 @@ dennis = User.new(
 )
 
 [alice, brian, carla, dennis].each do |user|
-  user.build_profile
   user.auto_generate_profile_picture
   user.save
 end
@@ -68,7 +67,6 @@ Friendship.create(:initiator => alice, :acceptor => dennis)
     :color_scheme => Color.color_options.sample,
     :visibility => :network
   )
-  u.build_profile
   u.auto_generate_profile_picture
   u.save
   conversation = PrivateConversation.new(:sender => alice, :recipient => u)
@@ -88,21 +86,21 @@ end
 # Create some posts
 100.times do |i|
   author = User.order("RANDOM()").first
-  profile =
+  recipient =
     (
       [author] +
       author.friends +
       User.where(:visibility => :public).or(
         User.where(:visibility => :network)
       )
-    ).sample.profile
+    ).sample
   Post.create(
     :author => author,
     :content => "Post #{i}\nLorem Ipsum Dolorem",
-    :profile => profile)
+    :recipient => recipient)
 end
 
 ### Democracy
 
 # Create a Community
-Democracy::Community.create(name: 'Test Community')
+# Democracy::Community.create(name: 'Test Community')

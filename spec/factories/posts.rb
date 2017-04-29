@@ -1,13 +1,13 @@
 FactoryGirl.define do
   factory :post do
     association :author, factory: :user
-    profile
+    association :recipient, factory: :user
     content { Faker::Lorem.paragraph }
   end
 
   factory :post_to_self do
     association :author, factory: :user
-    profile { author.profile }
+    recipient { author }
     content { Faker::Lorem.paragraph }
   end
 end

@@ -11,7 +11,7 @@ RSpec.describe "Friendship", type: :request do
 
     it "destroys the request when it is created" do
       post accept_friendship_request_path(@friendship_request.sender)
-      assert_redirected_to profile_path(@friendship_request.sender)
+      assert_redirected_to @friendship_request.sender
       expect{@friendship_request.reload}.to raise_error(ActiveRecord::RecordNotFound)
       expect(Friendship.all.size).to eq(1)
     end
@@ -27,7 +27,7 @@ RSpec.describe "Friendship", type: :request do
 
     it "destroys the friendship" do
       delete end_friendship_path(@friendship.initiator)
-      assert_redirected_to profile_path(@friendship.initiator)
+      assert_redirected_to @friendship.initiator
       expect(@friendship.acceptor).not_to have_friendship_with (@friendship.initiator)
     end
 

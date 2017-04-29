@@ -19,7 +19,6 @@ class RegistrationsController < ApplicationController
   def create
     @user = User.new(registration_params)
     @user.auto_generate_profile_picture
-    @user.build_profile
 
     if @user.save
       @user.send_registration_email

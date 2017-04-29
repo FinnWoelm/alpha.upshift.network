@@ -81,8 +81,8 @@ Rails.application.routes.draw do
   #   end
   # end
 
-  # Profiles -- this must be last
-  get '/:username', to: 'profiles#show', as: :profile,
+  # User profiles -- this must be last
+  get '/:username', to: 'users#show', as: :user,
     constraints: { :username =>  /[a-zA-Z0-9]{1}[a-zA-Z0-9_]{1,24}[a-zA-Z0-9]{1}/}
 
   # Profile Pictures

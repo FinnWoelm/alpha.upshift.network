@@ -69,7 +69,7 @@ feature 'Feed' do
         create(
           :post,
           :author => friends_and_myself.sample,
-          :profile_owner => friends_and_myself.sample
+          :recipient => friends_and_myself.sample
         )
     end
   end

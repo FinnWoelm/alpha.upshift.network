@@ -13,13 +13,11 @@ RSpec.describe User, type: :model do
   it { is_expected.to have_readonly_attribute(:username)}
 
   describe "associations" do
-    it { is_expected.to have_one(:profile).dependent(:destroy).
-      inverse_of(:user)}
 
     it { is_expected.to have_many(:posts_made).class_name("Post").
       dependent(:destroy).with_foreign_key("author_id") }
-    it { is_expected.to have_many(:posts_received).through(:profile).
-      source(:posts) }
+    it { is_expected.to have_many(:posts_received).class_name("Post").
+      dependent(:destroy).with_foreign_key("recipient_id") }
 
     it { is_expected.to have_many(:comments).dependent(:destroy).
       with_foreign_key("author_id")}
@@ -129,7 +127,6 @@ RSpec.describe User, type: :model do
   end
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:profile) }
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_confirmation_of(:password) }
     it { is_expected.to validate_length_of(:password).is_at_least(8).is_at_most(50) }

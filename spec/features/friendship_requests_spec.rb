@@ -48,7 +48,7 @@ feature 'Friendship Request' do
 
   def when_i_visit_the_page_of_another_user
     @another_user = create(:user)
-    visit profile_path @another_user.username
+    visit @another_user
   end
 
   def and_i_send_a_friend_request

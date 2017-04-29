@@ -20,13 +20,12 @@ class User < ApplicationRecord
   attr_readonly :username
 
   # # Associations
-  # ## Profile
-  has_one :profile, inverse_of: :user, dependent: :destroy
 
   # ## Posts
   has_many :posts_made, :class_name => "Post", :foreign_key => "author_id",
     dependent: :destroy
-  has_many :posts_received, :through => :profile, :source => :posts
+  has_many :posts_received, :class_name => "Post", :foreign_key => "recipient_id",
+    dependent: :destroy
 
   # ## Comments
   has_many :comments, :foreign_key => "author_id", dependent: :destroy
@@ -116,7 +115,6 @@ class User < ApplicationRecord
   end
 
   # # Validations
-  validates :profile, presence: true
 
   # name
   validates :name, presence: true

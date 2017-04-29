@@ -10,10 +10,6 @@ FactoryGirl.define do
     confirmed_registration true
     visibility { :network }
 
-    after(:build, :stub) do |user|
-      user.build_profile(attributes_for(:profile))
-    end
-
     factory :user_with_picture do
       after(:build, :stub) do |user|
         user.auto_generate_profile_picture

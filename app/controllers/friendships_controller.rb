@@ -8,16 +8,16 @@ class FriendshipsController < ApplicationController
     friendship.initiator = User.find_by_username(params[:username])
 
     if friendship.save
-      redirect_to profile_path(friendship.initiator), notice: "You and #{friendship.initiator.name} are now friends"
+      redirect_to friendship.initiator, notice: "You and #{friendship.initiator.name} are now friends"
     else
-      redirect_to profile_path(friendship.initiator), notice: 'An error occurred sending the friend request'
+      redirect_to friendship.initiator, notice: 'An error occurred sending the friend request'
     end
   end
 
   # DELETE /friendship/:username
   def destroy
     @friendship.destroy
-    redirect_back fallback_location: profile_path(@friend), notice: "You have ended your friendship with #{@friend.name}."
+    redirect_back fallback_location: @friend, notice: "You have ended your friendship with #{@friend.name}."
   end
 
   private

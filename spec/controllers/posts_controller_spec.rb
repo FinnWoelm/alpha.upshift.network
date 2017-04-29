@@ -40,7 +40,7 @@ RSpec.describe PostsController do
       before do
         sign_user_out
         post.author.public_visibility!
-        post.profile_owner.public_visibility!
+        post.recipient.public_visibility!
         perform_action
       end
 

@@ -1,6 +1,6 @@
 require 'rails_helper.rb'
 
-feature 'Profile' do
+feature 'User' do
 
   scenario 'User visits own profile' do
     given_i_am_logged_in_as_a_user
@@ -8,7 +8,7 @@ feature 'Profile' do
     then_i_should_see_my_profile
   end
 
-  scenario 'User visits another profile' do
+  scenario "User visits another user's profile" do
     given_i_am_logged_in_as_a_user
     when_i_visit_the_page_of_another_user
     then_i_should_see_their_profile
@@ -19,7 +19,7 @@ feature 'Profile' do
 
     # when I visit the page of another user
     @another_user = create(:user)
-    visit profile_path @another_user.username
+    visit @another_user
 
     # and I write a post
     @my_post_content = Faker::Lorem.paragraph
@@ -39,12 +39,12 @@ feature 'Profile' do
   end
 
   def when_i_visit_my_own_page
-    visit profile_path @user.username
+    visit @user
   end
 
   def when_i_visit_the_page_of_another_user
     @another_user = create(:user)
-    visit profile_path @another_user.username
+    visit @another_user
   end
 
   def then_i_should_see_my_profile

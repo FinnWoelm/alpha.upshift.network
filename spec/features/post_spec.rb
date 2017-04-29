@@ -31,7 +31,7 @@ feature 'Post' do
   end
 
   def when_i_write_a_post
-    visit profile_path(@user)
+    visit @user
     @my_post_content = Faker::Lorem.paragraph
     fill_in 'post_content', with: @my_post_content
     click_button "Post"

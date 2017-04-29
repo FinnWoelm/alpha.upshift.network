@@ -3,7 +3,7 @@
 
     <div class="post z-depth-1">
 
-      <div class="author_profile_wrapper">
+      <div class="author_recipient_wrapper">
         <%# AUTHOR %>
         <div class="author_wrapper single_line">
           <%# AUTHOR PICTURE %>
@@ -17,19 +17,19 @@
           </div>
         </div><%
 
-        if post.profile_owner and @current_user.id != post.profile_owner.id
-          %><div class="profile_owner_wrapper single_line">
+        if post.recipient and @current_user.id != post.recipient.id
+          %><div class="recipient_wrapper single_line">
 
             <i class="mdi mdi-chevron-right mdi-24px gray-text"></i>
 
-            <%# PROFILE OWNER PICTURE %>
+            <%# RECIPIENT PICTURE %>
             <div class="user_image z-depth-1 gray">
-              <%= image_tag profile_picture(post.profile_owner) %>
+              <%= image_tag profile_picture(post.recipient) %>
             </div>
 
-            <%# PROFILE OWNER NAME %>
-            <div class="name_badge single_line prevent_overflow z-depth-1 <%= post.profile_owner.color_scheme_with_font_color %>">
-                <%= post.profile_owner.name %>
+            <%# RECIPIENT NAME %>
+            <div class="name_badge single_line prevent_overflow z-depth-1 <%= post.recipient.color_scheme_with_font_color %>">
+                <%= post.recipient.name %>
             </div>
           </div>
         <% end %>
@@ -39,7 +39,7 @@
       <div class="row content no_margin">
         <%= form_for post, class: "col s12"  do |f| %>
 
-          <%= f.hidden_field :profile_owner %>
+          <%= f.hidden_field :recipient_username %>
 
           <div class="row no_margin_bottom">
             <div class="input-field col s12">

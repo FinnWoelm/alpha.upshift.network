@@ -20,7 +20,7 @@ RSpec.describe Post, type: :model do
 
   describe "associations" do
     it { is_expected.to belong_to(:author).dependent(false).class_name('User') }
-    it { is_expected.to belong_to(:profile).dependent(false) }
+    it { is_expected.to belong_to(:recipient).dependent(false) }
     it { is_expected.to have_many(:comments).dependent(:destroy) }
   end
 
@@ -45,7 +45,7 @@ RSpec.describe Post, type: :model do
             create(
               :post,
               :author => network_of_user.sample,
-              :profile_owner => network_of_user.sample
+              :recipient => network_of_user.sample
             )
         end
         expect(Post.from_and_to_network_of_user(user)).
@@ -57,7 +57,7 @@ RSpec.describe Post, type: :model do
           posts <<
             create(
               :post,
-              :profile_owner => network_of_user.sample
+              :recipient => network_of_user.sample
             )
         end
         expect(Post.from_and_to_network_of_user(user)).
@@ -93,7 +93,7 @@ RSpec.describe Post, type: :model do
           posts <<
             create(
               :post,
-              :profile_owner => user
+              :recipient => user
             )
         end
         expect(Post.from_and_to_network_of_user(user)).
@@ -113,7 +113,7 @@ RSpec.describe Post, type: :model do
     describe ":posts_made_and_received" do
       let(:user) { create(:user) }
       let(:posts_made) { create_list(:post, 3, :author => user) }
-      let(:posts_received) { create_list(:post, 3, :profile_owner => user) }
+      let(:posts_received) { create_list(:post, 3, :recipient => user) }
       let(:unrelated_posts) { create_list(:post, 3) }
 
       it "returns posts made by user" do
@@ -137,18 +137,18 @@ RSpec.describe Post, type: :model do
 
       after { Post.readable_by_user(user) }
 
-      it "merges User.viewable_by_user for authors and for profile_owners" do
+      it "merges User.viewable_by_user for authors and for recipients" do
         expect(User).
           to receive(:viewable_by_user).with(user, "authors").and_call_original
         expect(User).
-          to receive(:viewable_by_user).with(user, "profile_owners").and_call_original
+          to receive(:viewable_by_user).with(user, "recipients").and_call_original
       end
 
       context "when user is author" do
-        let!(:post) { create(:post, :profile_owner => create(:user)) }
+        let!(:post) { create(:post, :recipient => create(:user)) }
         before do
           post.author.private_visibility!
-          post.profile_owner.private_visibility!
+          post.recipient.private_visibility!
         end
 
         it "returns true" do
@@ -157,14 +157,14 @@ RSpec.describe Post, type: :model do
       end
 
       context "when user is profile owner" do
-        let!(:post) { create(:post, :profile_owner => create(:user)) }
+        let!(:post) { create(:post, :recipient => create(:user)) }
         before do
           post.author.private_visibility!
-          post.profile_owner.private_visibility!
+          post.recipient.private_visibility!
         end
 
         it "returns true" do
-          expect(Post.readable_by_user(post.profile_owner)).to include(post)
+          expect(Post.readable_by_user(post.recipient)).to include(post)
         end
       end
     end
@@ -188,15 +188,15 @@ RSpec.describe Post, type: :model do
   end
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:author) }
-    it { is_expected.to validate_presence_of(:profile) }
+    it { is_expected.to validate_presence_of(:author).with_message("must exist") }
+    it { is_expected.to validate_presence_of(:recipient).with_message("must exist") }
     it { is_expected.to validate_presence_of(:content) }
     it { is_expected.to validate_length_of(:content).is_at_most(5000) }
     it { is_expected.to validate_length_of(:content).is_at_most(5000) }
 
     context "custom validations" do
       after { post.valid? }
-      it { is_expected.to receive(:author_can_post_to_profile) }
+      it { is_expected.to receive(:author_can_post_to_recipient) }
     end
   end
 
@@ -207,7 +207,7 @@ RSpec.describe Post, type: :model do
     context "when user cannot view author" do
       before do
         allow(post).to receive_message_chain(:author, :viewable_by?) {false}
-        allow(post).to receive_message_chain(:profile_owner, :viewable_by?) {true}
+        allow(post).to receive_message_chain(:recipient, :viewable_by?) {true}
       end
 
       it "returns false" do
@@ -215,10 +215,10 @@ RSpec.describe Post, type: :model do
       end
     end
 
-    context "when user cannot view profile_owner" do
+    context "when user cannot view recipient" do
       before do
         allow(post.author).to receive(:viewable_by?) {true}
-        allow(post.profile_owner).to receive(:viewable_by?) {false}
+        allow(post.recipient).to receive(:viewable_by?) {false}
       end
 
       it "returns false" do
@@ -226,10 +226,10 @@ RSpec.describe Post, type: :model do
       end
     end
 
-    context "when user can view author and profile_owner" do
+    context "when user can view author and recipient" do
       before do
         allow(post.author).to receive(:viewable_by?) {true}
-        allow(post.profile_owner).to receive(:viewable_by?) {true}
+        allow(post.recipient).to receive(:viewable_by?) {true}
       end
 
       it "returns true" do
@@ -242,7 +242,7 @@ RSpec.describe Post, type: :model do
 
       before do
         allow(post.author).to receive(:viewable_by?) {true}
-        allow(post.profile_owner).to receive(:viewable_by?) {false}
+        allow(post.recipient).to receive(:viewable_by?) {false}
       end
 
       it "returns true" do
@@ -250,12 +250,12 @@ RSpec.describe Post, type: :model do
       end
     end
 
-    context "when user is profile_owner" do
-      let(:user) { post.profile_owner }
+    context "when user is recipient" do
+      let(:user) { post.recipient }
 
       before do
         allow(post.author).to receive(:viewable_by?) {false}
-        allow(post.profile_owner).to receive(:viewable_by?) {true}
+        allow(post.recipient).to receive(:viewable_by?) {true}
       end
 
       it "returns true" do
@@ -293,32 +293,23 @@ RSpec.describe Post, type: :model do
 
   end
 
-  describe "#profile_owner=" do
-    let(:profile_owner) { create(:user) }
+  describe "#author_can_post_to_recipient" do
+    after { post.send(:author_can_post_to_recipient) }
+    let(:recipient) { post.recipient }
 
-    it "sets the profile" do
-      post.profile_owner = profile_owner
-      expect(post.profile.id).to eq(profile_owner.profile.id)
-    end
-  end
-
-  describe "#author_can_post_to_profile" do
-    after { post.send(:author_can_post_to_profile) }
-    let(:profile_owner) { post.profile_owner }
-
-    context "when author can view profile owner" do
-      before { allow(profile_owner).to receive(:viewable_by?) {true} }
+    context "when author can view recipient" do
+      before { allow(recipient).to receive(:viewable_by?) {true} }
 
       it "does not add an error message" do
-        expect(post.errors[:profile]).not_to receive(:<<)
+        expect(post.errors[:recipient]).not_to receive(:<<)
       end
     end
 
-    context "when author cannot view profile owner" do
-      before { allow(profile_owner).to receive(:viewable_by?) {false} }
+    context "when author cannot view recipient" do
+      before { allow(recipient).to receive(:viewable_by?) {false} }
 
       it "adds an error message" do
-        expect(post.errors[:profile]).to receive(:<<).
+        expect(post.errors[:recipient]).to receive(:<<).
           with("does not exist or is private")
       end
     end

@@ -1,21 +1,21 @@
 require 'rails_helper'
 include SignInHelper
 
-RSpec.describe "profiles/show", type: :view do
+RSpec.describe "users/show", type: :view do
 
   let(:current_user) { create(:user) }
-  let(:profile) { create(:user).profile }
+  let(:user) { create(:user) }
 
   before do
     assign(:current_user, current_user)
-    assign(:profile, profile)
-    assign(:post, build(:post, :profile_owner => profile.user))
+    assign(:user, user)
+    assign(:post, build(:post, :recipient => user))
     assign(:posts, [])
   end
 
   it "renders user's name" do
     render
-    expect(rendered).to have_text(profile.user.name)
+    expect(rendered).to have_text(user.name)
   end
 
   it "renders most recent posts first" do
@@ -41,7 +41,7 @@ RSpec.describe "profiles/show", type: :view do
 
   context "Friendship request has been sent by user viewing profile" do
     it "has a revoke friend request button" do
-      create(:friendship_request, :recipient => profile.user, :sender => current_user)
+      create(:friendship_request, :recipient => user, :sender => current_user)
       render
       expect(rendered).to have_selector("a", text: "Revoke Request", count: 1)
     end
@@ -50,7 +50,7 @@ RSpec.describe "profiles/show", type: :view do
   context "Friendship request has been sent to user viewing profile" do
 
     before(:each) do
-      create(:friendship_request, :sender => profile.user, :recipient => current_user)
+      create(:friendship_request, :sender => user, :recipient => current_user)
     end
 
     it "has an accept friend request button" do
@@ -65,7 +65,7 @@ RSpec.describe "profiles/show", type: :view do
 
   context "Friendship exists between users" do
     it "has an unfriend button" do
-      create(:friendship, :initiator => profile.user, :acceptor => current_user)
+      create(:friendship, :initiator => user, :acceptor => current_user)
       render
       expect(rendered).to have_selector("a", text: "Unfriend", count: 1)
     end

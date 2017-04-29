@@ -13,9 +13,9 @@ class FriendshipRequestsController < ApplicationController
     friendship_request.recipient = User.find_by_username(params[:username])
 
     if friendship_request.save
-      redirect_to profile_path(friendship_request.recipient), notice: 'Friendship request was successfully sent.'
+      redirect_to friendship_request.recipient, notice: 'Friendship request was successfully sent.'
     else
-      redirect_to profile_path(friendship_request.recipient), notice: 'An error occurred sending the friend request.'
+      redirect_to friendship_request.recipient, notice: 'An error occurred sending the friend request.'
     end
   end
 

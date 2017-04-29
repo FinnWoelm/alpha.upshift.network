@@ -54,7 +54,7 @@ module ApplicationHelper
 
   # links to the profile of a given user
   def link_to_profile user, options = {}, &link_content
-    href = profile_path(user) if user.viewable_by?(@current_user)
+    href = user_path(user) if user.viewable_by?(@current_user)
 
     content_tag "a", href: href, class: options[:class], data: options[:data], title: options[:title] do
       link_content.call
