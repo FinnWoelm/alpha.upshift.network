@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170428115041) do
+ActiveRecord::Schema.define(version: 20170429152555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -152,6 +152,11 @@ ActiveRecord::Schema.define(version: 20170428115041) do
     t.string   "color_scheme",                 default: "indigo basic", null: false
     t.integer  "visibility",                   default: 0
     t.text     "options"
+    t.string   "profile_banner_file_name"
+    t.string   "profile_banner_content_type"
+    t.integer  "profile_banner_file_size"
+    t.datetime "profile_banner_updated_at"
+    t.text     "bio"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["registration_token"], name: "index_users_on_registration_token", unique: true, using: :btree
     t.index ["username"], name: "index_users_on_username", unique: true, using: :btree

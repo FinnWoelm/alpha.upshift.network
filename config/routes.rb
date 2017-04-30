@@ -87,10 +87,18 @@ Rails.application.routes.draw do
 
   # Profile Pictures
   scope module: 'user' do
-    get '/:username/profile_picture/:size', to: 'profile_pictures#show',
+    get '/:username/:attachment/:size', to: 'attachments#show',
       constraints: {
         :username => /[a-zA-Z0-9]{1}[a-zA-Z0-9_]{1,24}[a-zA-Z0-9]{1}/,
+        :attachment => "profile_picture",
         :size => /(medium)|(large)/,
+        :format => "jpg"
+      }
+    get '/:username/:attachment/:size', to: 'attachments#show',
+      constraints: {
+        :username => /[a-zA-Z0-9]{1}[a-zA-Z0-9_]{1,24}[a-zA-Z0-9]{1}/,
+        :attachment => "profile_banner",
+        :size => "original",
         :format => "jpg"
       }
   end

@@ -1,7 +1,7 @@
 <%= render partial: "shared/side_navigation/head",
   locals: {
     link_destination: @current_user,
-    background:       asset_path('dawn.jpg'),
+    background:       @current_user.profile_banner.url,
     image:            profile_picture(@current_user),
     title:            @current_user.name
   }

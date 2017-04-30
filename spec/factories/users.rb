@@ -9,6 +9,7 @@ FactoryGirl.define do
     last_seen_at nil
     confirmed_registration true
     visibility { :network }
+    bio { Faker::Lorem.paragraph }
 
     factory :user_with_picture do
       after(:build, :stub) do |user|

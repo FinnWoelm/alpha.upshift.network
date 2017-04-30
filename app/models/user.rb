@@ -11,7 +11,17 @@ class User < ApplicationRecord
       ":rails_root" +
       Rails.configuration.attachment_storage_location +
       "users/:param/profile_picture/:style.:extension",
-    :default_url => "/missing_attachment/profile_picture.png"
+    :default_url => "/missing_attachment/profile_picture.jpg"
+    has_attached_file :profile_banner, styles: {
+        original: ["1600x500#", :jpg]
+      },
+      :default_style => :original,
+      :url => "/:param/profile_banner/:style.:extension",
+      :path =>
+        ":rails_root" +
+        Rails.configuration.attachment_storage_location +
+        "users/:param/profile_banner/banner.:extension",
+      :default_url => "/missing_attachment/profile_banner.jpg"
 
   include Rails.application.routes.url_helpers
 
@@ -168,9 +178,16 @@ class User < ApplicationRecord
 
   # Profile picture
   validates_with AttachmentSizeValidator, attributes: :profile_picture,
-    less_than: 5.megabytes
+    less_than: 10.megabytes
   validates_with AttachmentContentTypeValidator, attributes: :profile_picture,
     content_type: ["image/jpeg", "image/gif", "image/png"]
+
+  # Profile banner
+  validates_with AttachmentSizeValidator, attributes: :profile_banner,
+    less_than: 10.megabytes
+  validates_with AttachmentContentTypeValidator, attributes: :profile_banner,
+    content_type: ["image/jpeg", "image/gif", "image/png"]
+
 
   # Color Scheme
   validates :color_scheme,

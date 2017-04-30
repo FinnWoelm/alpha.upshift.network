@@ -5,7 +5,12 @@ div#profile_banner {
 
   display: block;
 
-  div.parallax-container {
+  div.user_banner {
+
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
     @each $media_query, $banner_size in $profile_banner_size {
       @media #{$media_query} {
         height: $banner_size

@@ -2,10 +2,7 @@
 
 <div id="profile_banner" class="container-fluid">
 
-  <div class="parallax-container">
-    <div class="parallax">
-      <%= image_tag "dawn.jpg" %>
-    </div>
+  <div class="user_banner" style="background-image: url(<%= @user.profile_banner.url %>)">
   </div>
 
   <div class="user_meta container">
@@ -22,9 +19,7 @@
           </div>
           <div class="content white">
             <div class="bio">
-              <p>
-                Placeholder for bio.
-              </p>
+                <%= simple_format h(@user.bio) %>
             </div>
             <% if @current_user %>
             <div class="actions">

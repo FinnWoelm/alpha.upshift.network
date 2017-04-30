@@ -47,6 +47,7 @@ dennis = User.new(
 )
 
 [alice, brian, carla, dennis].each do |user|
+  user.bio = "Hi, my name is #{user.name}! :D"
   user.auto_generate_profile_picture
   user.save
 end
@@ -65,7 +66,8 @@ Friendship.create(:initiator => alice, :acceptor => dennis)
     :email => "user#{i}@upshift.network",
     :confirmed_registration => true,
     :color_scheme => Color.color_options.sample,
-    :visibility => :network
+    :visibility => :network,
+    :bio => "Hi, my name is user#{i}! :)"
   )
   u.auto_generate_profile_picture
   u.save

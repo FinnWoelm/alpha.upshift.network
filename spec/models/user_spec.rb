@@ -10,6 +10,7 @@ RSpec.describe User, type: :model do
 
   it { is_expected.to have_secure_password }
   it { is_expected.to have_attached_file(:profile_picture) }
+  it { is_expected.to have_attached_file(:profile_banner) }
   it { is_expected.to have_readonly_attribute(:username)}
 
   describe "associations" do
@@ -188,7 +189,6 @@ RSpec.describe User, type: :model do
     end
 
     context "validates profile picture" do
-
       it do
         is_expected.to validate_attachment_content_type(:profile_picture).
           allowing('image/png', 'image/gif', 'image/jpeg').
@@ -197,7 +197,20 @@ RSpec.describe User, type: :model do
 
       it do
         is_expected.to validate_attachment_size(:profile_picture).
-          less_than(5.megabytes)
+          less_than(10.megabytes)
+      end
+    end
+
+    context "validates profile banner" do
+      it do
+        is_expected.to validate_attachment_content_type(:profile_banner).
+          allowing('image/png', 'image/gif', 'image/jpeg').
+          rejecting('text/plain', 'text/xml', 'application/pdf')
+      end
+
+      it do
+        is_expected.to validate_attachment_size(:profile_banner).
+          less_than(10.megabytes)
       end
     end
 

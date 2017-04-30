@@ -18,6 +18,11 @@ RSpec.describe "users/show", type: :view do
     expect(rendered).to have_text(user.name)
   end
 
+  it "renders user's bio" do
+    render
+    expect(rendered).to have_text(user.bio)
+  end
+
   it "renders most recent posts first" do
     posts_to_check = []
     5.times { posts_to_check << create(:post, :author => current_user) }
