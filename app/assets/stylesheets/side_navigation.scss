@@ -2,6 +2,9 @@ div#desktop_side_navigation, ul#mobile_navigation {
 
   background-color: white;
 
+  // all list items should not use default list display
+  li { list-style-type: none; }
+
   a.head {
     padding: 24px 16px;
     position: relative;
