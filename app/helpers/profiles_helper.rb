@@ -38,7 +38,7 @@ module ProfilesHelper
 
   # shows a message that no posts have been written yet
   def no_posts_yet_message
-    if @profile.user.id == @current_user.id
+    if @current_user and @profile.user.id == @current_user.id
       return "You have not written any posts yet"
     else
       return "#{@profile.user.name} has not written any posts yet."
