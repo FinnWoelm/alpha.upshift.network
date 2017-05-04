@@ -1,16 +1,17 @@
-div#profile_banner {
+$profile_picture_size: ($small-and-down: 80px, $medium-and-up: 115px, $large-and-up: 150px);
+$profile_banner_size: ($small-and-down: 200px, $medium-and-up: 275px, $large-and-up: 350px);
 
-  $profile_picture_size: ($small-and-down: 80px, $medium-and-up: 115px, $large-and-up: 150px);
-  $profile_banner_size: ($small-and-down: 200px, $medium-and-up: 275px, $large-and-up: 350px);
+div#profile_head {
 
   display: block;
 
-  div.user_banner {
-
+  div.profile_banner, div.profile_picture {
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
+  }
 
+  div.profile_banner {
     @each $media_query, $banner_size in $profile_banner_size {
       @media #{$media_query} {
         height: $banner_size
@@ -32,6 +33,9 @@ div#profile_banner {
       position: absolute;
       border-radius: 8px;
       z-index: 99;
+      max-width: 100%;
+      overflow: hidden;
+
       @each $media_query, $picture_size in $profile_picture_size {
         @media #{$media_query} {
           width: $picture_size;
@@ -45,6 +49,7 @@ div#profile_banner {
         border-radius: inherit;
         @extend .responsive-img;
         width: 100%;
+        display: block;
       }
     }
 
@@ -98,10 +103,13 @@ div#profile_banner {
       }
 
       div.actions > div {
-        display: inline-block;
-        margin-right: 20px;
         margin-top: 10px;
         margin-bottom: 10px;
+
+        &:not(.col) {
+          display: inline-block;
+          margin-right: 20px;
+        }
       }
     }
   }
@@ -110,4 +118,77 @@ div#profile_banner {
 
 div.card {
   margin-left: 30px;
+}
+
+// Editing the profile
+form#edit_profile {
+
+  // Username
+  div.user_name, div.user_name > div.heading { width: 100% }
+  div.user_name input {
+    font-size: inherit;
+    border: none;
+    margin: 0px;
+    font-weight: 500;
+    height: auto;
+  }
+
+  // Profile picture
+  div.profile_picture img {
+    position: absolute;
+    top: 0px;
+  }
+  div.profile_picture input[type="file"] ~ .btn {
+    position: relative;
+    padding: 0 1rem;
+    @each $media_query, $picture_size in $profile_picture_size {
+      @media #{$media_query} {
+        top: $picture_size / 2 - 18px;
+      }
+    }
+  }
+
+  // Profile banner
+  div.profile_banner input[type="file"] ~ .btn {
+    position: relative;
+    @each $media_query, $banner_size in $profile_banner_size {
+      @media #{$media_query} {
+        top: $banner_size / 2 - 18px - 30px;
+      }
+    }
+  }
+
+  // Hide input fields
+  input[type="file"] {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+
+    & ~ .upload, & ~ .remove { opacity: .5; }
+  }
+
+  input[type="file"]:focus + label,
+  input[type="file"] ~ .btn.upload:hover,
+  input[type="file"] ~ .btn.remove:hover {
+    opacity: 1;
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+
+  // Do not show errors for file inputs next to label
+  input[type="file"] + label + ul.errors { display: none; }
+  div.form-errors { padding-bottom: 30px; }
+
+  // Bio
+  div.content > *:first-child { padding-top: 30px; }
+
+  // Save & cancel button
+  @media #{$medium-and-up} {
+    div.actions .action_wrapper {
+      &.save { text-align: right; }
+      &.cancel { text-align: left; }
+    }
+  }
 }

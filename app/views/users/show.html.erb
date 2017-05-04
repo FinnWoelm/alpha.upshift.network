@@ -1,8 +1,8 @@
 </div>
 
-<div id="profile_banner" class="container-fluid">
+<div id="profile_head" class="container-fluid">
 
-  <div class="user_banner" style="background-image: url(<%= @user.profile_banner.url %>)">
+  <div class="profile_banner" style="background-image: url(<%= @user.profile_banner.url %>)">
   </div>
 
   <div class="user_meta container">
@@ -23,6 +23,7 @@
             </div>
             <% if @current_user %>
             <div class="actions">
+              <%= edit_action %>
               <%= friendship_actions %>
               <%= message_action %>
             </div>

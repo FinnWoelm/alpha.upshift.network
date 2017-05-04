@@ -12,6 +12,7 @@ FactoryGirl.define do
     bio { Faker::Lorem.paragraph }
 
     factory :user_with_picture do
+      profile_banner { File.open("#{Rails.root}/spec/support/fixtures/community/user/profile_banner.jpg")}
       after(:build, :stub) do |user|
         user.auto_generate_profile_picture
       end

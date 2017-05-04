@@ -1,4 +1,18 @@
 module UsersHelper
+
+  # show a button if current user can edit this profile
+  def edit_action
+
+    # do not show anything if user is not signed in
+    return unless @current_user
+
+    # do not show anything unless user is on their own profile
+    return unless @user.id == @current_user.id
+
+    render partial: "users/edit_button", locals: {recipient: @user}
+
+  end
+
   def friendship_actions
 
     # do not show anything if user is not signed in

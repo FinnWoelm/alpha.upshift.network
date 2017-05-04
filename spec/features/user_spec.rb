@@ -52,6 +52,82 @@ feature 'User' do
     end
   end
 
+  scenario "User can edit profile" do
+    given_i_am_logged_in_as_a_user
+
+    # when I edit my profile
+    visit edit_user_path @user
+
+    # and I change my banner, picture, name, color scheme, bio, and visibility
+    attach_file('user[profile_banner]', "#{Rails.root}/spec/support/fixtures/community/user/profile_banner.jpg")
+    attach_file('user[profile_picture]', "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.jpg")
+    fill_in 'user[name]',       with: "My new name"
+    select "Indigo",            from: 'user[color_scheme_base]'
+    select "Accent 2",          from: 'user[color_scheme_shade]'
+    fill_in 'user[bio]',        with: "Hey y'all, looking forward to meet you :)"
+    select 'Public',            from: 'user[visibility]'
+
+    # and click save
+    click_on "Save"
+
+    # then I should see my profile
+    expect(page).to have_current_path user_path(@user)
+
+    # and my banner, picture, name, color scheme, bio, and visibility
+    expect(@user.reload.profile_banner).to be_present
+    expect(@user.profile_picture).to be_present
+    expect(@user.options[:auto_generate_profile_picture]).to be false
+    expect(page).to have_content "My new name"
+    expect(page).to have_selector "body.primary-indigo.primary-accent-2"
+    expect(page).to have_content "Hey y'all, looking forward to meet you :)"
+    expect(@user.visibility).to eq "public"
+  end
+
+  scenario "User can remove profile banner", :js => true do
+    given_i_am_logged_in_as_a_user
+
+    # and I have a profile banner
+    @user.profile_banner = File.new("#{Rails.root}/spec/support/fixtures/community/user/profile_banner.jpg")
+    @user.save
+
+    # when I edit my profile
+    visit edit_user_path @user
+
+    # and I click the remove profile banner button
+    within '.profile_banner' do
+      find(".remove").click
+    end
+
+    # and I save
+    click_on "Save"
+
+    # then I should not have a profile banner
+    expect(@user.reload.profile_banner).not_to be_present
+  end
+
+  scenario "User can remove profile banner", :js => true do
+    given_i_am_logged_in_as_a_user
+
+    # and I have a profile picture
+    @user.profile_picture = File.new("#{Rails.root}/spec/support/fixtures/community/user/profile_picture.jpg")
+    @user.save
+
+    # when I edit my profile
+    visit edit_user_path @user
+
+    # and I click the remove profile picture button
+    within '.profile_picture' do
+      find(".remove").click
+    end
+
+    # and I save
+    click_on "Save"
+
+    # then my profile picture should be auto-generated
+    expect(@user.reload.profile_picture).to be_present
+    expect(@user.options[:auto_generate_profile_picture]).to be true
+  end
+
   def given_i_am_logged_in_as_a_user
     @user = create(:user)
     visit login_path

@@ -44,6 +44,16 @@ RSpec.describe "users/show", type: :view do
     expect(rendered).to have_selector("button", text: "Message")
   end
 
+  context "when user is on own profile" do
+
+    before { assign(:current_user, user) }
+
+    it "shows a button for editing the profile" do
+      render
+      expect(rendered).to have_selector("a", text: "Edit")
+    end
+  end
+
   context "No friendship request has been sent" do
     it "has an add friend button" do
       render

@@ -242,7 +242,7 @@ RSpec.describe User, type: :model do
         end
         after do
           user.profile_picture = File.new(
-            "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.png"
+            "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.jpg"
           )
         end
         it { is_expected.to receive(:destroy_original_profile_picture) }
@@ -337,6 +337,34 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#delete_profile_banner=" do
+
+    let(:user) { build(:user_with_picture) }
+
+    context "when true" do
+
+      it "sets profile banner to nil" do
+        user.delete_profile_banner = "true"
+        expect(user.profile_banner).not_to be_present
+      end
+    end
+  end
+
+  describe "#delete_profile_picture=" do
+
+    let(:user) { build(:user_with_picture) }
+
+    context "when true" do
+
+      it "auto-generates a profile picture" do
+        user.options[:auto_generate_profile_picture] = false
+        user.delete_profile_picture = "true"
+        expect(user.options[:auto_generate_profile_picture]).to be true
+      end
+    end
+  end
+
+
   describe "#friends" do
     let(:friends_made) { build_stubbed_list(:user, 3) }
     let(:friends_found) { build_stubbed_list(:user, 3) }
@@ -428,7 +456,7 @@ RSpec.describe User, type: :model do
   describe "#profile_picture=" do
     let(:picture) do
       File.new(
-        "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.png"
+        "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.jpg"
         )
     end
 

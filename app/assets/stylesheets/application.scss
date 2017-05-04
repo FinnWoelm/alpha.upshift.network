@@ -72,8 +72,15 @@ div.col.main {
 // DROPDOWN
 
 // DROPDOWN: Text should always be black
-.dropdown-content li > a {
+.dropdown-content li > a,
+.dropdown-content li > span {
   color: $off-black;
+}
+
+// DROPDOWN: No pointer events on disabled list items
+.dropdown-content li.disabled {
+  pointer-events: none;
+  cursor: default;
 }
 
 // DROPDOWN: Apply styling to forms and links in dropdown
@@ -355,6 +362,17 @@ form label + ul.errors {
   margin-top: -15px;
   margin-bottom: 20px;
   display: block;
+}
+
+// FORMS: Displayed form errors
+.form-errors {
+  padding-top: 10px;
+  padding-left: 20px;
+
+  ul.errors {
+    @extend .red-text;
+    padding-left: 10px;
+  }
 }
 
 // FORMS: List of errors when there is an icon prefix

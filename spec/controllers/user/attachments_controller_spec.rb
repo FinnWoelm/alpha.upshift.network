@@ -57,7 +57,8 @@ RSpec.describe User::AttachmentsController, type: :controller do
 
     context "when attachment is nil" do
       before do
-        allow_any_instance_of(Paperclip::Attachment).to receive(:present?).and_return(false)
+        user.profile_picture_via_paperclip = nil
+        user.save
         perform_action
       end
 

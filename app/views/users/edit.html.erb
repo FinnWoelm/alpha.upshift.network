@@ -1,0 +1,149 @@
+</div>
+
+<%= form_for @user, url: {action: "update"}, html: {id: "edit_profile", multipart: true } do |f| %>
+  <div id="profile_head" class="container-fluid">
+
+    <div
+      class="<%= @user.profile_banner.present? ? '' : 'default '%>profile_banner center-align"
+      data-default-image-url="<%= @user.profile_banner.options[:default_url] %>"
+      style="background-image: url(<%= @user.profile_banner.url %>)">
+      <%= f.file_field :profile_banner, :value => nil, accept: "image/jpeg, image/gif, image/png" %>
+      <%= f.label :profile_banner,
+        :class => "upload primary-color primary-color-text btn waves-effect waves-light tooltipped",
+        :data => { position: "bottom", delay: "50", tooltip: "Upload a profile banner (max. 10MB)"} do %>
+        <i class="mdi mdi-cloud-upload left"></i>
+        Upload
+      <% end %>
+      <%= content_tag "div",
+        :class => "hide remove primary-color primary-color-text btn waves-effect waves-light" do %>
+        <i class="mdi mdi-close left"></i>
+        Remove
+      <% end %>
+      <%= content_tag "div",
+        :class => "hide loading disabled btn" do %>
+        <i class="mdi mdi-cached mdi-spin left"></i>
+        Loading
+      <% end %>
+      <%= f.hidden_field :delete_profile_banner, :value => false, :class => "delete_picture" %>
+    </div>
+
+    <div class="user_meta container">
+      <div class="row">
+        <div class="col s12">
+          <div class="wrapper z-depth-2">
+            <div
+              class="<%= @user.options[:auto_generate_profile_picture] ? 'default ' : ''%>profile_picture z-depth-2 grey center-align"
+              data-default-image-url="<%= @user.profile_picture.options[:default_url] %>"
+              style="background-image: url(<%= @user.options[:auto_generate_profile_picture] ? @user.profile_picture.options[:default_url] : profile_picture(@user, :large) %>)">
+              <%= f.file_field :profile_picture, accept: "image/jpeg, image/gif, image/png" %>
+              <%= f.label :profile_picture,
+                :class => "upload primary-color primary-color-text btn waves-effect waves-light tooltipped",
+                :data => { position: "bottom", delay: "50", tooltip: "Upload a profile picture (max. 10MB)"} do %>
+                <i class="mdi mdi-cloud-upload"></i>
+              <% end %>
+              <%= content_tag "div",
+                :class => "hide remove primary-color primary-color-text btn waves-effect waves-light" do %>
+                <i class="mdi mdi-close"></i>
+              <% end %>
+              <%= content_tag "div",
+                :class => "hide loading disabled btn" do %>
+                <i class="mdi mdi-cached mdi-spin"></i>
+              <% end %>
+              <%= f.hidden_field :delete_profile_picture, :value => false, :class => "delete_picture" %>
+            </div>
+            <div class="user_name z-depth-3 primary-color primary-color-text center-align" title="<%= @user.name %>">
+              <div class="heading single_line prevent_overflow">
+                <%= f.text_field :name %>
+              </div>
+            </div>
+            <div class="content white">
+
+              <% if @user.errors.any? %>
+                <p class="no_margin_bottom">Your profile could not be updated because the following errors were encountered:</p>
+                <div class="form-errors">
+                  <ul class="errors browser-default no_margin_top">
+                  <% @user.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                  <% end %>
+                  </ul>
+                </div>
+              <% end %>
+
+              <div class="color_scheme row">
+                <div class="base_color input-field col s12 m6">
+                  <%= f.select(:color_scheme_base) do %>
+                    <% Color.colors.keys.map {|c| [c.to_s.gsub("-", " ").titleize, c.to_s]}.each do |c| -%>
+                      <%= content_tag(
+                        :option,
+                        c.first,
+                        value: c.last,
+                        class: "left circle #{c.last}",
+                        data: {icon: "/images/transparent_pixel.png"},
+                        selected: c.last == @user.color_scheme_base) %>
+                    <% end %>
+                  <% end %>
+                  <%= f.label :color_scheme_base, "Color Scheme: Base" %>
+                </div>
+                <div class="shade_color input-field col s12 m6">
+                  <%= f.select(:color_scheme_shade) do %>
+                    <% Color.colors[:red].keys.map {|c| [c.to_s.gsub("-", " ").titleize, c.to_s]}.each do |c| -%>
+                      <%= content_tag(
+                        :option,
+                        c.first,
+                        value: c.last,
+                        class: "left circle #{@user.color_scheme_base} #{c.last}",
+                        data: {icon: "/images/transparent_pixel.png"},
+                        selected: c.last == @user.color_scheme_shade) %>
+                    <% end %>
+                  <% end %>
+                  <%= f.label :color_scheme_shade, "Color Scheme: Shade" %>
+                </div>
+
+              </div>
+
+              <div class="bio row">
+                <div class="input-field col s12">
+                  <%= f.text_area :bio, {:class => "materialize-textarea"} %>
+                  <%= f.label :bio, "Tell your friends about you" %>
+                </div>
+              </div>
+
+              <div class="visibility row">
+                <div class="input-field col s12 m6">
+                  <%= f.select(:visibility) do %>
+                    <% [["Friends only (Private)", "private"], ["Upshift users (Network)", "network"], ["Everyone (Public)", "public"]].each do |c| -%>
+                      <%= content_tag(
+                        :option,
+                        c.first,
+                        value: c.last,
+                        selected: c.last == @user.visibility) %>
+                    <% end %>
+                  <% end %>
+                  <%= f.label :visibility, "Who can see your profile?" %>
+                </div>
+              </div>
+
+              <div class="actions row">
+                <div class="action_wrapper save col s12 m6 push-m6">
+                  <button class="primary-color primary-color-text btn waves-effect waves-light" type="submit" name="action">
+                    Save
+                    <i class="mdi mdi-check left"></i>
+                  </button>
+                </div>
+                <div class="action_wrapper cancel col s12 m6 pull-m6">
+                  <%= link_to @user, class: "primary-color primary-color-text btn waves-effect waves-light" do %>
+                    Cancel
+                    <i class="mdi mdi-cancel left"></i>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+<% end %>
+
+<div class="container">

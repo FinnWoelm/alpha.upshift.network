@@ -1,0 +1,30 @@
+class @Color
+
+  @color_options: ->
+
+    {
+      <% Color.colors.each do |color, shades| %>
+      "<%= color.to_s %>": [
+        <% shades.keys.each do |shade| %>
+        "<%= shade.to_s %>",
+        <% end %>
+      ],
+      <% end %>
+    }
+
+  @base_colors: ->
+
+    Object.keys(Color.color_options())
+
+  @shades_for_color: (color) ->
+
+    Color.color_options()[color]
+
+  @font_color_for: (color_scheme) ->
+    switch color_scheme
+    <% Color.colors.each do |color, shades| %>
+      <% shades.keys.each do |shade| %>
+      <% scheme = color.to_s + " " + shade.to_s %>
+      when "<%= scheme %>" then "<%= Color.font_color_for scheme %>"
+      <% end%>
+    <% end %>

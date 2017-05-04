@@ -6,6 +6,14 @@ MagicLamp.define(controller: StaticController) do
   end
 end
 
+MagicLamp.define(controller: UsersController) do
+
+  fixture do
+    @user = FactoryGirl.create(:user)
+    render :edit
+  end
+end
+
 MagicLamp.define(controller: PrivateConversationsController) do
 
   fixture do

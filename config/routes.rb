@@ -67,6 +67,10 @@ Rails.application.routes.draw do
   post '/:commentable_type/:commentable_id/comment', to: 'comments#create', as: :comment
   delete '/comments/:id', to: 'comments#destroy', as: :delete_comment
 
+  # User Path
+  get '/profile/edit', to: 'users#edit', as: :edit_user
+  match '/profile/edit', to: 'users#update', via: [:patch, :put]
+
   # Votes Path
   resources :votes, only: [:create, :update, :destroy], :path => "vote"
 

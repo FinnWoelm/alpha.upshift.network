@@ -85,6 +85,7 @@ class User < ApplicationRecord
   # # Accessors
   enum visibility: [ :private, :network, :public ], _suffix: true
   attr_accessor(:friends_ids)
+  attr_reader :delete_profile_picture, :delete_profile_banner
   serialize :options, Hash
 
   # alias the Paperclip setter, so that we can extend it with custom calls
@@ -223,7 +224,7 @@ class User < ApplicationRecord
 
   # destroy the original profile picture (b/c it is not needed)
   after_save :destroy_original_profile_picture,
-    if: "profile_picture_updated_at_changed?"
+    if: "profile_picture_updated_at_changed? and profile_picture.present?"
 
   # auto generate profile picture when name or color_scheme changes
   before_save :auto_generate_profile_picture,
@@ -249,9 +250,39 @@ class User < ApplicationRecord
     options[:auto_generate_profile_picture] = true
   end
 
+  # returns the color scheme's base color
+  def color_scheme_base
+    "#{color_scheme.split(' ').first}"
+  end
+
+  # sets the color scheme's base color
+  def color_scheme_base=(base)
+    self.color_scheme = [base, color_scheme.split(' ').second].join(" ")
+  end
+
+  # returns the color scheme's shade
+  def color_scheme_shade
+    "#{color_scheme.split(' ').second}"
+  end
+
+  # sets the color scheme's shade
+  def color_scheme_shade=(shade)
+    self.color_scheme = [color_scheme.split(' ').first, shade].join(" ")
+  end
+
   # returns both color_scheme and the font color for the color_scheme
   def color_scheme_with_font_color
     "#{color_scheme} #{Color.font_color_for(color_scheme)}"
+  end
+
+  # delete the profile banner
+  def delete_profile_banner=(delete_picture)
+    self.profile_banner = nil if delete_picture == "true" and profile_banner.present?
+  end
+
+  # delete the profile picture
+  def delete_profile_picture=(delete_picture)
+    self.profile_picture = nil if delete_picture == "true" and profile_picture.present?
   end
 
   def friends
