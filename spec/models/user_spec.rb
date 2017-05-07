@@ -534,11 +534,13 @@ RSpec.describe User, type: :model do
   describe "#unread_private_conversations" do
     before { user.save }
     let!(:conversations) { create_list(:private_conversation, 5, :sender => user) }
+    let(:unread_conversations) { user.unread_private_conversations }
 
     it "returns conversations in the order of most recent activity" do
-      expect(user.private_conversations).
-      to receive(:most_recent_activity_first) { user.private_conversations }
-      user.unread_private_conversations
+      expect(unread_conversations[0].updated_at).to be > unread_conversations[1].updated_at
+      expect(unread_conversations[1].updated_at).to be > unread_conversations[2].updated_at
+      expect(unread_conversations[2].updated_at).to be > unread_conversations[3].updated_at
+      expect(unread_conversations[3].updated_at).to be > unread_conversations[4].updated_at
     end
 
     it "returns conversations that were never read" do

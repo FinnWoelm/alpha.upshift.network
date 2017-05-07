@@ -175,7 +175,8 @@ class User < ApplicationRecord
   # Password
   validates :password, confirmation: true
   validates :password,
-    length: { in: 8..50 }, unless: "password.nil?"
+    length: { in: 8..50 },
+    unless: Proc.new { |u| u.password.nil? }
 
   # Profile picture
   validates_with AttachmentSizeValidator, attributes: :profile_picture,
@@ -224,11 +225,11 @@ class User < ApplicationRecord
 
   # destroy the original profile picture (b/c it is not needed)
   after_save :destroy_original_profile_picture,
-    if: "profile_picture_updated_at_changed? and profile_picture.present?"
+    if: Proc.new { |u| u.saved_change_to_profile_picture_updated_at? and u.profile_picture.present? }
 
   # auto generate profile picture when name or color_scheme changes
   before_save :auto_generate_profile_picture,
-    if: "(options[:auto_generate_profile_picture] and (name_changed? or color_scheme_changed?))"
+    if: Proc.new { |u| u.options[:auto_generate_profile_picture] and (u.name_changed? or u.color_scheme_changed?) }
 
   # generate fallback profile picture for user (using Avatarly)
   def auto_generate_profile_picture
