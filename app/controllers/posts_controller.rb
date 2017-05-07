@@ -19,7 +19,7 @@ class PostsController < ApplicationController
 
   # GET /post/new
   def new
-    @post = Post.new(:profile_owner => @current_user)
+    @post = Post.new(:recipient => @current_user)
   end
 
 
@@ -46,7 +46,7 @@ class PostsController < ApplicationController
   # DELETE /post/1
   def destroy
     @post.destroy
-    redirect_to profile_path(@current_user), notice: 'Post was successfully destroyed.'
+    redirect_to @current_user, notice: 'Post was successfully destroyed.'
   end
 
   private
@@ -61,6 +61,6 @@ class PostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
-      params.require(:post).permit(:content, :profile_owner)
+      params.require(:post).permit(:content, :recipient_username)
     end
 end

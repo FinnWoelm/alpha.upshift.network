@@ -1,12 +1,12 @@
 require "rails_helper"
 
-RSpec.describe "routes for profiles", :type => :routing do
+RSpec.describe "routes for users", :type => :routing do
   it "/user routes to profile page" do
 
     username = "user"
 
     expect(:get => "/" + username).to route_to(
-      :controller => "profiles",
+      :controller => "users",
       :action => "show",
       :username => username
     )
@@ -17,7 +17,7 @@ RSpec.describe "routes for profiles", :type => :routing do
     username = "some_user"
 
     expect(:get => "/" + username).to route_to(
-      :controller => "profiles",
+      :controller => "users",
       :action => "show",
       :username => username
     )
@@ -28,7 +28,7 @@ RSpec.describe "routes for profiles", :type => :routing do
     username = "my_username99"
 
     expect(:get => "/" + username).to route_to(
-      :controller => "profiles",
+      :controller => "users",
       :action => "show",
       :username => username
     )
@@ -39,7 +39,7 @@ RSpec.describe "routes for profiles", :type => :routing do
     username = "_abc"
 
     expect(:get => "/" + username).not_to route_to(
-      :controller => "profiles",
+      :controller => "users",
       :action => "show",
       :username => username
     )
@@ -50,7 +50,7 @@ RSpec.describe "routes for profiles", :type => :routing do
     username = "abc_"
 
     expect(:get => "/" + username).not_to route_to(
-      :controller => "profiles",
+      :controller => "users",
       :action => "show",
       :username => username
     )
@@ -61,7 +61,7 @@ RSpec.describe "routes for profiles", :type => :routing do
     username = "i!!ega!_char$"
 
     expect(:get => "/" + username).not_to route_to(
-      :controller => "profiles",
+      :controller => "users",
       :action => "show",
       :username => username
     )
@@ -72,7 +72,7 @@ RSpec.describe "routes for profiles", :type => :routing do
     username = "image_file.jpg"
 
     expect(:get => "/" + username).not_to route_to(
-      :controller => "profiles",
+      :controller => "users",
       :action => "show",
       :username => username
     )
@@ -83,7 +83,7 @@ RSpec.describe "routes for profiles", :type => :routing do
     username = "ab"
 
     expect(:get => "/" + username).not_to route_to(
-      :controller => "profiles",
+      :controller => "users",
       :action => "show",
       :username => username
     )
@@ -94,7 +94,7 @@ RSpec.describe "routes for profiles", :type => :routing do
     username = "longerthan26charactersfails"
 
     expect(:get => "/" + username).not_to route_to(
-      :controller => "profiles",
+      :controller => "users",
       :action => "show",
       :username => username
     )

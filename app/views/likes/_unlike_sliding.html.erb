@@ -2,7 +2,7 @@
   <%=
     link_to unlike_path(:likable_id => object.id, :likable_type => object.class.base_class.to_s),
       method: :delete,
-      class: 'btn-flat waves-effect waves-light red white-text' do %>
+      class: 'btn-flat waves-effect waves-light primary-color primary-color-text' do %>
     <span>
       <i class="mdi mdi-thumb-up left"></i>
       <%= object.likes_count || 0 %>

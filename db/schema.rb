@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170426065228) do
+ActiveRecord::Schema.define(version: 20170429152555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,14 +109,14 @@ ActiveRecord::Schema.define(version: 20170426065228) do
 
   create_table "posts", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.integer  "author_id"
-    t.text     "content",     null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.text     "content",      null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.integer  "likes_count"
-    t.integer  "profile_id"
+    t.integer  "recipient_id"
     t.index ["author_id"], name: "index_posts_on_author_id", using: :btree
     t.index ["created_at"], name: "index_posts_on_created_at", using: :btree
-    t.index ["profile_id"], name: "index_posts_on_profile_id", using: :btree
+    t.index ["recipient_id"], name: "index_posts_on_recipient_id", using: :btree
   end
 
   create_table "private_conversations", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -133,13 +133,6 @@ ActiveRecord::Schema.define(version: 20170426065228) do
     t.datetime "updated_at",              null: false
     t.index ["private_conversation_id"], name: "index_private_messages_on_private_conversation_id", using: :btree
     t.index ["sender_id"], name: "index_private_messages_on_sender_id", using: :btree
-  end
-
-  create_table "profiles", force: :cascade do |t|
-    t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_profiles_on_user_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
@@ -159,6 +152,11 @@ ActiveRecord::Schema.define(version: 20170426065228) do
     t.string   "color_scheme",                 default: "indigo basic", null: false
     t.integer  "visibility",                   default: 0
     t.text     "options"
+    t.string   "profile_banner_file_name"
+    t.string   "profile_banner_content_type"
+    t.integer  "profile_banner_file_size"
+    t.datetime "profile_banner_updated_at"
+    t.text     "bio"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["registration_token"], name: "index_users_on_registration_token", unique: true, using: :btree
     t.index ["username"], name: "index_users_on_username", unique: true, using: :btree
@@ -185,10 +183,9 @@ ActiveRecord::Schema.define(version: 20170426065228) do
   add_foreign_key "likes", "users", column: "liker_id"
   add_foreign_key "participantship_in_private_conversations", "private_conversations"
   add_foreign_key "participantship_in_private_conversations", "users", column: "participant_id"
-  add_foreign_key "posts", "profiles"
   add_foreign_key "posts", "users", column: "author_id"
+  add_foreign_key "posts", "users", column: "recipient_id"
   add_foreign_key "private_messages", "private_conversations"
   add_foreign_key "private_messages", "users", column: "sender_id"
-  add_foreign_key "profiles", "users"
   add_foreign_key "votes", "users", column: "voter_id"
 end

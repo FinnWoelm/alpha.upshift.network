@@ -9,12 +9,10 @@ FactoryGirl.define do
     last_seen_at nil
     confirmed_registration true
     visibility { :network }
-
-    after(:build, :stub) do |user|
-      user.build_profile(attributes_for(:profile))
-    end
+    bio { Faker::Lorem.paragraph }
 
     factory :user_with_picture do
+      profile_banner { File.open("#{Rails.root}/spec/support/fixtures/community/user/profile_banner.jpg")}
       after(:build, :stub) do |user|
         user.auto_generate_profile_picture
       end

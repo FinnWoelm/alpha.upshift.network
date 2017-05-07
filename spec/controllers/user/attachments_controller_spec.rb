@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe User::ProfilePicturesController, type: :controller do
+RSpec.describe User::AttachmentsController, type: :controller do
 
   let(:current_user) { create(:user) }
   let(:sign_user_in) { @request.session['user_id'] = current_user.id }
@@ -14,6 +14,7 @@ RSpec.describe User::ProfilePicturesController, type: :controller do
     let(:perform_action) do
       get :show, params: {
         :username => user.username,
+        :attachment => "profile_picture",
         :size => "medium"
       }
     end
@@ -48,6 +49,16 @@ RSpec.describe User::ProfilePicturesController, type: :controller do
     context "when user is not visible to current user" do
       before do
         allow_any_instance_of(User).to receive(:viewable_by?).and_return(false)
+        perform_action
+      end
+
+      it { is_expected.to respond_with :not_found }
+    end
+
+    context "when attachment is nil" do
+      before do
+        user.profile_picture_via_paperclip = nil
+        user.save
         perform_action
       end
 

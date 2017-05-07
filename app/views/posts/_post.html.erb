@@ -6,7 +6,7 @@
       <%# DELETE POST %>
       <% if post.deletable_by?(@current_user) %>
         <div class="administrative-actions">
-          <%= options_dropdown_button post.id do %>
+          <%= options_dropdown_button post do %>
             <li>
               <%= link_to (post), method: :delete, data: { confirm: 'Are you sure?' } do %>
                 <i class="mdi mdi-delete"></i> Delete Post
@@ -16,7 +16,7 @@
         </div>
       <% end %>
 
-      <div class="author_profile_wrapper">
+      <div class="author_recipient_wrapper">
         <%# AUTHOR %>
         <div class="author_wrapper single_line">
           <%# AUTHOR PICTURE %>
@@ -32,21 +32,21 @@
           <% end %>
         </div><%
 
-        if post.author.id != post.profile_owner.id
-          %><div class="profile_owner_wrapper single_line">
+        if post.author.id != post.recipient.id
+          %><div class="recipient_wrapper single_line">
 
             <i class="mdi mdi-chevron-right mdi-24px gray-text"></i>
 
-            <%# PROFILE OWNER PICTURE %>
-            <%= link_to_profile post.profile_owner, class: "user_image z-depth-1 gray" do %>
-              <%= image_tag profile_picture(post.profile_owner) %>
+            <%# RECIPIENT PICTURE %>
+            <%= link_to_profile post.recipient, class: "user_image z-depth-1 gray" do %>
+              <%= image_tag profile_picture(post.recipient) %>
             <% end %>
 
-            <%# PROFILE OWNER NAME %>
-            <%= link_to_profile post.profile_owner, {
-                  class: "name_badge single_line prevent_overflow z-depth-1 #{post.profile_owner.color_scheme_with_font_color}",
-                  title: "#{post.profile_owner.name}" } do %>
-                <%= post.profile_owner.name %>
+            <%# RECIPIENT NAME %>
+            <%= link_to_profile post.recipient, {
+                  class: "name_badge single_line prevent_overflow z-depth-1 #{post.recipient.color_scheme_with_font_color}",
+                  title: "#{post.recipient.name}" } do %>
+                <%= post.recipient.name %>
             <% end %>
           </div>
         <% end %>
@@ -75,7 +75,7 @@
 
         <%# TIMESTAMP %>
         <div class="col s12 m6 right-align no_padding">
-          <%= link_to render_timestamp(post.created_at), post, class: "btn-flat waves-effect waves-red tooltipped", data: {position: 'bottom', delay: '50', tooltip: "Show post on a separate page"} %>
+          <%= link_to render_timestamp(post.created_at), post, class: "btn-flat waves-effect waves-light tooltipped", data: {position: 'bottom', delay: '50', tooltip: "Show post on a separate page"} %>
         </div>
       </div>
     </div>

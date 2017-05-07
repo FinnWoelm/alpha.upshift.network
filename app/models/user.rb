@@ -11,7 +11,17 @@ class User < ApplicationRecord
       ":rails_root" +
       Rails.configuration.attachment_storage_location +
       "users/:param/profile_picture/:style.:extension",
-    :default_url => "/missing_attachment/profile_picture.png"
+    :default_url => "/missing_attachment/profile_picture.jpg"
+    has_attached_file :profile_banner, styles: {
+        original: ["1600x500#", :jpg]
+      },
+      :default_style => :original,
+      :url => "/:param/profile_banner/:style.:extension",
+      :path =>
+        ":rails_root" +
+        Rails.configuration.attachment_storage_location +
+        "users/:param/profile_banner/banner.:extension",
+      :default_url => "/missing_attachment/profile_banner.jpg"
 
   include Rails.application.routes.url_helpers
 
@@ -20,13 +30,12 @@ class User < ApplicationRecord
   attr_readonly :username
 
   # # Associations
-  # ## Profile
-  has_one :profile, inverse_of: :user, dependent: :destroy
 
   # ## Posts
   has_many :posts_made, :class_name => "Post", :foreign_key => "author_id",
     dependent: :destroy
-  has_many :posts_received, :through => :profile, :source => :posts
+  has_many :posts_received, :class_name => "Post", :foreign_key => "recipient_id",
+    dependent: :destroy
 
   # ## Comments
   has_many :comments, :foreign_key => "author_id", dependent: :destroy
@@ -76,6 +85,7 @@ class User < ApplicationRecord
   # # Accessors
   enum visibility: [ :private, :network, :public ], _suffix: true
   attr_accessor(:friends_ids)
+  attr_reader :delete_profile_picture, :delete_profile_banner
   serialize :options, Hash
 
   # alias the Paperclip setter, so that we can extend it with custom calls
@@ -116,7 +126,6 @@ class User < ApplicationRecord
   end
 
   # # Validations
-  validates :profile, presence: true
 
   # name
   validates :name, presence: true
@@ -170,9 +179,16 @@ class User < ApplicationRecord
 
   # Profile picture
   validates_with AttachmentSizeValidator, attributes: :profile_picture,
-    less_than: 5.megabytes
+    less_than: 10.megabytes
   validates_with AttachmentContentTypeValidator, attributes: :profile_picture,
     content_type: ["image/jpeg", "image/gif", "image/png"]
+
+  # Profile banner
+  validates_with AttachmentSizeValidator, attributes: :profile_banner,
+    less_than: 10.megabytes
+  validates_with AttachmentContentTypeValidator, attributes: :profile_banner,
+    content_type: ["image/jpeg", "image/gif", "image/png"]
+
 
   # Color Scheme
   validates :color_scheme,
@@ -208,7 +224,7 @@ class User < ApplicationRecord
 
   # destroy the original profile picture (b/c it is not needed)
   after_save :destroy_original_profile_picture,
-    if: "profile_picture_updated_at_changed?"
+    if: "profile_picture_updated_at_changed? and profile_picture.present?"
 
   # auto generate profile picture when name or color_scheme changes
   before_save :auto_generate_profile_picture,
@@ -234,9 +250,39 @@ class User < ApplicationRecord
     options[:auto_generate_profile_picture] = true
   end
 
+  # returns the color scheme's base color
+  def color_scheme_base
+    "#{color_scheme.split(' ').first}"
+  end
+
+  # sets the color scheme's base color
+  def color_scheme_base=(base)
+    self.color_scheme = [base, color_scheme.split(' ').second].join(" ")
+  end
+
+  # returns the color scheme's shade
+  def color_scheme_shade
+    "#{color_scheme.split(' ').second}"
+  end
+
+  # sets the color scheme's shade
+  def color_scheme_shade=(shade)
+    self.color_scheme = [color_scheme.split(' ').first, shade].join(" ")
+  end
+
   # returns both color_scheme and the font color for the color_scheme
   def color_scheme_with_font_color
     "#{color_scheme} #{Color.font_color_for(color_scheme)}"
+  end
+
+  # delete the profile banner
+  def delete_profile_banner=(delete_picture)
+    self.profile_banner = nil if delete_picture == "true" and profile_banner.present?
+  end
+
+  # delete the profile picture
+  def delete_profile_picture=(delete_picture)
+    self.profile_picture = nil if delete_picture == "true" and profile_picture.present?
   end
 
   def friends

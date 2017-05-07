@@ -24,11 +24,11 @@ feature 'Friendship' do
   end
 
   def when_i_visit_the_page_of_my_friend
-    visit profile_path @friend.username
+    visit @friend
   end
 
   def and_i_end_the_friendship
-    click_link 'Unfriend'
+    click_on 'End Friendship'
   end
 
   def then_we_should_not_be_friends

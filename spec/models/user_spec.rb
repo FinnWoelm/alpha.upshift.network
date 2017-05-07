@@ -10,16 +10,15 @@ RSpec.describe User, type: :model do
 
   it { is_expected.to have_secure_password }
   it { is_expected.to have_attached_file(:profile_picture) }
+  it { is_expected.to have_attached_file(:profile_banner) }
   it { is_expected.to have_readonly_attribute(:username)}
 
   describe "associations" do
-    it { is_expected.to have_one(:profile).dependent(:destroy).
-      inverse_of(:user)}
 
     it { is_expected.to have_many(:posts_made).class_name("Post").
       dependent(:destroy).with_foreign_key("author_id") }
-    it { is_expected.to have_many(:posts_received).through(:profile).
-      source(:posts) }
+    it { is_expected.to have_many(:posts_received).class_name("Post").
+      dependent(:destroy).with_foreign_key("recipient_id") }
 
     it { is_expected.to have_many(:comments).dependent(:destroy).
       with_foreign_key("author_id")}
@@ -129,7 +128,6 @@ RSpec.describe User, type: :model do
   end
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:profile) }
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_confirmation_of(:password) }
     it { is_expected.to validate_length_of(:password).is_at_least(8).is_at_most(50) }
@@ -191,7 +189,6 @@ RSpec.describe User, type: :model do
     end
 
     context "validates profile picture" do
-
       it do
         is_expected.to validate_attachment_content_type(:profile_picture).
           allowing('image/png', 'image/gif', 'image/jpeg').
@@ -200,7 +197,20 @@ RSpec.describe User, type: :model do
 
       it do
         is_expected.to validate_attachment_size(:profile_picture).
-          less_than(5.megabytes)
+          less_than(10.megabytes)
+      end
+    end
+
+    context "validates profile banner" do
+      it do
+        is_expected.to validate_attachment_content_type(:profile_banner).
+          allowing('image/png', 'image/gif', 'image/jpeg').
+          rejecting('text/plain', 'text/xml', 'application/pdf')
+      end
+
+      it do
+        is_expected.to validate_attachment_size(:profile_banner).
+          less_than(10.megabytes)
       end
     end
 
@@ -232,7 +242,7 @@ RSpec.describe User, type: :model do
         end
         after do
           user.profile_picture = File.new(
-            "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.png"
+            "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.jpg"
           )
         end
         it { is_expected.to receive(:destroy_original_profile_picture) }
@@ -327,6 +337,34 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#delete_profile_banner=" do
+
+    let(:user) { build(:user_with_picture) }
+
+    context "when true" do
+
+      it "sets profile banner to nil" do
+        user.delete_profile_banner = "true"
+        expect(user.profile_banner).not_to be_present
+      end
+    end
+  end
+
+  describe "#delete_profile_picture=" do
+
+    let(:user) { build(:user_with_picture) }
+
+    context "when true" do
+
+      it "auto-generates a profile picture" do
+        user.options[:auto_generate_profile_picture] = false
+        user.delete_profile_picture = "true"
+        expect(user.options[:auto_generate_profile_picture]).to be true
+      end
+    end
+  end
+
+
   describe "#friends" do
     let(:friends_made) { build_stubbed_list(:user, 3) }
     let(:friends_found) { build_stubbed_list(:user, 3) }
@@ -418,7 +456,7 @@ RSpec.describe User, type: :model do
   describe "#profile_picture=" do
     let(:picture) do
       File.new(
-        "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.png"
+        "#{Rails.root}/spec/support/fixtures/community/user/profile_picture.jpg"
         )
     end
 

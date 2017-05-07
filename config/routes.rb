@@ -67,6 +67,10 @@ Rails.application.routes.draw do
   post '/:commentable_type/:commentable_id/comment', to: 'comments#create', as: :comment
   delete '/comments/:id', to: 'comments#destroy', as: :delete_comment
 
+  # User Path
+  get '/profile/edit', to: 'users#edit', as: :edit_user
+  match '/profile/edit', to: 'users#update', via: [:patch, :put]
+
   # Votes Path
   resources :votes, only: [:create, :update, :destroy], :path => "vote"
 
@@ -81,16 +85,24 @@ Rails.application.routes.draw do
   #   end
   # end
 
-  # Profiles -- this must be last
-  get '/:username', to: 'profiles#show', as: :profile,
+  # User profiles -- this must be last
+  get '/:username', to: 'users#show', as: :user,
     constraints: { :username =>  /[a-zA-Z0-9]{1}[a-zA-Z0-9_]{1,24}[a-zA-Z0-9]{1}/}
 
   # Profile Pictures
   scope module: 'user' do
-    get '/:username/profile_picture/:size', to: 'profile_pictures#show',
+    get '/:username/:attachment/:size', to: 'attachments#show',
       constraints: {
         :username => /[a-zA-Z0-9]{1}[a-zA-Z0-9_]{1,24}[a-zA-Z0-9]{1}/,
+        :attachment => "profile_picture",
         :size => /(medium)|(large)/,
+        :format => "jpg"
+      }
+    get '/:username/:attachment/:size', to: 'attachments#show',
+      constraints: {
+        :username => /[a-zA-Z0-9]{1}[a-zA-Z0-9_]{1,24}[a-zA-Z0-9]{1}/,
+        :attachment => "profile_banner",
+        :size => "original",
         :format => "jpg"
       }
   end

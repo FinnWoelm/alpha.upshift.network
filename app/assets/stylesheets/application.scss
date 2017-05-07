@@ -14,6 +14,7 @@ $input-focus-color: color("grey", "darken-4") !default;
 @import "integrations/material_design_icons/materialdesignicons";
 
 // App Stylesheets
+@import "color_scheme";
 @import "infinity_scroll";
 @import "side_navigation";
 @import "static";
@@ -63,36 +64,40 @@ $input-focus-color: color("grey", "darken-4") !default;
   padding-right: 0px !important;
 }
 
-// GENERAL: limit parallax height to 300px
-.parallax-container {
-  height: 300px;
-}
-
-// GENERAL: limit parallax height to 300px
-.parallax-container {
-  height: 300px;
-}
-
 // GENERAL: main content z-index is lower than side nav
 div.col.main {
   z-index: 5;
 }
 
-// COLOR
+// DROPDOWN
 
-// COLOR: applies primary color as background
-.primary_color {
-  background-color: $primary-color !important;
+// DROPDOWN: Text should always be black
+.dropdown-content li > a,
+.dropdown-content li > span {
+  color: $off-black;
 }
 
-// COLOR: applies primary color as text
-.primary_color_text {
-  color: $primary-color !important;
+// DROPDOWN: No pointer events on disabled list items
+.dropdown-content li.disabled {
+  pointer-events: none;
+  cursor: default;
 }
 
-// COLOR: applies highlight color (secondary color)
-.highlight-text {
-  color: $secondary-color !important;
+// DROPDOWN: Apply styling to forms and links in dropdown
+.dropdown-content li > a,
+.dropdown-content li > form > button[type="submit"] {
+  font-size: 16px;
+  display: block;
+  line-height: 22px;
+  padding: 14px 16px;
+}
+
+// DROPDOWN: Mask submit buttons in forms
+.dropdown-content li > form > button[type="submit"] {
+  outline: none;
+  box-shadow: none;
+  border: none;
+  background: inherit;
 }
 
 // NAVIGATION
@@ -119,10 +124,15 @@ nav .brand-logo img {
 }
 
 // NAVIGATION: force 48px high icons on side nav
-nav ul.side-nav li a > i.mdi {
-  line-height: 48px;
-  height: 48px;
-  margin: 0px 16px 0px 0px;
+nav ul.side-nav li:not(.head-wrapper) a {
+  & > i.mdi, & > img {
+    line-height: 48px;
+    height: 48px;
+    margin: 0px 16px 0px 0px;
+  }
+  & > img {
+    padding: 12px 0px;
+  }
 }
 
 // NAVIGATION: 64px tall on desktop
@@ -130,12 +140,33 @@ nav ul:not(.side-nav) li {
   height: 64px;
 }
 
+// NAVIGATION: pad the icons
+nav ul:not(.side-nav) li a {
+
+  padding: 20px 15px;
+  line-height: 24px;
+
+  i.mdi, img {
+    display: block;
+    line-height: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    text-shadow: 0 8px 17px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+
+    img {
+      box-shadow: 0 8px 17px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+    }
+  }
+}
+
 // NAVIGATION: Badges on icons
 nav ul:not(.side-nav) li a i+span.badge {
   display: block;
   float: right;
   position: relative;
-  top: -55px;
+  top: -35px;
   left: 10px;
   line-height: 1;
   padding: 3px 5px;
@@ -234,14 +265,6 @@ body.fullscreen div.page_heading {
 
 // ANCHORS & LINKS
 
-// ANCHOR: position button correctly
-a.with_icon > i.mdi,
-button.as_link.with_icon > i.mdi {
-  position: relative;
-  top: 5px;
-  margin-top: -7px;
-}
-
 // BUTTONS
 
 // Buttons: Button with sliding effect
@@ -300,7 +323,8 @@ a.btn-small {
 // CARDS
 
 // CARDS: render forms as links
-.card .card-action > form {
+.card .card-action > form,
+.card .card-action > div.action_wrapper > form {
 
   display: inline-block;
   margin-right: 20px;
@@ -314,6 +338,12 @@ a.btn-small {
       color: #ffd8a6;
     }
   }
+}
+
+// CARDS: if there are wrappers around actions, make sure to treat them as
+//        inline blocks
+.card .card-action > div.action_wrapper {
+  display: inline-block;
 }
 
 // CARDS: light border
@@ -332,6 +362,17 @@ form label + ul.errors {
   margin-top: -15px;
   margin-bottom: 20px;
   display: block;
+}
+
+// FORMS: Displayed form errors
+.form-errors {
+  padding-top: 10px;
+  padding-left: 20px;
+
+  ul.errors {
+    @extend .red-text;
+    padding-left: 10px;
+  }
 }
 
 // FORMS: List of errors when there is an icon prefix

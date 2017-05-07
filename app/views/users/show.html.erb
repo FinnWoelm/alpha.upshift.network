@@ -1,0 +1,47 @@
+</div>
+
+<div id="profile_head" class="container-fluid">
+
+  <div class="profile_banner" style="background-image: url(<%= @user.profile_banner.url %>)">
+  </div>
+
+  <div class="user_meta container">
+    <div class="row">
+      <div class="col s12">
+        <div class="wrapper z-depth-2">
+          <div class="profile_picture z-depth-2 grey">
+            <%= image_tag profile_picture(@user, :large) %>
+          </div>
+          <div class="user_name z-depth-3 <%= @user.color_scheme_with_font_color %> center-align" title="<%= @user.name %>">
+            <div class="heading single_line prevent_overflow">
+              <strong><%= @user.name %></strong>
+            </div>
+          </div>
+          <div class="content white">
+            <div class="bio">
+                <%= simple_format h(@user.bio) %>
+            </div>
+            <% if @current_user %>
+            <div class="actions">
+              <%= edit_action %>
+              <%= friendship_actions %>
+              <%= message_action %>
+            </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="container">
+
+<%= write_post_action %>
+
+<%= infinity_scroll_fallback @posts %>
+
+<%= render(@posts) || no_posts_yet_message %>
+
+<%= infinity_scroll @posts %>

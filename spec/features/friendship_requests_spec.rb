@@ -48,11 +48,11 @@ feature 'Friendship Request' do
 
   def when_i_visit_the_page_of_another_user
     @another_user = create(:user)
-    visit profile_path @another_user.username
+    visit @another_user
   end
 
   def and_i_send_a_friend_request
-    click_button 'Send Friend Request'
+    click_button 'Add Friend'
   end
 
   def then_another_user_should_have_received_a_friend_request
@@ -106,7 +106,7 @@ feature 'Friendship Request' do
   end
 
   def and_revoke_the_friend_request
-    click_link "Revoke Request"
+    click_on "Cancel Friend Request"
   end
 
 end

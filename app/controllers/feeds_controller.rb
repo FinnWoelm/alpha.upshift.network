@@ -10,6 +10,6 @@ class FeedsController < ApplicationController
       most_recent_first.
       limit(30)
 
-    @post = Post.new(:profile_owner => @current_user)
+    @post = Post.new(:recipient => @current_user)
   end
 end

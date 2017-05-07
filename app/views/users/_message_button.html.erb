@@ -1,0 +1,13 @@
+<div class="message_action action_wrapper">
+
+  <%= form_for PrivateConversation.new do |f| %>
+
+    <%= f.hidden_field :recipient, :value => recipient %>
+
+    <button class="primary-color primary-color-text btn waves-effect waves-light" type="submit" name="action">
+      <i class="mdi mdi-message left"></i>
+      Message
+    </button>
+  <% end %>
+
+</div>

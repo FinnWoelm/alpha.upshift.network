@@ -1,6 +1,10 @@
-<%= form_tag(accept_friendship_request_path(user), method: "post") do %>
-  <button class="as_link with_icon" type="submit" name="action">
-    <i class="mdi mdi-account-check"></i>
-    Accept
-  </button>
-<% end %>
+<div class="friendship_action action_wrapper">
+
+  <%= form_tag(accept_friendship_request_path(user), method: "post") do %>
+    <button class="as_link with_icon" type="submit" name="action">
+      <i class="mdi mdi-account-check left"></i>
+      Accept
+    </button>
+  <% end %>
+
+</div>

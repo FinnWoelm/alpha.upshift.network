@@ -36,6 +36,9 @@ $(document).on 'turbolinks:load', ->
   $('textarea.with_counter').each ->
     $(@).characterCounter()
 
+  # initialize selects
+  $('select').material_select();
+
   # make sure labels do not overlap text
   Materialize.updateTextFields();
 
@@ -52,6 +55,7 @@ $(document).on 'turbolinks:before-cache', ->
   $("#toggle_mobile_navigation").off("click")
   $("[id=sidenav-overlay]").remove()
   $(".material-tooltip").remove()
+  $('select').material_select('destroy');
   $("div.drag-target").remove()
   $("body").attr("data-is-cached", "true")
   $("body").css("overflow", "unset")

@@ -1,10 +1,21 @@
-<%= link_to reject_friendship_request_path(recipient), class: 'waves-effect waves-light btn sliding', method: :delete, data: { confirm: 'Are you sure?' } do %>
-  <span>
-    <i class="mdi mdi-call-made left"></i>
-    Friend Request Sent
-  </span>
-  <span>
-    <i class="mdi mdi-cancel left"></i>
-    Revoke Request
-  </span>
-<% end %>
+<div class="friendship_action action_wrapper">
+
+  <%= dropdown_button(
+  "friendship-#{recipient.username}",
+  {
+    :trigger => {
+      class: "primary-color primary-color-text waves-effect waves-light btn",
+      content: '<i class="mdi mdi-account-plus left"></i> Request Sent'.html_safe
+    },
+  }) do %>
+    <li>
+      <%= form_tag(reject_friendship_request_path(recipient), method: :delete, data: { confirm: "Are you sure you want to cancel your friend request?"}) do %>
+        <button type="submit" class="text-primary-color" name="action">
+          <i class="mdi mdi-account-remove left"></i>
+          Cancel Friend Request
+        </button>
+      <% end %>
+    </li>
+  <% end %>
+
+</div>

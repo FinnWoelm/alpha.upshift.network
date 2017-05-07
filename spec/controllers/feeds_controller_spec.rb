@@ -49,7 +49,7 @@ RSpec.describe FeedsController do
       end
 
       it "sets profile owner to current_user" do
-        expect(assigns(:post).profile_owner).to eq current_user
+        expect(assigns(:post).recipient).to eq current_user
       end
     end
 

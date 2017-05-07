@@ -19,7 +19,7 @@ div.post-wrapper {
     $author_image_size: 60px;
 
     // width and height of profile picture of profile owner (recipient of post)
-    $profile_owner_image_size: 40px;
+    $recipient_image_size: 40px;
 
     // width of the icon for toggling administrative actions
     $administrative_actions_icon_width: 40px;
@@ -29,7 +29,7 @@ div.post-wrapper {
 
     // the vertical spacing between author and profile owner (if they are on
     // separate lines)
-    $vertical_spacing_between_author_and_profile_owner: 10px;
+    $vertical_spacing_between_author_and_recipient: 10px;
 
     // line_height for the name badge
     $name_badge_line_height: 22.5px;
@@ -41,17 +41,17 @@ div.post-wrapper {
     z-index: 20;
     margin-left: $author_image_size / 2; // fix positioning b/c of author image
 
-    div.author_profile_wrapper {
+    div.author_recipient_wrapper {
 
       // set widths & max-widths so that overflows work correctly
       width: 100%;
-      .author_wrapper, .profile_owner_wrapper { max-width: 100%; }
+      .author_wrapper, .recipient_wrapper { max-width: 100%; }
 
       // prevent administrative actions icon from being overlapped
       padding-right: $administrative_actions_icon_width;
 
       // inline-block wrappers and name_badges and float images and icon
-      .author_wrapper, .profile_owner_wrapper, .name_badge { display: inline-block; }
+      .author_wrapper, .recipient_wrapper, .name_badge { display: inline-block; }
       .user_image, i.mdi { float: left; }
 
 
@@ -83,7 +83,7 @@ div.post-wrapper {
     // styles specific to the author
     div.author_wrapper {
       margin-right: - $author_image_size/2;
-      margin-bottom: - $vertical_spacing_between_author_and_profile_owner;
+      margin-bottom: - $vertical_spacing_between_author_and_recipient;
 
       .user_image {
         margin-right: - $author_image_size / 2;
@@ -95,7 +95,7 @@ div.post-wrapper {
 
         // negative margin-bottom, so that vertical spacing between author and
         // profile owner is correct
-        margin-bottom: - ($author_image_size - ($name_badge_line_height/2 + $profile_picture_name_badge_offset)*2 - $vertical_spacing_between_author_and_profile_owner);
+        margin-bottom: - ($author_image_size - ($name_badge_line_height/2 + $profile_picture_name_badge_offset)*2 - $vertical_spacing_between_author_and_recipient);
       }
 
       // adjust max-width of name badge for author's profile picture
@@ -105,21 +105,21 @@ div.post-wrapper {
     }
 
     // styles specific to the profile owner
-    div.profile_owner_wrapper {
+    div.recipient_wrapper {
       position: relative;
       height: $name_badge_line_height;
       margin-left: $author_image_size/2;
 
       // set the correct dimensions for profile picture
       .user_image {
-        height: $profile_owner_image_size;
-        width: $profile_owner_image_size;
+        height: $recipient_image_size;
+        width: $recipient_image_size;
       }
 
       // adjust max-width of name badge for author's profile picture, icon, and
-      // profile_owner's profile picture,
+      // recipient's profile picture,
       .name_badge {
-        max-width: calc(100% - #{$author_image_size/2 + $directional_icon_width + $profile_owner_image_size});
+        max-width: calc(100% - #{$author_image_size/2 + $directional_icon_width + $recipient_image_size});
         margin-right: $administrative_actions_icon_width;
       }
     }
