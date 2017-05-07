@@ -39,7 +39,7 @@ gem "figaro", '~> 1.1'
 gem 'materialize-sass', '~> 0.97'
 
 # New Relic for performance analysis
-gem 'newrelic_rpm', '~> 3.16'
+gem 'newrelic_rpm', '~> 4.0'
 
 # Nokogiri for parsing fields with errors
 gem "nokogiri", '~> 1.6'
@@ -73,7 +73,7 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 3.0'
-  gem 'listen', '~> 3.0.5'
+  gem 'listen', '~> 3.0'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
@@ -91,12 +91,12 @@ group :development do
   gem 'capistrano-bundler', require: false
   gem 'capistrano3-puma',   require: false
   gem 'capistrano-figaro-yml', '~> 1.0.2', require: false
-  gem 'capistrano-rails-console', '~> 1.0.2', require: false
+  gem 'capistrano-rails-console', '~> 2.0', require: false
 end
 
 group :test do
   # Add rake for Travis CI
-  gem 'rake', '~> 11.2'
+  gem 'rake', '~> 12.0'
   # Better testing
   gem 'rspec-rails', '~> 3.5'
   # Testing controllers for rendered template and variables
