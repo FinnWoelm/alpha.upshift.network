@@ -65,6 +65,11 @@
           <%= like_action post, "sliding" %>
         <% elsif post.unlikable_by?(@current_user) %>
           <%= unlike_action post, "sliding" %>
+        <% else %>
+          <div class="fake_button">
+            <i class="mdi mdi-thumb-up left"></i>
+            <%= post.likes_count || 0 %>
+          </div>
         <% end %>
         </div>
 

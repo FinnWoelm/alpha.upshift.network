@@ -43,6 +43,11 @@
       <%= like_action comment, "minimal" %>
     <% elsif comment.unlikable_by?(@current_user) %>
       <%= unlike_action comment, "minimal" %>
+    <% else %>
+      <div class="fake_button btn-small">
+        <i class="mdi mdi-thumb-up left"></i>
+        <%= comment.likes_count || 0 %>
+      </div%>
     <% end %>
   </div>
 

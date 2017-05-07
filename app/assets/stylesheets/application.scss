@@ -275,6 +275,14 @@ div.fake_button {
   outline: 0;
   padding: 0 2rem;
   text-transform: uppercase;
+
+  i {
+    font-size: 1.3rem;
+  }
+
+  &.btn-small {
+    padding: 0 1rem;
+  }
 }
 
 // BUTTONS: Creates a button that looks like a link
