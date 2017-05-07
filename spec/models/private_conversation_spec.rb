@@ -273,14 +273,12 @@ RSpec.describe PrivateConversation, type: :model do
   end
 
   describe "#add_participant" do
-    after { private_conversation.add_participant participant }
-
     context "when participant is not nil" do
-      let(:participant) { build_stubbed(:user) }
+      let(:participant) { create(:user) }
 
       it "builds a participantship" do
-        expect(private_conversation.participantships).
-          to receive(:build).with(participant: participant)
+        expect{ private_conversation.add_participant participant }.
+          to change(private_conversation.participantships, :size).by(1)
       end
     end
 
@@ -288,8 +286,8 @@ RSpec.describe PrivateConversation, type: :model do
       let(:participant) { nil }
 
       it "does not build a participantship" do
-        expect(private_conversation.participantships).
-          not_to receive(:build).with(participant: participant)
+        expect{ private_conversation.add_participant participant }.
+          not_to change(private_conversation.participantships, :size)
       end
     end
   end

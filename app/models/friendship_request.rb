@@ -15,7 +15,7 @@ class FriendshipRequest < ApplicationRecord
   validate :recipient_profile_must_be_viewable_by_sender,
     :friendship_request_is_unique,
     :friendship_must_not_already_exist,
-    if: "sender.present? and recipient.present?"
+    if: Proc.new { |f| f.sender.present? and f.recipient.present? }
 
   private
     def recipient_profile_must_be_viewable_by_sender

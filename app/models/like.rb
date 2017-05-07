@@ -13,7 +13,7 @@ class Like < ApplicationRecord
     message: "%{value} is not a valid likable type" }
 
   validate :like_must_be_unique_for_user_and_content,
-    if: "liker.present? and likable_id.present? and likable_type.present?"
+    if: Proc.new { |l| l.present? and l.likable_id.present? and l.likable_type.present? }
 
   private
 

@@ -12,7 +12,7 @@ class Friendship < ApplicationRecord
   validates :acceptor, presence: true
 
   validate :friendship_must_be_unique,
-    if: "initiator.present? and acceptor.present?"
+    if: Proc.new { |f| f.initiator.present? and f.acceptor.present? }
 
   after_create :destroy_friendship_requests
 

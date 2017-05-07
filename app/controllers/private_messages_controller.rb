@@ -37,7 +37,7 @@ class PrivateMessagesController < ApplicationController
 
     @private_messages =
       @private_conversation.messages.
-      where("id > ?", params[:last_message_id]).
+      where("private_messages.id > ?", params[:last_message_id]).
       order(id: :asc)
 
     @private_conversation.mark_read_for @current_user
