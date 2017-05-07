@@ -21,25 +21,25 @@ $(document).on 'turbolinks:load', ->
     $(@).find("input[type=submit], button[type=submit]").first().find("i:not(.loading-indicator)").addClass("hide")
 
 
-  # on completed ajax call, re-enable buttons, text area, and icons
-  $(document).ajaxComplete (event, xhr, settings) ->
+# on completed ajax call, re-enable buttons, text area, and icons
+$(document).ajaxComplete (event, xhr, settings) ->
 
-    $("form[data-remote=true]").each ->
+  $("form[data-remote=true]").each ->
 
-      if settings.url == $(@).attr("action")
+    if settings.url == $(@).attr("action")
 
-        $(@).find("input, textarea").prop("readonly", false)
-        $(@).find("input[type=submit], button[type=submit]").removeClass("disabled")
+      $(@).find("input, textarea").prop("readonly", false)
+      $(@).find("input[type=submit], button[type=submit]").removeClass("disabled")
 
-        $(@).find("input[type=submit], button[type=submit]").first().find("i.loading-indicator").addClass("hide")
-        $(@).find("input[type=submit], button[type=submit]").first().find("i:not(.loading-indicator)").removeClass("hide")
+      $(@).find("input[type=submit], button[type=submit]").first().find("i.loading-indicator").addClass("hide")
+      $(@).find("input[type=submit], button[type=submit]").first().find("i:not(.loading-indicator)").removeClass("hide")
 
 
-  # on failed ajax call, show toast (only if it's a failed form submission)
-  $(document).ajaxError (event, xhr, settings) ->
+# on failed ajax call, show toast (only if it's a failed form submission)
+$(document).ajaxError (event, xhr, settings) ->
 
-    $("form[data-remote=true]").each ->
+  $("form[data-remote=true]").each ->
 
-      if settings.url == $(@).attr("action")
+    if settings.url == $(@).attr("action")
 
-        Application.show_notice "An error occured. Please check your Internet connection and try again."
+      Application.show_notice "An error occured. Please check your Internet connection and try again."
