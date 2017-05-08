@@ -19,15 +19,15 @@ class Vote < ApplicationRecord
     message: "%{value} is not a valid likable type" }
 
   validate :vote_must_be_unique_for_user_and_content,
-    if: "voter.present? and votable_id.present? and votable_type.present?",
-      on: :create
+    if: Proc.new { |v| v.voter.present? and v.votable_id.present? and v.votable_type.present? },
+    on: :create
   validate :voter_must_not_change, on: :update
   validate :votable_must_not_change, on: :update
 
   # # Callbacks
   # Keep vote counts on votable accurate
   after_create { votable.increase_votes_count(vote) }
-  after_update { votable.modify_votes_count(vote, vote_was) }
+  after_update { votable.modify_votes_count(vote, vote_before_last_save) }
   after_destroy { votable.decrease_votes_count(vote) }
 
   private
