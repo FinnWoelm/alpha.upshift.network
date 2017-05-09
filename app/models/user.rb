@@ -89,9 +89,6 @@ class User < ApplicationRecord
     through: :notification_actions, source: :notification
   has_many :notification_subscriptions, class_name: "Notification::Subscription",
     dependent: :delete_all, foreign_key: "subscriber_id"
-  has_many :notifications, through: :notification_subscriptions, source: :notification
-
-
 
   # # Accessors
   enum visibility: [ :private, :network, :public ], _suffix: true
@@ -318,6 +315,11 @@ class User < ApplicationRecord
   # checks whether this user has sent a friend request to another user
   def has_sent_friend_request_to? user
     friendship_requests_sent.exists?(recipient_id: user.id)
+  end
+
+  # returns the user's notifications
+  def notifications
+    Notification.for_user(self)
   end
 
   # returns post made and received by this user

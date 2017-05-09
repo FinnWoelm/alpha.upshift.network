@@ -63,8 +63,6 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:notification_subscriptions).
       class_name("Notification::Subscription").dependent(:delete_all).
       with_foreign_key("subscriber_id") }
-    it { is_expected.to have_many(:notifications).dependent(false).
-      through(:notification_subscriptions).source(:notification) }
 
   end
 

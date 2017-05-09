@@ -14,18 +14,18 @@ $input-focus-color: color("grey", "darken-4") !default;
 @import "integrations/material_design_icons/materialdesignicons";
 
 // App Stylesheets
-@import "color_scheme";
 @import "cards";
+@import "color_scheme";
+@import "democracy/community/decision";
 @import "infinity_scroll";
-@import "side_navigation";
-@import "static";
-@import "post_and_comment";
 @import "like";
-@import "profile";
+@import "notification";
+@import "post_and_comment";
 @import "private_conversation";
 @import "private_message";
-@import "democracy/community/decision";
-
+@import "profile";
+@import "side_navigation";
+@import "static";
 
 // GENERAL
 

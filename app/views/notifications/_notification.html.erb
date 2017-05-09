@@ -1,0 +1,57 @@
+<%
+  most_recent_actor = notification.actions.first.actor
+  is_unseen = (notification.subscriptions.first.seen_at.nil? or notification.actions.first.created_at > notification.subscriptions.first.seen_at)
+  others_have_acted = (notification.others_acted_before.present? and notification.others_acted_before > notification.subscriptions.first.created_at)
+%>
+
+<div class="row no_margin_bottom">
+  <div class="col s12">
+      <div class="<%= is_unseen ? 'unseen' : 'seen'%> notification_wrapper card-panel card-flat no_margin primary-color-text-on-hover">
+
+        <%# DELETE CONVERSATION %>
+        <div class="administrative-actions right">
+          <%= options_dropdown_button notification do %>
+            <li class="disabled">
+              <a>Coming soon...</a>
+            </li>
+          <% end %>
+        </div>
+
+        <%= link_to path_to_notification_notifier(notification), class: "hoverable white black-text primary-color-on-hover primary-color-text-on-hover color-trigger" do %>
+
+          <div class="row no_margin">
+            <div class="col s2 m2 l1 center-align">
+              <%= image_tag profile_picture(most_recent_actor),
+                class: 'responsive-img z-depth-1 rounded ' + most_recent_actor.color_scheme_with_font_color,
+                alt: most_recent_actor.name %>
+            </div>
+            <div class="col s10 m10 l11">
+
+              <span class="unseen_marker badge primary-color primary-color-text highlight-color-on-hover-trigger highlight-color-text-on-hover-trigger">
+                new
+              </span>
+
+              <div class="prevent_overflow">
+                <strong>
+                  <%= notification_title(
+                    notification.actions.map(&:actor),
+                    others_have_acted,
+                    notification.action_on_notifier,
+                    notification.notifier,
+                    notification.subscriptions.first.reason_for_subscription
+                    )
+                  %>
+                </strong>
+              </div>
+
+              <div>
+                <em>
+                  <%= notification_subtitle(notification.notifier) %>
+                </em>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+  </div>
+</div>

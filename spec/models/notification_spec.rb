@@ -20,6 +20,73 @@ RSpec.describe Notification, type: :model do
       through(:subscriptions).source(:subscriber) }
   end
 
+  describe "scopes" do
+
+    describe ":for_user" do
+      let(:user) { create(:user) }
+      let!(:post) { create(:post, :recipient => user) }
+      let!(:comment) { create(:comment, :commentable => post) }
+      let!(:like) { create(:like, :likable => post) }
+      let(:notifications) { Notification.for_user(user) }
+
+      it "returns 3 notifications the user is subscribed to" do
+        expect(notifications.count).to eq 3
+        expect(notifications.map(&:notifier)).to match [post, post, post]
+        expect(notifications.map(&:action_on_notifier)).to match_array ["post", "comment", "like"]
+      end
+
+      it "sorts notifications in order of last action" do
+        expect(notifications.first.actions.first.created_at).to be > notifications.second.actions.first.created_at
+        expect(notifications.second.actions.first.created_at).to be > notifications.third.actions.first.created_at
+      end
+
+      it "returns all actions that occured after the user subscribed" do
+        comment_notification = Notification.find_by(:notifier => post, :action_on_notifier => "comment")
+        comment_notification.subscriptions.
+          find_by(:subscriber => user).update(:created_at => Time.now)
+        create(:comment, :commentable => post)
+        expect(notifications.includes(:actions).first.actions.size).to eq 1
+      end
+
+      it "returns only the user's subscription" do
+        expect(notifications.includes(:subscriptions).first.subscriptions.size).to eq 1
+        expect(notifications.includes(:subscriptions).first.subscriptions.first.subscriber_id).to eq user.id
+      end
+
+      describe "when the notification has no actions" do
+        it "does not return the notification" do
+          expect {
+            Notification.where(:notifier => post).first.actions.delete_all
+          }.to change {
+            notifications.count
+          }.by(-1)
+        end
+      end
+
+      describe "when actor of last action is user" do
+        it "does not return the notification" do
+          expect {
+            Notification::Action.
+            where(:actor => comment.author).update(:actor => user)
+          }.to change {
+            notifications.count
+          }.by(-1)
+        end
+      end
+
+      describe "when last action created_at < subscription.created_at" do
+        it "does not return the notification" do
+          expect {
+            Notification::Subscription.
+            where(:subscriber => user).first.update(:created_at => Time.now)
+          }.to change {
+            notifications.count
+          }.by(-1)
+        end
+      end
+    end
+  end
+
   describe "accessors" do
     it {
       is_expected.to define_enum_for(:action_on_notifier).
@@ -68,6 +135,5 @@ RSpec.describe Notification, type: :model do
       expect(notification.actors.count).to eq 1
       expect(notification.others_acted_before).to eq nil
     end
-
   end
 end

@@ -42,6 +42,9 @@ Rails.application.routes.draw do
   post 'friendship/:username' => 'friendships#create', as: :accept_friendship_request
   delete 'friendship/:username' => 'friendships#destroy', as: :end_friendship
 
+  # notifications
+  resources :notifications, only: [:index]
+
   # Posts
   resources :posts, only: [:new, :create, :show, :destroy], :path => "post" do
     get '', on: :collection, :action => :new

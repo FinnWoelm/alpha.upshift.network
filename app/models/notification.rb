@@ -13,6 +13,28 @@ class Notification < ApplicationRecord
     dependent: :delete_all
   has_many :subscribers, through: :subscriptions, source: :subscriber
 
+  # # Scopes
+  # returns notifications for the given user
+  scope :for_user, -> (user) {
+    includes(actions: [:actor]).
+    includes(:subscriptions).
+    preload(:notifier).
+    where(notification_subscriptions: {subscriber_id: user.id}).
+    where('"notification_actions"."created_at" >= notification_subscriptions.created_at and notification_actions.actor_id != ?', user.id).
+    order("notification_actions.created_at DESC")
+
+    # Alternative Syntax
+    # unfortunately this does not work with includes().
+    # Manually preloading is complex because of the conditions on the preloaded
+    # associations (action created after user has subscribed and actor is not
+    # user).
+    # joins(:subscriptions, :actions).
+    # where(notification_subscriptions: {subscriber_id: user.id}).
+    # where('"notification_actions"."created_at" >= notification_subscriptions.created_at and notification_actions.actor_id != ?', user.id).
+    # group("notifications.id").
+    # order("max(notification_actions.created_at) DESC")
+  }
+
   # # Accessors
   enum action_on_notifier: [ :post, :comment, :like ], _suffix: true
 
@@ -67,5 +89,4 @@ class Notification < ApplicationRecord
       :others_acted_before => last_distinct_actions[3].try(:created_at)
     )
   end
-
 end
