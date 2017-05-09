@@ -15,6 +15,7 @@ $input-focus-color: color("grey", "darken-4") !default;
 
 // App Stylesheets
 @import "color_scheme";
+@import "cards";
 @import "infinity_scroll";
 @import "side_navigation";
 @import "static";
@@ -67,6 +68,11 @@ $input-focus-color: color("grey", "darken-4") !default;
 // GENERAL: main content z-index is lower than side nav
 div.col.main {
   z-index: 5;
+}
+
+// rounds off the edges
+.rounded {
+  border-radius: 5px;
 }
 
 // DROPDOWN

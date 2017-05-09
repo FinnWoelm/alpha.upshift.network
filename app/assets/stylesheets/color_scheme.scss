@@ -2,8 +2,45 @@
 $colors: map_merge($colors, ("gray": map_get($colors, "grey")));
 $colors: map_merge($colors, ("blue-gray": map_get($colors, "blue-grey")));
 
+@mixin define_classes_based_on_color_scheme($color) {
+  // primary-color: applies main color to an element as background-color
+  // primary-color-on-hover: applies primary-color but only when element is
+  //                         hovered on
+  .primary-color,
+  .primary-color-on-hover:hover {
+    background-color: $color !important;
+  }
 
-// support for shades?
+  // highlight-color-text: applies main color to an element as text-color
+  // highlight-color-text-on-hover-trigger: applies main color to an element as
+  //                                        as text-color when a parent element
+  //                                        with class .color-trigger is hovered
+  //                                        on
+  .highlight-color-text,
+  .color-trigger:hover .highlight-color-text-on-hover-trigger {
+    color: $color !important;
+  }
+}
+
+@mixin define_classes_based_on_font_color($color) {
+  // primary-color-text: applies font color to an element as text-color
+  // primary-color-text-on-hover: applies primary-color-text but only when an
+  //                              element is hovered on
+  // primary-color-text-on-hover-trigger: applies font color to an element as
+  //                                      text-color when a parent element with
+  //                                      class .color-trigger is hovered on
+  .primary-color-text,
+  .primary-color-text-on-hover:hover,
+  .color-trigger:hover .primary-color-text-on-hover-trigger {
+    color: $color !important;
+  }
+  // highlight-color-on-hover-trigger: applies font color to an element as
+  //                                   background-color when a parent element
+  //                                   with class .color-trigger is hovered on
+  .color-trigger:hover .highlight-color-on-hover-trigger {
+    background-color: $color !important;
+  }
+}
 
 // set up color schemes
 body.color-scheme {
@@ -12,14 +49,12 @@ body.color-scheme {
     @each $color_type, $color_value in $color {
       @if $color_type == "base" {
         &.primary-#{$color_name} {
-          .primary-color { background-color: $color_value !important; }
-          .highlight-color-text { color: $color_value !important; }
+          @include define_classes_based_on_color_scheme($color_value);
         }
       }
       @else if $color_name != "shades" {
         &.primary-#{$color_name}.primary-#{$color_type} {
-          .primary-color { background-color: $color_value !important; }
-          .highlight-color-text { color: $color_value !important; }
+          @include define_classes_based_on_color_scheme($color_value);
         }
       }
     }
@@ -28,17 +63,16 @@ body.color-scheme {
   // mapping shades
   @each $color, $color_value in $shades {
     &.primary-#{$color} {
-      .primary-color { background-color: $color_value !important; }
-      .highlight-color-text { color: $color_value !important; }
+      @include define_classes_based_on_color_scheme($color_value);
     }
   }
 
   // mapping our two text colors: black and white
-  &.primary-black-text .primary-color-text {
-    color: #000000;
+  &.primary-black-text {
+    @include define_classes_based_on_font_color(#000000);
   }
-  &.primary-white-text .primary-color-text {
-    color: #FFFFFF;
+  &.primary-white-text {
+    @include define_classes_based_on_font_color(#FFFFFF);
   }
 }
 

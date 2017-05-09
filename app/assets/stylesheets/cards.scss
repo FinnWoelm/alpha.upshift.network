@@ -1,0 +1,44 @@
+.card-flat {
+  border-radius: 0px;
+  padding: 0px;
+  box-shadow: none;
+
+  // use relative position, so that box shadow is not blocked when we are
+  // hovering
+  position: relative;
+  &:not(:hover) {
+    z-index: 1;
+  }
+  &:hover {
+    z-index: 10;
+  }
+
+  // if we are having administrative actions, apply a padding on the right for
+  // the dropdown action
+  & > .administrative-actions ~ a {
+    padding-right: 80px;
+  }
+
+  // style the administrative actions to work with color changing hovers
+  // inherit the color unless we're hovering on the admin. action button itself
+  // that allows us to change the icon's color when hovering on the main part
+  // of the card
+  & > .administrative-actions:not(:hover) {
+    color: inherit !important;
+    & > a { color: inherit !important; }
+  }
+
+  // style the link (main part of flat-card)
+  & > a {
+    padding: 10px 30px;
+    display: block;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+
+    &.hoverable {
+      &:hover {
+        border-top-color: rgba(0,0,0,0);
+      }
+    }
+  }
+}
