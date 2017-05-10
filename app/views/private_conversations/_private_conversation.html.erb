@@ -1,5 +1,5 @@
 <li>
-  <div class="preview_conversation" data-conversation-id="<%= private_conversation.id %>" data-updated-at="<%= private_conversation.updated_at.exact %>">
+  <div class="preview_conversation card-panel card-flat no_margin primary-color-text-on-hover" data-conversation-id="<%= private_conversation.id %>" data-updated-at="<%= private_conversation.updated_at.exact %>">
 
     <%# DELETE CONVERSATION %>
     <div class="administrative-actions right">
@@ -17,16 +17,16 @@
     %>
 
     <%# PREVIEW %>
-    <%= link_to link_to_private_conversation(private_conversation), class: 'open_conversation' do %>
+    <%= link_to link_to_private_conversation(private_conversation), class: 'open_conversation hoverable white black-text primary-color-on-hover primary-color-text-on-hover color-trigger' do %>
       <div class="row no_margin_bottom">
         <div class="col s2 m2 l1 center-align">
           <%= image_tag profile_picture(conversation_partner),
-              class: 'responsive-img ' + conversation_partner.color_scheme_with_font_color,
+              class: 'responsive-img z-depth-1 rounded ' + conversation_partner.color_scheme_with_font_color,
               alt:  conversation_partner.name %>
         </div>
         <div class="col s10 m10 l11">
 
-          <span class='unread_message_count badge'>
+          <span class='unread_message_count badge primary-color primary-color-text highlight-color-on-hover-trigger highlight-color-text-on-hover-trigger'>
             <% if private_conversation.unread_message_count and private_conversation.unread_message_count > 0 %>
               <%= private_conversation.unread_message_count.to_s %>
             <% elsif private_conversation.participantship_of(@current_user).read_at.nil? %>

@@ -7,11 +7,11 @@
 <%= infinity_scroll_fallback @private_conversations %>
 
 <ul class="conversation_preview_wrapper">
-  <div class="new_conversation">
-    <%= link_to new_private_conversation_path, class: 'open_conversation' do %>
+  <div class="new_conversation card-panel card-flat no_margin">
+    <%= link_to new_private_conversation_path, class: 'open_conversation hoverable white black-text primary-color-on-hover primary-color-text-on-hover' do %>
       <div class="row no_margin_bottom">
         <div class="col s2 m2 l1 center-align">
-          <%= image_tag "community/add.png", class: 'responsive-img' %>
+          <%= image_tag "community/add.png", class: 'responsive-img z-depth-1 rounded' %>
         </div>
         <div class="col s10 m10 l11">
 

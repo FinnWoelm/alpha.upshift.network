@@ -2,53 +2,13 @@ body.c-private_conversations {
 
   // Formatting of conversation previews
   &.a-index {
-    div.preview_conversation, div.new_conversation {
+    div.new_conversation {
 
-      border-top: 1px solid rgba(0, 0, 0, .2);
-
-      // color the symbol for the dropdown menu white
-      &:hover > div.administrative-actions > a:not(:hover) {
-        @extend .white-text;
-      }
-
+      // manually set padding right on the new conversation card (even thought
+      // the padding wouldn't be needed), so that it matches the sizing of the
+      // other cards
       & > a.open_conversation {
-        padding: 10px 30px;
         padding-right: 80px;
-        display: block;
-        outline: none !important;
-        @extend .grey-text, .text-darken-4;
-        transition: all .3s;
-
-        .unread_message_count {
-          @extend .red;
-          @extend .white-text;
-        }
-
-        &:hover {
-          @extend .red;
-          @extend .white-text;
-          @extend .z-depth-2;
-
-          .unread_message_count {
-            @extend .white;
-            @extend .red-text;
-          }
-        }
-
-        img {
-          display: block;
-          @extend .z-depth-1;
-          margin: auto;
-          border-radius: 10px;
-          width: 70px;
-          overflow: hidden;
-        }
-      }
-
-      div.administrative-actions {
-        margin-bottom: -36px;
-        z-index: 5;
-        position: relative;
       }
     }
   }
