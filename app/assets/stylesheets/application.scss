@@ -106,6 +106,24 @@ div.col.main {
   background: inherit;
 }
 
+// Remove float from icons in buttons to get alignment correct
+.dropdown-content li > form > button > i.mdi.left,
+.dropdown-content li > a > i.mdi.left {
+  float: none !important;
+  margin: 0px 10px 0px 0px;
+  height: inherit;
+  line-height: inherit;
+}
+
+// Disabled dropdown options
+.dropdown-content li.disabled {
+  & > a, & > form > button {
+    color: $button-disabled-color;
+    background-color: $button-disabled-background;
+    pointer-events: none;
+  }
+}
+
 // NAVIGATION
 
 // NAVIGATION: Fluid has spacing that matches side nav and FAB

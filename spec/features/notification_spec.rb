@@ -16,16 +16,21 @@ feature 'Notification' do
     expect(page).to have_content("#{@brian.name} posted on your profile")
   end
 
-  xscenario "Users can mark a notification as seen" do
+  scenario "Users can mark a notification as seen" do
     given_i_am_logged_in_as_a_user
 
     # and I have received a post
+    create(:post, :recipient => @user)
 
     # when I visit my notifications
+    visit notifications_path
 
     # and mark the notification as seen
+    click_button 'Mark seen'
 
     # then I should not have unread notifications
+    expect(page).to have_selector("div.notification.seen", count: 1)
+    expect(page).not_to have_selector("div.notification.unseen")
   end
 
   xscenario "Users can mark all notification as seen" do

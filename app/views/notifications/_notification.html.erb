@@ -4,15 +4,18 @@
   others_have_acted = (notification.others_acted_before.present? and notification.others_acted_before > notification.subscriptions.first.created_at)
 %>
 
-<div class="row no_margin_bottom">
-  <div class="col s12">
-      <div class="<%= is_unseen ? 'unseen' : 'seen'%> notification_wrapper card-panel card-flat no_margin primary-color-text-on-hover">
+      <div class="<%= is_unseen ? 'unseen' : 'seen'%> notification card-panel card-flat no_margin primary-color-text-on-hover" data-notification-id="<%= notification.id %>">
 
         <%# DELETE CONVERSATION %>
         <div class="administrative-actions right">
           <%= options_dropdown_button notification do %>
-            <li class="disabled">
-              <a>Coming soon...</a>
+            <li class="<%= 'disabled' unless is_unseen %> mark_seen action">
+              <%= form_tag notification_mark_seen_path(notification), method: "post", remote: true do %>
+                <button type="submit" name="action">
+                  <i class="mdi mdi-eye left"></i>
+                  Mark seen
+                </button>
+              <% end %>
             </li>
           <% end %>
         </div>
@@ -53,5 +56,3 @@
           </div>
         <% end %>
       </div>
-  </div>
-</div>

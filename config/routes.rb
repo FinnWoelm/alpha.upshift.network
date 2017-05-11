@@ -43,7 +43,9 @@ Rails.application.routes.draw do
   delete 'friendship/:username' => 'friendships#destroy', as: :end_friendship
 
   # notifications
-  resources :notifications, only: [:index]
+  resources :notifications, only: [:index] do
+    post 'mark_seen', :action => :mark_seen
+  end
 
   # Posts
   resources :posts, only: [:new, :create, :show, :destroy], :path => "post" do
