@@ -20,8 +20,15 @@ module InfinityScroll
       anchor_column       = options.delete(:anchor_column)
       anchor_orientation  = options.delete(:anchor_orientation)
 
+      # if anchor column is a symbol, expand it into table_name and column
+      if anchor_column.is_a? Symbol
+        table_and_column = "#{rel.model.table_name}.#{anchor_column}"
+      else
+        table_and_column = anchor_column
+      end
+
       # apply anchor query
-      rel = rel.where("#{rel.model.table_name}.#{anchor_column} #{anchor_orientation == :greater_than ? '>=' : '<='} ?", rel.anchor) if rel.anchor
+      rel = rel.where("#{table_and_column} #{anchor_orientation == :greater_than ? '>=' : '<='} ?", rel.anchor) if rel.anchor
 
       # if anchor is not set, let's set it manually
       if rel.anchor.nil?

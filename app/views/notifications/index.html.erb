@@ -13,4 +13,8 @@
 
 <div class="section"></div>
 
+<%= infinity_scroll_fallback @notifications %>
+
 <%= render(@notifications) || "You have no notifications." %>
+
+<%= infinity_scroll @notifications %>

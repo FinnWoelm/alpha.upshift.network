@@ -23,7 +23,8 @@ MagicLamp.define(controller: NotificationsController) do
       Notification.for_user(@current_user).
       includes(actions: [:actor]).
       includes(:subscriptions).
-      preload(:notifier)
+      preload(:notifier).
+      paginate(:page => 1)
     render :index
   end
 end

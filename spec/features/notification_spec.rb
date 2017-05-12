@@ -50,11 +50,9 @@ feature 'Notification' do
     expect(page).not_to have_selector("div.notification.unseen")
   end
 
-  xcontext "When user scrolls to bottom of notifications (infinity scroll)" do
+  context "When user scrolls to bottom of notifications (infinity scroll)" do
     scenario 'User can see older notifications', :js => true do
       given_i_am_logged_in_as_a_user
-
-      pending
 
       # and there are more notifications than fit on a page
       create_list(:post, Notification.per_page+1, :recipient => @user)

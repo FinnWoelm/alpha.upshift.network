@@ -4,10 +4,21 @@ class NotificationsController < ApplicationController
   def index
     @notifications =
       Notification.
-      for_user(@current_user)
+      for_user(@current_user).
+      paginate_with_anchor(
+        :page => params[:page],
+        :anchor => params[:anchor] || Time.zone.now,
+        :anchor_column => "notification_actions.created_at",
+        :anchor_orientation => :less_than
+      )
 
-    @unseen_notifications_count =
-      Notification.for_user(@current_user).unseen_only.count
+    respond_to do |format|
+      format.html {
+        @unseen_notifications_count =
+          Notification.for_user(@current_user).unseen_only.count
+      }
+      format.js { }
+    end
   end
 
   def mark_seen

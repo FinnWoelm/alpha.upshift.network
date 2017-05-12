@@ -80,12 +80,12 @@ end
 100.times do |i|
   conversation = PrivateConversation.order("RANDOM()").first
   PrivateMessage.create(:sender => alice, :conversation => conversation, :content => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus quis placerat diam. Donec tempor consectetur sem ac accumsan. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Proin aliquam justo vel massa vehicula, id finibus magna auctor. Vivamus luctus tristique quam, in molestie orci convallis sed.")
-  if (i+1)%10 == 0
-    puts "Generated #{i+1} messages"
-  end
 end
 
+puts "Generated 100 private messages"
+
 # Create some posts
+posts = []
 100.times do |i|
   author = User.order("RANDOM()").first
   recipient =
@@ -96,11 +96,29 @@ end
         User.where(:visibility => :network)
       )
     ).sample
-  Post.create(
+  posts << Post.create(
     :author => author,
     :content => "Post #{i}\nLorem Ipsum Dolorem",
     :recipient => recipient)
 end
+
+puts "Generated 100 posts"
+
+# Create 100 comments
+posts_and_comments = posts
+100.times do |i|
+  author = User.order("RANDOM()").first
+  post_to_comment_on = posts_and_comments.sample
+  if post_to_comment_on.is_a? Comment
+    post_to_comment_on = post_to_comment_on.commentable
+  end
+  posts_and_comments << Comment.create(
+    :author => author,
+    :commentable => post_to_comment_on,
+    :content => "Post #{i}\nLorem Ipsum Dolorem")
+end
+
+puts "Generated 100 comments"
 
 ### Democracy
 

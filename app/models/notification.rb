@@ -39,6 +39,9 @@ class Notification < ApplicationRecord
     joins('INNER JOIN "notification_actions" AS "acts" ON "acts"."notification_id" = "notifications"."id" AND "acts"."created_at" > COALESCE(notification_subscriptions.seen_at, to_timestamp(\'0001-01-01 23:59:59\', \'YYYY-MM-DD HH24:MI:SS\'))')
   }
 
+  # # Pagination
+  self.per_page = 15
+
   # # Accessors
   enum action_on_notifier: [ :post, :comment, :like ], _suffix: true
 
