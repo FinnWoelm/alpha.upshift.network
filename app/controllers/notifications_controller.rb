@@ -11,14 +11,6 @@ class NotificationsController < ApplicationController
         :anchor_column => "notification_actions.created_at",
         :anchor_orientation => :less_than
       )
-
-    respond_to do |format|
-      format.html {
-        @unseen_notifications_count =
-          Notification.for_user(@current_user).unseen_only.count
-      }
-      format.js { }
-    end
   end
 
   def mark_seen
