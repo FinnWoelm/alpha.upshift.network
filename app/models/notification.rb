@@ -35,6 +35,10 @@ class Notification < ApplicationRecord
     # order("max(notification_actions.created_at) DESC")
   }
 
+  scope :unseen_only, -> {
+    joins('INNER JOIN "notification_actions" AS "acts" ON "acts"."notification_id" = "notifications"."id" AND "acts"."created_at" > COALESCE(notification_subscriptions.seen_at, to_timestamp(\'0001-01-01 23:59:59\', \'YYYY-MM-DD HH24:MI:SS\'))')
+  }
+
   # # Accessors
   enum action_on_notifier: [ :post, :comment, :like ], _suffix: true
 

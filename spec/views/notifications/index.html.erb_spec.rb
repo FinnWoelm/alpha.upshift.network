@@ -10,8 +10,8 @@ RSpec.describe "notifications/index.html.erb", type: :view do
     assign(:notifications, Notification.for_user(current_user))
   end
 
-  xit "renders a button to mark all notifications seen" do
+  it "renders a button to mark all notifications seen" do
     render
-    expect(rendered).to have_selector("a", text: "Mark all notifications as seen")
+    expect(rendered).to have_selector("button", text: "Mark all notifications as 'seen'")
   end
 end

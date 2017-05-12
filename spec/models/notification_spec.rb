@@ -84,6 +84,34 @@ RSpec.describe Notification, type: :model do
           }.by(-1)
         end
       end
+
+      describe ":unseen_only" do
+        let(:user) { create(:user) }
+        let!(:post) { create(:post, :recipient => user) }
+        let!(:comment) { create(:comment, :commentable => post) }
+        let!(:like) { create(:like, :likable => post) }
+        let(:notifications) { Notification.for_user(user).unseen_only }
+
+        it "returns notifications where last_action.created_at > subscription.seen_at" do
+          expect {
+            Notification::Subscription.
+            where(:subscriber => user).first.touch(:seen_at)
+          }.to change {
+            notifications.count
+          }.by(-1)
+        end
+
+        it "returns notifications where subscription.seen_at is nil" do
+          Notification::Subscription.
+            where(:subscriber => user).update_all(:seen_at => Time.zone.now)
+          expect {
+            Notification::Subscription.
+            where(:subscriber => user).first.update(:seen_at => nil)
+          }.to change {
+            notifications.count
+          }.by(1)
+        end
+      end
     end
   end
 

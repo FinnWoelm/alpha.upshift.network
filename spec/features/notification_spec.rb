@@ -33,16 +33,21 @@ feature 'Notification' do
     expect(page).not_to have_selector("div.notification.unseen")
   end
 
-  xscenario "Users can mark all notification as seen" do
+  scenario "Users can mark all notification as seen" do
     given_i_am_logged_in_as_a_user
 
     # and I have received a post plus a like and comment on the post
+    create(:post, :recipient => @user)
 
     # when I visit my notifications
+    visit notifications_path
 
     # and mark all notification as seen
+    click_button "Mark all notifications as 'seen'"
 
     # then I should not have unread notifications
+    expect(page).to have_selector("div.notification.seen", count: 1)
+    expect(page).not_to have_selector("div.notification.unseen")
   end
 
   xcontext "When user scrolls to bottom of notifications (infinity scroll)" do
