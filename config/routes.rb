@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   # notifications
   resources :notifications, only: [:index] do
     post 'mark_seen', :action => :mark_seen
+    post 'mark_all_seen', on: :collection, :action => :mark_all_seen
   end
 
   # Posts
