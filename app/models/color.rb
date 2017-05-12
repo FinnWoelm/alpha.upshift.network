@@ -33,7 +33,11 @@ class Color
 
     # contains all the colors of a rainbow
     def rainbow_colors
-      ["red", "purple", "indigo", "light-blue", "green", "light-green", "orange"]
+      ["red", "amber", "yellow", "light-green", "light-blue", "indigo", "purple"]
+    end
+
+    def rainbow_color_schemes
+      rainbow_colors.map {|color| "#{color} basic"}
     end
 
     # contains all the colors as an array of hashes
