@@ -94,6 +94,7 @@ class User < ApplicationRecord
   enum visibility: [ :private, :network, :public ], _suffix: true
   attr_accessor(:friends_ids)
   attr_reader :delete_profile_picture, :delete_profile_banner
+  attr_reader :unread_conversations_count, :unread_notifications_count
   serialize :options, Hash
 
   # alias the Paperclip setter, so that we can extend it with custom calls
@@ -380,6 +381,18 @@ class User < ApplicationRecord
       where('private_conversations.updated_at > participantship_in_private_conversations.read_at ' +
       'OR ' +
       'participantship_in_private_conversations.read_at IS NULL')
+  end
+
+  # gets the number of unread conversations, max 20
+  def unread_conversations_count
+    @unread_conversations_count ||=
+      unread_private_conversations.count
+  end
+
+  # gets the number of unread notifications, max 20
+  def unread_notifications_count
+    @unread_notifications_count ||=
+      Notification.for_user(self).unseen_only.count
   end
 
   # whether the user is visible to a given viewer

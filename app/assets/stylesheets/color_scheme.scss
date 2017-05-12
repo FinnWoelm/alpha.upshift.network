@@ -34,9 +34,11 @@ $colors: map_merge($colors, ("blue-gray": map_get($colors, "blue-grey")));
   .color-trigger:hover .primary-color-text-on-hover-trigger {
     color: $color !important;
   }
+  // highlight-color: applies font color to an element as background color
   // highlight-color-on-hover-trigger: applies font color to an element as
   //                                   background-color when a parent element
   //                                   with class .color-trigger is hovered on
+  .highlight-color,
   .color-trigger:hover .highlight-color-on-hover-trigger {
     background-color: $color !important;
   }
