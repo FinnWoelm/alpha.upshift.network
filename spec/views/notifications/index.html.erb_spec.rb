@@ -7,7 +7,7 @@ RSpec.describe "notifications/index.html.erb", type: :view do
 
   before(:each) do
     assign(:current_user, current_user)
-    assign(:notifications, Notification.for_user(current_user))
+    assign(:notifications, Notification.for_user(current_user).paginate(:page => 1))
   end
 
   it "renders a button to mark all notifications seen" do
