@@ -1,0 +1,20 @@
+<div class="page_heading z-depth-1">
+  <h3>Notifications</h3>
+</div>
+
+<div class="section"></div>
+
+<%= form_tag mark_all_seen_notifications_path, method: 'post' do %>
+  <button class="<%= 'disabled ' if @current_user.unread_notifications_count == 0 %>btn waves-effect waves-light" type="submit" name="action">
+    <i class="mdi mdi-eye left"></i>
+    Mark all <span class="hide-on-small-only">notifications</span> as 'seen'
+  </button>
+<% end %>
+
+<div class="section"></div>
+
+<%= infinity_scroll_fallback @notifications %>
+
+<%= render(@notifications) || "You have no notifications." %>
+
+<%= infinity_scroll @notifications %>

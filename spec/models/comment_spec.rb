@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'models/shared_examples/examples_for_likable.rb'
+require 'models/shared_examples/examples_for_notifying.rb'
 
 RSpec.describe Comment, type: :model do
 
@@ -11,6 +12,10 @@ RSpec.describe Comment, type: :model do
 
   it_behaves_like "a likable object" do
     subject(:likable) { comment }
+  end
+
+  it_behaves_like "a notifying object" do
+    subject(:notifier) { build(:comment) }
   end
 
   describe "associations" do
@@ -28,6 +33,99 @@ RSpec.describe Comment, type: :model do
     it "validates that #author_must_be_able_to_see_post" do
       expect(comment).to receive(:author_must_be_able_to_see_commentable)
       comment.valid?
+    end
+  end
+
+  describe "#create_notification" do
+    let(:comment_notification) do
+      Notification.find_by(
+        :notifier => comment.commentable,
+        :action_on_notifier => "comment"
+      )
+    end
+    let(:commenter_subscription) do
+      Notification::Subscription.find_by(
+        :notification => comment_notification,
+        :subscriber => comment.author,
+        :created_at => comment.created_at
+      )
+    end
+
+    context "when comment author is already subscribed" do
+      before { comment.save }
+
+      it "updates :seen_at to comment.created_at" do
+        comment.send(:create_notification)
+        expect(commenter_subscription.seen_at.exact).to eq comment.created_at.exact
+      end
+    end
+
+    context "when comment author is not yet subscribed" do
+      before do
+        comment.save
+        commenter_subscription.destroy
+      end
+
+      it "subscribes the author to comments on the post" do
+        comment.send(:create_notification)
+        expect(commenter_subscription).to be_present
+      end
+    end
+
+    it "creates an action for comment" do
+      comment.save
+      expect(Notification::Action).
+        to exist(
+          notification: comment_notification,
+          actor: comment.author,
+          created_at: comment.created_at)
+    end
+  end
+
+  describe "#destroy_notification" do
+    let!(:comment) { create(:comment) }
+    let!(:comment_author) { comment.author }
+    let(:comment_notification) do
+      Notification.find_by(
+        :notifier => comment.commentable,
+        :action_on_notifier => "comment"
+      )
+    end
+    let(:comment_author_subscription) do
+      Notification::Subscription.find_by(
+        :notification => comment_notification,
+        :subscriber => comment_author,
+        :reason_for_subscription => :commenter
+      )
+    end
+
+    it "destroys any notification(s) associated with the comment" do
+      comment.destroy
+      expect(Notification.where(:notifier => comment).count).to eq 0
+    end
+
+    it "unsubscribes the comment author from comment notifications" do
+      comment.destroy
+      expect(comment_author_subscription).to be_nil
+    end
+
+    it "re-initalizes the comment notification" do
+      allow(Notification).to receive(:find_by).and_return(comment_notification)
+      expect(comment_notification).to receive(:reinitialize_actions)
+      comment.destroy
+    end
+
+    context "when comment author has another comment" do
+      before do
+        create(:comment,
+          commentable: comment.commentable,
+          author: comment.author)
+      end
+
+      it "does not unsubscribe the comment author from comment notifications" do
+        comment.destroy
+        expect(comment_author_subscription).to be_present
+      end
     end
   end
 
@@ -56,7 +154,6 @@ RSpec.describe Comment, type: :model do
         is_expected.to be_deletable_by(user)
       end
     end
-
   end
 
   describe "#author_must_be_able_to_see_commentable" do

@@ -82,10 +82,19 @@ class User < ApplicationRecord
     dependent: :destroy
   has_many :friends_made, :through => :friendships_accepted, :source => :initiator
 
+  # ## Notifications
+  has_many :notification_actions, class_name: "Notification::Action",
+    dependent: :delete_all, foreign_key: "actor_id"
+  has_many :notifications_created, class_name: "Notification",
+    through: :notification_actions, source: :notification
+  has_many :notification_subscriptions, class_name: "Notification::Subscription",
+    dependent: :delete_all, foreign_key: "subscriber_id"
+
   # # Accessors
   enum visibility: [ :private, :network, :public ], _suffix: true
   attr_accessor(:friends_ids)
   attr_reader :delete_profile_picture, :delete_profile_banner
+  attr_reader :unread_conversations_count, :unread_notifications_count
   serialize :options, Hash
 
   # alias the Paperclip setter, so that we can extend it with custom calls
@@ -309,6 +318,11 @@ class User < ApplicationRecord
     friendship_requests_sent.exists?(recipient_id: user.id)
   end
 
+  # returns the user's notifications
+  def notifications
+    Notification.for_user(self)
+  end
+
   # returns post made and received by this user
   def posts_made_and_received
     Post.made_and_received_by_user(self)
@@ -367,6 +381,18 @@ class User < ApplicationRecord
       where('private_conversations.updated_at > participantship_in_private_conversations.read_at ' +
       'OR ' +
       'participantship_in_private_conversations.read_at IS NULL')
+  end
+
+  # gets the number of unread conversations, max 20
+  def unread_conversations_count
+    @unread_conversations_count ||=
+      unread_private_conversations.count
+  end
+
+  # gets the number of unread notifications, max 20
+  def unread_notifications_count
+    @unread_notifications_count ||=
+      Notification.for_user(self).unseen_only.count
   end
 
   # whether the user is visible to a given viewer
