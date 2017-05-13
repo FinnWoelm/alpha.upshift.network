@@ -3,6 +3,18 @@
   padding: 0px;
   box-shadow: none;
 
+  // use relative position, so that box shadow is not blocked when we are
+  // hovering
+  &:not(.card-no-hover) {
+    position: relative;
+    &:not(:hover) {
+      z-index: 1;
+    }
+    &:hover {
+      z-index: 10;
+    }
+  }
+
   // if we are having administrative actions, apply a padding on the right for
   // the dropdown action
   & > .administrative-actions ~ a {
@@ -33,7 +45,7 @@
   }
 
   // style the link (main part of flat-card)
-  & > a {
+  & > a, & > div.content {
     padding: 10px 30px;
     display: block;
     border-top: 1px solid rgba(0, 0, 0, 0.2);

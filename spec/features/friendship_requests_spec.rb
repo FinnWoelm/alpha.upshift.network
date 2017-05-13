@@ -93,7 +93,7 @@ feature 'Friendship Request' do
 
   def and_reject_the_friend_request
     visit friendship_requests_received_path
-    click_link 'Reject'
+    click_on 'Reject'
     @user.reload
     @another_user.reload
   end

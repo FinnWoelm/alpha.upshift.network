@@ -1,20 +1,3 @@
-<h1>Friendship Requests</h1>
+<h1>Friend Requests</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Sender</th>
-      <th colspan="2"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @friendship_requests.each do |friendship_request| %>
-      <tr>
-        <td><%= friendship_request.sender.name %></td>
-        <td><%= render partial: "accept_friendship_request_button", locals: { user: friendship_request.sender } %></td>
-        <td><%= link_to 'Reject', reject_friendship_request_path(friendship_request.sender), method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<%= render(@friendship_requests) || "You do not have any open requests." %>
