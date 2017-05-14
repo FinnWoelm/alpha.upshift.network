@@ -16,7 +16,7 @@ describe 'View: Notifications#index', ->
 
       it "triggers click on 'mark seen'", ->
         # spy on clicks
-        click = spyOn($.fn, 'click').and.callThrough()
+        click = spyOn($.fn, 'click')
         notification_id = $("div.notification").first().attr("data-notification-id")
 
         # remove the href attribute so that we don't navigate away from the page
