@@ -19,19 +19,30 @@
           <% if @current_user %>
 
             <li>
-              <%= link_to_profile @current_user, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'My Profile'} do %>
-                <%= image_tag profile_picture(@current_user), class: "img-responsive circle" %>
+              <%= link_to notifications_path, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'Notifications'} do %>
+                <i class="mdi mdi-earth"></i>
+                <% if @current_user.unread_notifications_count > 0 %>
+                  <span class="highlight-color highlight-color-text z-depth-1 badge">
+                    <%= @current_user.unread_notifications_count %>
+                  </span>
+                <% end %>
               <% end %>
             </li>
 
             <li>
               <%= link_to private_conversations_home_path, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'Conversations'} do %>
                 <i class="mdi mdi-message"></i>
-                <% if @current_user.unread_private_conversations.size > 0 %>
-                  <span class="white black-text z-depth-1 badge">
-                    <%= @current_user.unread_private_conversations.size %>
+                <% if @current_user.unread_conversations_count > 0 %>
+                  <span class="highlight-color highlight-color-text z-depth-1 badge">
+                    <%= @current_user.unread_conversations_count %>
                   </span>
                 <% end %>
+              <% end %>
+            </li>
+
+            <li>
+              <%= link_to_profile @current_user, class: 'tooltipped', data: {position: 'bottom', delay: '50', tooltip: 'My Profile'} do %>
+                <%= image_tag profile_picture(@current_user), class: "img-responsive circle" %>
               <% end %>
             </li>
 
@@ -62,10 +73,18 @@
             <li><div class="divider"></div></li>
 
             <li>
-              <%= link_to_profile @current_user do %>
-                <%= image_tag profile_picture(@current_user), class: "img-responsive circle left" %>
+              <%= link_to notifications_path do %>
+
+                <%# unread notifications indicator %>
+                <% if @current_user.unread_notifications_count > 0 %>
+                  <span class="primary-color-text primary-color badge">
+                    <%= @current_user.unread_notifications_count %>
+                  </span>
+                <% end %>
+
+                <i class="mdi mdi-earth"></i>
                 <span class="content">
-                  My Profile
+                  Notifications
                 </span>
               <% end %>
             </li>
@@ -74,15 +93,24 @@
               <%= link_to private_conversations_home_path do %>
 
                 <%# unread conversations indicator %>
-                <% if @current_user.unread_private_conversations.size > 0 %>
+                <% if @current_user.unread_conversations_count > 0 %>
                   <span class="primary-color-text primary-color badge">
-                    <%= @current_user.unread_private_conversations.size %>
+                    <%= @current_user.unread_conversations_count %>
                   </span>
                 <% end %>
 
                 <i class="mdi mdi-message"></i>
                 <span class="content">
                   Conversations
+                </span>
+              <% end %>
+            </li>
+
+            <li>
+              <%= link_to_profile @current_user do %>
+                <%= image_tag profile_picture(@current_user), class: "img-responsive circle left" %>
+                <span class="content">
+                  My Profile
                 </span>
               <% end %>
             </li>

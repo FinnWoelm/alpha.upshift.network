@@ -1,6 +1,7 @@
 require 'rails_helper'
 require 'models/shared_examples/examples_for_likable.rb'
 require 'models/shared_examples/examples_for_commentable.rb'
+require 'models/shared_examples/examples_for_notifying.rb'
 
 RSpec.describe Post, type: :model do
 
@@ -18,10 +19,14 @@ RSpec.describe Post, type: :model do
     subject(:commentable) { post }
   end
 
+  it_behaves_like "a notifying object" do
+    subject(:notifier) { build(:post) }
+  end
+
   describe "associations" do
     it { is_expected.to belong_to(:author).dependent(false).class_name('User') }
     it { is_expected.to belong_to(:recipient).dependent(false) }
-    it { is_expected.to have_many(:comments).dependent(:destroy) }
+    it { is_expected.to have_many(:comments).dependent(:delete_all) }
   end
 
   describe "scopes" do
@@ -156,7 +161,7 @@ RSpec.describe Post, type: :model do
         end
       end
 
-      context "when user is profile owner" do
+      context "when user is recipient" do
         let!(:post) { create(:post, :recipient => create(:user)) }
         before do
           post.author.private_visibility!
@@ -197,6 +202,83 @@ RSpec.describe Post, type: :model do
     context "custom validations" do
       after { post.valid? }
       it { is_expected.to receive(:author_can_post_to_recipient) }
+    end
+  end
+
+  describe "#create_notification" do
+    let(:post) { build(:post_to_self) }
+    let(:comment_notification) do
+      Notification.find_by(
+        notifier: post,
+        action_on_notifier: "comment",
+        created_at: post.created_at
+      )
+    end
+    before { post.save }
+
+    it "creates a notification for comments" do
+      expect(comment_notification).to be_present
+    end
+
+    it "creates a subscription for author" do
+      expect(Notification::Subscription).
+        to exist(
+          notification: comment_notification,
+          subscriber: post.author,
+          created_at: post.created_at)
+    end
+
+    context "when author is not the recipient" do
+      let(:post) { build(:post) }
+      let(:post_notification) do
+        Notification.find_by(
+          notifier: post,
+          action_on_notifier: "post",
+          created_at: post.created_at)
+      end
+
+      it "creates a notification for post" do
+        expect(post_notification).to be_present
+      end
+
+      it "creates a subscription to the post notification for recipient" do
+        expect(Notification::Subscription).
+          to exist(
+            notification: post_notification,
+            subscriber: post.recipient,
+            created_at: post.created_at)
+      end
+
+      it "creates a subscription to the comment notification for recipient" do
+        expect(Notification::Subscription).
+          to exist(
+            notification: comment_notification,
+            subscriber: post.recipient,
+            created_at: post.created_at)
+      end
+
+      it "creates an action for post" do
+        expect(Notification::Action).
+          to exist(
+            notification: post_notification,
+            actor: post.author,
+            created_at: post.created_at)
+      end
+    end
+  end
+
+  describe "#destroy_notification" do
+    let!(:post) { create(:post) }
+    before do
+      Notification.destroy_all
+      create(:post_notification, :notifier => post)
+      create(:comment_notification, :notifier => post)
+      create(:like_notification, :notifier => post)
+    end
+
+    it "destroys any notification(s) associated with the post" do
+      post.destroy
+      expect(Notification.count).to eq 0
     end
   end
 

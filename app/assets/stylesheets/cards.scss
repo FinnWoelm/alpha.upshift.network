@@ -3,16 +3,6 @@
   padding: 0px;
   box-shadow: none;
 
-  // use relative position, so that box shadow is not blocked when we are
-  // hovering
-  position: relative;
-  &:not(:hover) {
-    z-index: 1;
-  }
-  &:hover {
-    z-index: 10;
-  }
-
   // if we are having administrative actions, apply a padding on the right for
   // the dropdown action
   & > .administrative-actions ~ a {
@@ -28,6 +18,20 @@
     & > a { color: inherit !important; }
   }
 
+  // administrative-actions need to have a high z-index so as not to be
+  // overlapped by the hoverable
+  & > .administrative-actions {
+
+    a.dropdown-button {
+      position: relative;
+      z-index: 20;
+    }
+
+    ul.dropdown-content.active {
+      z-index: 30;
+    }
+  }
+
   // style the link (main part of flat-card)
   & > a {
     padding: 10px 30px;
@@ -36,6 +40,17 @@
     transition: all 0.3s;
 
     &.hoverable {
+
+      // use relative position, so that box shadow is not blocked when we are
+      // hovering
+      position: relative;
+      &:not(:hover) {
+        z-index: 1;
+      }
+      &:hover {
+        z-index: 10;
+      }
+
       &:hover {
         border-top-color: rgba(0,0,0,0);
       }

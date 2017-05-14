@@ -1,0 +1,15 @@
+body.c-notifications {
+
+  // Formatting of Notification#index
+  &.a-index {
+    div.notification {
+
+      // if the notification is seen, hide the badge
+      &.seen {
+        .badge.unseen_marker {
+          display: none
+        }
+      }
+    }
+  }
+}

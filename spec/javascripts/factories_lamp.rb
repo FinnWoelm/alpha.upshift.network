@@ -14,6 +14,21 @@ MagicLamp.define(controller: UsersController) do
   end
 end
 
+MagicLamp.define(controller: NotificationsController) do
+
+  fixture do
+    @current_user = FactoryGirl.create(:user)
+    FactoryGirl.create_list(:post, 3, :recipient => @current_user)
+    @notifications =
+      Notification.for_user(@current_user).
+      includes(actions: [:actor]).
+      includes(:subscriptions).
+      preload(:notifier).
+      paginate(:page => 1)
+    render :index
+  end
+end
+
 MagicLamp.define(controller: PrivateConversationsController) do
 
   fixture do
