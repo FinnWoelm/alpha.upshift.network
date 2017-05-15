@@ -163,5 +163,56 @@ RSpec.describe Notification, type: :model do
       expect(notification.actors.count).to eq 1
       expect(notification.others_acted_before).to eq nil
     end
+
+    context "when action on notifier is post" do
+      let(:post) { create(:post) }
+      let!(:notification) { Notification.find_by(notifier: post, action_on_notifier: :post) }
+      let!(:actions) { notification.actions.map { |a| [a.actor_id, a.created_at] } }
+      let!(:others_acted_before) { notification.others_acted_before }
+
+      it "successfully reinitializes actions" do
+        successfully_reinitializes_actions
+      end
+    end
+
+    context "when action on notifier is comment" do
+      let(:post) { create(:post) }
+      let!(:comments) { create_list(:comment, 3, :commentable => post)}
+      let!(:notification) { Notification.find_by(notifier: post, action_on_notifier: :comment) }
+      let!(:actions) { notification.actions.map { |a| [a.actor_id, a.created_at] } }
+      let!(:others_acted_before) { notification.others_acted_before }
+
+      it "successfully reinitializes actions" do
+        successfully_reinitializes_actions
+      end
+    end
+
+    context "when action on notifier is like" do
+      let(:post) { create(:post) }
+      let!(:likes) { create_list(:like, 4, :likable => post)}
+      let!(:notification) { Notification.find_by(notifier: post, action_on_notifier: :like) }
+      let!(:actions) { notification.actions.map { |a| [a.actor_id, a.created_at] } }
+      let!(:others_acted_before) { notification.others_acted_before }
+
+      it "successfully reinitializes actions" do
+        successfully_reinitializes_actions
+      end
+    end
+
+    def successfully_reinitializes_actions
+      notification.actions.clear
+      notification.reinitialize_actions
+      notification.actions.reload
+      # match size
+      expect(notification.actions.size).to eq actions.size
+      # match others_acted_before
+      expect(notification.others_acted_before).to eq others_acted_before
+      # match each action
+      expect(
+        notification.actions.map {|action| [action.actor_id, action.created_at] }
+      ).to eq(
+        actions
+      )
+    end
   end
 end
