@@ -118,7 +118,7 @@ RSpec.describe Notification, type: :model do
   describe "accessors" do
     it {
       is_expected.to define_enum_for(:action_on_notifier).
-        with([:post, :comment, :like])
+        with([:post, :comment, :like, :friendship_request])
     }
   end
 
@@ -191,6 +191,18 @@ RSpec.describe Notification, type: :model do
       let(:post) { create(:post) }
       let!(:likes) { create_list(:like, 4, :likable => post)}
       let!(:notification) { Notification.find_by(notifier: post, action_on_notifier: :like) }
+      let!(:actions) { notification.actions.map { |a| [a.actor_id, a.created_at] } }
+      let!(:others_acted_before) { notification.others_acted_before }
+
+      it "successfully reinitializes actions" do
+        successfully_reinitializes_actions
+      end
+    end
+
+    context "when action on notifier is friend request" do
+      let(:user) { create(:user) }
+      let!(:friendship_requests) { create_list(:friendship_request, 4, :recipient => user)}
+      let!(:notification) { Notification.find_by(notifier: user, action_on_notifier: :friendship_request) }
       let!(:actions) { notification.actions.map { |a| [a.actor_id, a.created_at] } }
       let!(:others_acted_before) { notification.others_acted_before }
 

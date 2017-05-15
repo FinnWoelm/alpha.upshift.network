@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'models/shared_examples/examples_for_notifying.rb'
 
 RSpec.describe FriendshipRequest, type: :model do
 
@@ -6,6 +7,10 @@ RSpec.describe FriendshipRequest, type: :model do
 
   it "has a valid factory" do
     is_expected.to be_valid
+  end
+
+  it_behaves_like "a notifying object" do
+    subject(:notifier) { build(:friendship_request) }
   end
 
   describe "associations" do
@@ -62,6 +67,79 @@ RSpec.describe FriendshipRequest, type: :model do
       it { is_expected.to receive(:friendship_request_is_unique) }
       it { is_expected.to receive(:friendship_must_not_already_exist) }
 
+    end
+  end
+
+  describe "#create_notification" do
+    let(:friendship_request) { build(:friendship_request) }
+    let(:friendship_request_notification) do
+      Notification.find_by(
+        :notifier => friendship_request.recipient,
+        :action_on_notifier => "friendship_request"
+      )
+    end
+
+    it "creates a notification" do
+      friendship_request.save
+      expect(Notification::Action).
+        to exist(
+          notification: friendship_request_notification,
+          actor: friendship_request.sender,
+          created_at: friendship_request.created_at)
+    end
+
+    context "when notification for friend requests does not exist" do
+      before { Notification::Subscription.destroy_all }
+
+      it "creates the notifaction" do
+        friendship_request.save
+        expect(friendship_request_notification).to be_present
+      end
+
+      it "subscribes the user to the notification" do
+        friendship_request.save
+        expect(Notification::Subscription).
+          to exist(
+            notification: friendship_request_notification,
+            subscriber: friendship_request.recipient,
+            created_at: friendship_request.created_at
+          )
+      end
+    end
+  end
+
+  describe "#destroy_notification" do
+    let(:friendship_request) { build(:friendship_request) }
+    let(:friendship_request_notification) do
+      Notification.find_by(
+        :notifier => friendship_request.recipient,
+        :action_on_notifier => "friendship_request"
+      )
+    end
+
+    context "when other requests exist" do
+      before do
+        friendship_request.save
+        create(:friendship_request, :recipient => friendship_request.recipient)
+      end
+
+      it "re-initalizes actions on the notification" do
+        allow(Notification).to receive(:find_by).and_return(friendship_request_notification)
+        expect(friendship_request_notification).to receive(:reinitialize_actions)
+        friendship_request.destroy
+      end
+    end
+
+    context "when other requests do not exist" do
+      before do
+        FriendshipRequest.destroy_all
+        friendship_request.save
+      end
+
+      it "destroys the like notification" do
+        friendship_request.destroy
+        expect(friendship_request_notification).not_to be_present
+      end
     end
   end
 

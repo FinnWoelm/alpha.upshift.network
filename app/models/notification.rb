@@ -1,7 +1,7 @@
 class Notification < ApplicationRecord
 
   def self.notifier_types
-    ["Post", "Comment"]
+    ["Post", "Comment", "User"]
   end
 
   # # Associations
@@ -43,7 +43,7 @@ class Notification < ApplicationRecord
   self.per_page = 15
 
   # # Accessors
-  enum action_on_notifier: [ :post, :comment, :like ], _suffix: true
+  enum action_on_notifier: [ :post, :comment, :like, :friendship_request ], _suffix: true
 
   # # Validations
   validates :notifier_type, inclusion: { in: notifier_types,
@@ -72,6 +72,10 @@ class Notification < ApplicationRecord
       sort_by = :id
       actor_column = "liker"
       notifier_records = notifier.likes
+    when :friendship_request
+      sort_by = :id
+      actor_column = "sender"
+      notifier_records = notifier.friendship_requests_received
     end
 
     # subquery: get distinct actions
