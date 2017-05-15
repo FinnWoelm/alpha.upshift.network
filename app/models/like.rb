@@ -88,15 +88,14 @@ class Like < ApplicationRecord
           :action_on_notifier => "like"
         )
 
+      # destroy the notification if no likes remain
+      if self.likable.likes_count == 0
+        likable_notification.destroy
       # reinitialize the notification if other likes exist and this like is
       # among the last four actions
-      if (self.likable.likes_count > 0 and
-        (likable_notification.others_acted_before.nil? or
-        self.created_at >= likable_notification.others_acted_before))
+      elsif likable_notification.others_acted_before.nil? or
+        self.created_at >= likable_notification.others_acted_before
         likable_notification.reinitialize_actions
-      else
-        # destroy the notification
-        likable_notification.destroy
       end
     end
 
