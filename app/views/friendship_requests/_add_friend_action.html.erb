@@ -1,6 +1,7 @@
 <div class="friendship_action action_wrapper">
 
-  <%= form_tag(add_friend_path(new_friend), method: "post") do %>
+  <%= form_for FriendshipRequest.new do |f| %>
+    <%= f.hidden_field :recipient_username, :value => new_friend.username %>
     <button class="primary-color primary-color-text btn waves-effect waves-light" type="submit" name="action">
       <i class="mdi mdi-account-plus left"></i>
       Add Friend

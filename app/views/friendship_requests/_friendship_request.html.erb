@@ -19,10 +19,8 @@
         <% end %>
       </div>
 
-      <div class="row">
-        <div class="col s12 right-align">
-          <%= render partial: "friendship_requests/respond_to_friend_request_actions", locals: { sender: friendship_request.sender } %>
-        </div>
+      <div class="right-align margin_bottom_15">
+        <%= render partial: "friendship_requests/respond_to_friend_request_actions", locals: { sender: friendship_request.sender } %>
       </div>
     </div>
   </div>

@@ -34,8 +34,7 @@ Rails.application.routes.draw do
   get '/logout' => 'sessions#destroy'
 
   # FriendshipRequests
-  get 'friend-requests' => 'friendship_requests#index', as: :friendship_requests_received
-  post 'friendship-request/:username' => 'friendship_requests#create', as: :add_friend
+  resources :friendship_requests, only: [:index, :create], :path => "friend-requests"
   delete 'friendship-request/:username' => 'friendship_requests#destroy', as: :reject_friendship_request
 
   # Friendships

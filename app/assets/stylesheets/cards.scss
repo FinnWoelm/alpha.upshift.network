@@ -45,7 +45,7 @@
   }
 
   // style the link (main part of flat-card)
-  & > a, & > div.content {
+  & > a, & > .content {
     padding: 10px 30px;
     display: block;
     border-top: 1px solid rgba(0, 0, 0, 0.2);

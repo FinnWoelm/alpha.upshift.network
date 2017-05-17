@@ -1,3 +1,31 @@
 <h1>Friend Requests</h1>
 
+<% if @success %>
+  <i class="mdi mdi-check green-text"></i> Friend request sent to @<%= @user_added %>. The profile of @<%= @user_added %>
+  is either private or a user with that username does not exist. If the user
+  exists, they have received your friend request.
+  <div class="section"></div>
+<% end %>
+
+<div class="card-panel card-flat no_margin card-no-hover">
+  <%= form_for(@friendship_request || FriendshipRequest.new, html: {:class => "content"}) do |f| %>
+    <div class="row no_margin_bottom">
+      <div class="col s2 m2 l1 center-align">
+        <%= image_tag "community/add.png", class: 'responsive-img z-depth-1 rounded' %>
+      </div>
+      <div class="input-field col s10 m10 l11">
+        <%= f.text_field :recipient_username, placeholder: "Enter username of user to add" %>
+        <%= f.label :recipient_username, "Add friend..." %>
+      </div>
+    </div>
+    <div class="row no_margin_bottom">
+      <div class="col s12 right-align margin_bottom_15">
+        <button class="waves-effect waves-light btn primary-color primary-color-text">
+          <i class="mdi mdi-add left"></i>Add friend
+        </button>
+      </div>
+    </div>
+  <% end %>
+</div>
+
 <%= render(@friendship_requests) || "You do not have any open requests." %>

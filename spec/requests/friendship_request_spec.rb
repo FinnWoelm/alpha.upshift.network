@@ -10,9 +10,9 @@ RSpec.describe "FriendshipRequest", type: :request do
     end
 
     it "destroys the request" do
-      get friendship_requests_received_path
+      get friendship_requests_path
       delete reject_friendship_request_path(@friendship_request.sender)
-      assert_redirected_to friendship_requests_received_path
+      assert_redirected_to friendship_requests_path
       expect{@friendship_request.reload}.to raise_error(ActiveRecord::RecordNotFound)
     end
 

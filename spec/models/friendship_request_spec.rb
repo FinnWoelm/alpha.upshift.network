@@ -59,14 +59,46 @@ RSpec.describe FriendshipRequest, type: :model do
   describe "validations" do
     it { is_expected.to validate_presence_of(:sender) }
     it { is_expected.to validate_presence_of(:recipient) }
+    it { is_expected.to validate_presence_of(:recipient_username) }
 
     context "custom validations" do
       after { friendship_request.valid? }
 
-      it { is_expected.to receive(:recipient_profile_must_be_viewable_by_sender) }
+      it { is_expected.to receive(:recipient_is_not_sender) }
+      it { is_expected.to receive(:recipient_has_not_sent_friendship_request) }
       it { is_expected.to receive(:friendship_request_is_unique) }
       it { is_expected.to receive(:friendship_must_not_already_exist) }
 
+    end
+  end
+
+  describe "#recipient_username=" do
+
+    context "when recipient exists" do
+      let(:recipient) { create(:user) }
+
+      it "sets recipient" do
+        friendship_request.recipient_username = recipient.username
+        expect(friendship_request.recipient).to be_a(User)
+        expect(friendship_request.recipient).to eq recipient
+      end
+    end
+
+    context "when recipient does not exist" do
+      let(:recipient) { build(:user) }
+
+      it "retains recipient username" do
+        friendship_request.recipient_username = recipient.username
+        expect(friendship_request.recipient).not_to be_present
+        expect(friendship_request.recipient_username).to eq recipient.username
+      end
+    end
+
+    context "when username starts with an '@'" do
+      it "removes the leading @" do
+        friendship_request.recipient_username = "@test_user"
+        expect(friendship_request.recipient_username).to eq "test_user"
+      end
     end
   end
 
@@ -143,31 +175,37 @@ RSpec.describe FriendshipRequest, type: :model do
     end
   end
 
-  describe "#recipient_profile_must_be_viewable_by_sender" do
+  describe "#recipient_is_not_sender" do
     let(:recipient) { friendship_request.recipient }
     let(:sender)    { friendship_request.sender }
     after do
-      friendship_request.send(:recipient_profile_must_be_viewable_by_sender)
+      friendship_request.send(:recipient_is_not_sender)
     end
 
-    it "checks whether the recipient profile is viewable by the sender" do
-      expect(recipient).to receive(:viewable_by?).with(sender)
-    end
-
-    context "when sender cannot see recipient" do
-      before { allow(recipient).to receive(:viewable_by?) { false } }
+    context "when recipient equals sender" do
+      before { friendship_request.recipient = sender }
 
       it "adds an error message" do
-        expect(friendship_request.errors[:base]).to receive(:<<).
-          with("User does not exist or profile is private")
+        expect(friendship_request.errors[:recipient_username]).to receive(:<<).
+          with("cannot be yourself")
       end
     end
+  end
 
-    context "when sender can see recipient" do
-      before { allow(recipient).to receive(:viewable_by?) { true } }
+  describe "#recipient_has_not_sent_friendship_request" do
+    let(:friendship_request) { build(:friendship_request) }
+    let(:recipient) { friendship_request.recipient }
+    let(:sender)    { friendship_request.sender }
+    after do
+      friendship_request.send(:recipient_has_not_sent_friendship_request)
+    end
 
-      it "does not add an error message" do
-        expect(friendship_request.errors[:base]).not_to receive(:<<)
+    context "when recipient has sent friendship request" do
+      before { create(:friendship_request, :recipient => sender, :sender => recipient) }
+
+      it "adds an error message" do
+        expect(friendship_request.errors[:recipient_username]).to receive(:<<).
+          with("has already sent you a friend request")
       end
     end
   end
@@ -224,8 +262,8 @@ RSpec.describe FriendshipRequest, type: :model do
       before { allow(sender).to receive(:has_friendship_with?) { true } }
 
       it "adds an error message" do
-        expect(friendship_request.errors[:base]).to receive(:<<).
-          with("You are already friends with #{recipient.name}")
+        expect(friendship_request.errors[:recipient_username]).to receive(:<<).
+          with("is already among your friends")
       end
     end
 
@@ -233,7 +271,7 @@ RSpec.describe FriendshipRequest, type: :model do
       before { allow(sender).to receive(:has_friendship_with?) { false } }
 
       it "does not add an error message" do
-        expect(friendship_request.errors[:base]).not_to receive(:<<)
+        expect(friendship_request.errors[:recipient_username]).not_to receive(:<<)
       end
     end
   end

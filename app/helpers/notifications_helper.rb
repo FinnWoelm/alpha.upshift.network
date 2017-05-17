@@ -57,7 +57,7 @@ module NotificationsHelper
     when :user
       case notification.action_on_notifier.downcase.to_sym
       when :friendship_request
-        path = "friendship_requests_received_path"
+        path = "friendship_requests_path"
         id = ""
       end
     else
