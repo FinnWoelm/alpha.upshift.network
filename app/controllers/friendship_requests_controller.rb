@@ -4,7 +4,8 @@ class FriendshipRequestsController < ApplicationController
 
   # GET /friend-requests
   def index
-    @friendship_requests = @current_user.friendship_requests_received.includes(:sender)
+    @friendship_requests =
+      @current_user.friendship_requests_received.order(id: :desc).includes(:sender)
   end
 
   # POST /friendship-request/:username
