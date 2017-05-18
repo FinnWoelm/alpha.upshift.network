@@ -60,6 +60,27 @@ feature 'Friendship Request' do
     then_we_should_not_be_friends
   end
 
+  context "When user scrolls to bottom of requests (infinity scroll)" do
+    scenario 'User can see older requests', :js => true do
+      given_i_am_logged_in_as_a_user
+
+      # and there are more friendship requests than fit on a page
+      create_list(:friendship_request, FriendshipRequest.per_page+1, :recipient => @user)
+
+      # when I visit my friendship requests
+      visit friendship_requests_path
+
+      # then I should see as many friendship requests as are shown per page
+      expect(page).to have_selector(".friendship_request", count: FriendshipRequest.per_page)
+
+      # when I scroll to the bottom
+      page.driver.scroll_to(0, 10000)
+
+      # then I should see as many friendship requests as are shown per page + 1
+      expect(page).to have_selector(".friendship_request", count: FriendshipRequest.per_page+1)
+    end
+  end
+
   def given_i_am_logged_in_as_a_user
     @user = create(:user)
     visit login_path

@@ -7,6 +7,8 @@
   <div class="section"></div>
 <% end %>
 
+<%= infinity_scroll_fallback @friendship_requests %>
+
 <div class="card-panel card-flat no_margin card-no-hover">
   <%= form_for(@friendship_request || FriendshipRequest.new, html: {:class => "content"}) do |f| %>
     <div class="row no_margin_bottom">
@@ -29,3 +31,5 @@
 </div>
 
 <%= render(@friendship_requests) || "You do not have any open requests." %>
+
+<%= infinity_scroll @friendship_requests %>

@@ -12,6 +12,9 @@ class FriendshipRequest < ApplicationRecord
         or(where(:sender => user_two).where(:recipient => user_one))
     }
 
+  # # Pagination
+  self.per_page = 15
+
   validates :sender, presence: true
   validates :recipient, presence: true
 

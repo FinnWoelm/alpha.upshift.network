@@ -4,8 +4,7 @@ class FriendshipRequestsController < ApplicationController
 
   # GET /friend-requests
   def index
-    @friendship_requests =
-      @current_user.friendship_requests_received.order(id: :desc).includes(:sender)
+    @friendship_requests = get_friendship_requests
   end
 
   # POST /friendship-request/:username
@@ -30,7 +29,7 @@ class FriendshipRequestsController < ApplicationController
       @friendship_request = nil
     end
 
-    @friendship_requests = @current_user.friendship_requests_received.includes(:sender)
+    @friendship_requests = get_friendship_requests
     render 'index'
   end
 
@@ -52,5 +51,18 @@ class FriendshipRequestsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def friendship_request_params
       params.require(:friendship_request).permit(:recipient_username)
+    end
+
+    def get_friendship_requests
+      @current_user.
+      friendship_requests_received.
+      order(id: :desc).
+      includes(:sender).
+      paginate_with_anchor(
+        :page => params[:page],
+        :anchor => params[:anchor],
+        :anchor_column => :id,
+        :anchor_orientation => :less_than
+      )
     end
 end
