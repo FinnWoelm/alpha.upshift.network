@@ -55,25 +55,35 @@ class Notification < ApplicationRecord
     # clear existing actions
     actions.clear
 
-    case action_on_notifier.to_s
-    when "comment"
+    case action_on_notifier.to_s.to_sym
+    when :post
+      # custom re-initialization procedure
+      Notification::Action.create(
+        :notification => self,
+        :actor_id => notifier.author_id,
+        :timestamps => notifier.created_at
+      )
+      return # do not re-initalize actions
+    when :comment
       sort_by = :created_at
       actor_column = "author"
-    when "like"
+      notifier_records = notifier.comments
+    when :like
       sort_by = :id
       actor_column = "liker"
+      notifier_records = notifier.likes
     end
 
     # subquery: get distinct actions
     query_for_distinct_actions =
-      notifier.comments.unscoped.select("distinct on (#{actor_column}_id) *").order("#{actor_column}_id, #{sort_by} DESC")
+      notifier_records.unscoped.select("distinct on (#{actor_column}_id) *").order("#{actor_column}_id, #{sort_by} DESC")
     # main query: sort actions to get most recent action first
     query_for_last_actions =
-      notifier.comments.unscoped.select("*").limit(4).order("#{sort_by} DESC")
+      notifier_records.unscoped.select("*").limit(4).order("#{sort_by} DESC")
 
     # combine queries to get last actions from a table of distinct actions
     last_distinct_actions =
-      notifier.comments.find_by_sql(
+      notifier_records.find_by_sql(
         query_for_last_actions.
         to_sql.
         gsub(

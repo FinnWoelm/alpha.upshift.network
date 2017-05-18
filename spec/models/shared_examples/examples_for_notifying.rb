@@ -17,4 +17,13 @@ RSpec.shared_examples "a notifying object" do
       it { is_expected.to receive(:destroy_notification) }
     end
   end
+
+  describe "when actions are re-initalized" do
+
+    it "does not raise an error" do
+      subject.save
+      notification = Notification.last
+      expect{ notification.reinitialize_actions }.not_to raise_error
+    end
+  end
 end
