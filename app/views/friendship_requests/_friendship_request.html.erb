@@ -1,0 +1,27 @@
+<div class="friendship_request card-panel card-flat no_margin card-no-hover">
+
+  <div class="content row no_margin_bottom">
+    <div class="col s2 m2 l1 center-align">
+      <%= link_to_profile friendship_request.sender do %>
+        <%= image_tag profile_picture(friendship_request.sender),
+            class: 'responsive-img z-depth-1 rounded ' + friendship_request.sender.color_scheme_with_font_color,
+            alt:  friendship_request.sender.name %>
+      <% end %>
+    </div>
+    <div class="col s10 m10 l11">
+
+      <div class="single_line prevent_overflow">
+        <%= link_to_profile friendship_request.sender, class: "black-text", title: "#{friendship_request.sender.name} (@#{friendship_request.sender.username})" do %>
+          <strong>
+            <%= friendship_request.sender.name %>
+          </strong>
+          (@<%= friendship_request.sender.username %>)
+        <% end %>
+      </div>
+
+      <div class="right-align margin_bottom_15">
+        <%= render partial: "friendship_requests/respond_to_friend_request_actions", locals: { sender: friendship_request.sender } %>
+      </div>
+    </div>
+  </div>
+</div>

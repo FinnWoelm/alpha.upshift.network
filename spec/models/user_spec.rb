@@ -409,7 +409,8 @@ RSpec.describe User, type: :model do
   end
 
   describe "#has_received_friend_request_from?" do
-    let(:other_user) { build(:user) }
+    let(:user) { create(:user) }
+    let(:other_user) { create(:user) }
 
     context "when user has received friend request" do
       before do
@@ -431,7 +432,7 @@ RSpec.describe User, type: :model do
   end
 
   describe "#has_sent_friend_request_to?" do
-    let(:other_user) { build(:user) }
+    let(:other_user) { create(:user) }
 
     context "when user has sent friend request" do
       before do

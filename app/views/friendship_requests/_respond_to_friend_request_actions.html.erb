@@ -4,7 +4,7 @@
   "friendship-#{sender.username}",
   {
     :trigger => {
-      class: "primary-color primary-color-text btn waves-effect waves-light",
+      class: "#{sender.color_scheme_with_font_color} btn waves-effect waves-light",
       content: '<i class="mdi mdi-account-plus left"></i> Request Received'.html_safe
     },
   }) do %>
@@ -17,7 +17,7 @@
       <% end %>
     </li>
     <li>
-      <%= form_tag(accept_friendship_request_path(sender),method: :delete, data: { confirm: "Are you sure you want to reject the friend request from #{sender.name}?" }) do %>
+      <%= form_tag(reject_friendship_request_path(sender), method: :delete, data: { confirm: "Are you sure you want to reject the friend request from #{sender.name}?" }) do %>
         <button type="submit" class="text-primary-color" name="action">
           <i class="mdi mdi-account-remove left"></i>
           Reject Friend Request

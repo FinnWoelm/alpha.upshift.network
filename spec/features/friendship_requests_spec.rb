@@ -9,6 +9,28 @@ feature 'Friendship Request' do
     then_another_user_should_have_received_a_friend_request
   end
 
+  scenario 'User can send a friend request to a user with private visibility' do
+    given_i_am_logged_in_as_a_user
+
+    # and there is a private user
+    @private_user = create(:user, :visibility => :private)
+
+    # when I go to my friend requests
+    visit friendship_requests_path
+
+    # and I fill in the private user's username
+    fill_in "Add friend...", with: "@#{@private_user.username}"
+    click_on "Add friend"
+
+    # then I should see a success message
+    expect(page).to have_content "Friend request sent to @#{@private_user.username}"
+
+    # and private user should have received my request
+    expect(
+      FriendshipRequest.exists?(:sender => @user, :recipient => @private_user)
+      ).to be_truthy
+  end
+
   scenario 'User views friend requests' do
     given_i_am_logged_in_as_a_user
     when_i_receive_some_friend_requests
@@ -38,6 +60,27 @@ feature 'Friendship Request' do
     then_we_should_not_be_friends
   end
 
+  context "When user scrolls to bottom of requests (infinity scroll)" do
+    scenario 'User can see older requests', :js => true do
+      given_i_am_logged_in_as_a_user
+
+      # and there are more friendship requests than fit on a page
+      create_list(:friendship_request, FriendshipRequest.per_page+1, :recipient => @user)
+
+      # when I visit my friendship requests
+      visit friendship_requests_path
+
+      # then I should see as many friendship requests as are shown per page
+      expect(page).to have_selector(".friendship_request", count: FriendshipRequest.per_page)
+
+      # when I scroll to the bottom
+      page.driver.scroll_to(0, 10000)
+
+      # then I should see as many friendship requests as are shown per page + 1
+      expect(page).to have_selector(".friendship_request", count: FriendshipRequest.per_page+1)
+    end
+  end
+
   def given_i_am_logged_in_as_a_user
     @user = create(:user)
     visit login_path
@@ -64,7 +107,7 @@ feature 'Friendship Request' do
   end
 
   def and_visit_my_friend_requests_page
-    visit friendship_requests_received_path
+    visit friendship_requests_path
   end
 
   def then_i_should_see_some_friend_requests
@@ -78,7 +121,7 @@ feature 'Friendship Request' do
   end
 
   def and_accept_the_friend_request
-    visit friendship_requests_received_path
+    visit friendship_requests_path
     click_button 'Accept'
     @user.reload
     @another_user.reload
@@ -92,8 +135,8 @@ feature 'Friendship Request' do
   end
 
   def and_reject_the_friend_request
-    visit friendship_requests_received_path
-    click_link 'Reject'
+    visit friendship_requests_path
+    click_on 'Reject'
     @user.reload
     @another_user.reload
   end

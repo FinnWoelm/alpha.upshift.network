@@ -16,7 +16,8 @@ alice = User.new(
   :email => "alice@upshift.network",
   :password => "password",
   :confirmed_registration => true,
-  :color_scheme => Color.color_options.sample
+  :color_scheme => Color.color_options.sample,
+  :visibility => :network
 )
 
 brian = User.new(
@@ -71,6 +72,7 @@ Friendship.create(:initiator => alice, :acceptor => dennis)
   )
   u.auto_generate_profile_picture
   u.save
+  FriendshipRequest.create(:sender => u, :recipient => alice)
   conversation = PrivateConversation.new(:sender => alice, :recipient => u)
   conversation.messages.build(:content => "initial message", :sender => alice)
   conversation.save

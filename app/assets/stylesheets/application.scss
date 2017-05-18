@@ -50,6 +50,11 @@ $input-focus-color: color("grey", "darken-4") !default;
   margin: 0px !important;
 }
 
+// GENERAL: adds 15px of bottom margin
+.margin_bottom_15 {
+  margin-bottom: 15px;
+}
+
 // GENERAL: removes all padding
 .no_padding {
   padding: 0px !important;
