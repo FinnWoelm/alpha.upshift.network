@@ -60,13 +60,13 @@ feature 'Notification' do
       # when I visit my notifications
       visit notifications_path
 
-      # then I should see as many notificatios as are shown per page
+      # then I should see as many notifications as are shown per page
       expect(page).to have_selector(".notification", count: Notification.per_page)
 
       # when I scroll to the bottom
       page.driver.scroll_to(0, 10000)
 
-      # then I should see as many conversations as are shown per page + 1
+      # then I should see as many notifications as are shown per page + 1
       expect(page).to have_selector(".notification", count: Notification.per_page+1)
     end
   end
