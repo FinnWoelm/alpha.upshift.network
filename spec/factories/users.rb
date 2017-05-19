@@ -17,5 +17,17 @@ FactoryGirl.define do
         user.auto_generate_profile_picture
       end
     end
+
+    factory :public_user do
+      visibility { :public }
+    end
+
+    factory :network_user do
+      visibility { :network }
+    end
+
+    factory :private_user do
+      visibility { :private }
+    end
   end
 end
