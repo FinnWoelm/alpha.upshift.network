@@ -1,0 +1,27 @@
+<div class="search_result card-panel card-flat no_margin" title="<%= result.name %> (@<%= result.username %>)">
+
+  <%= link_to_profile result, class: "hoverable white black-text primary-color-on-hover primary-color-text-on-hover" do %>
+
+    <div class="row no_margin">
+      <div class="col s2 m2 l1 center-align">
+        <%= image_tag profile_picture(result),
+          class: 'responsive-img z-depth-1 rounded ' + result.color_scheme_with_font_color,
+          alt: result.name %>
+      </div>
+      <div class="col s10 m10 l11">
+
+        <div class="prevent_overflow">
+          <strong>
+            <%= result.name %>
+          </strong>
+        </div>
+
+        <div>
+          <em>
+            @<%= result.username %>
+          </em>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
