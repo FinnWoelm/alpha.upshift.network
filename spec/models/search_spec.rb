@@ -53,6 +53,14 @@ RSpec.describe Search, type: :model do
       end
     end
 
+    context "when name includes accents" do
+      let!(:user_with_accent) { create(:public_user, :name => "Gørún Björn")}
+
+      it "finds the user regardless" do
+        expect(Search.find_users_by_name("Gorun Bjorn")).to include user_with_accent
+      end
+    end
+
     context "when query includes _" do
       let!(:underscore_user) { create(:public_user, :name => "My _ name", :username => "my___name")}
       let!(:non_underscore_user) { create(:public_user, :name => "User without underscore")}
@@ -318,6 +326,14 @@ RSpec.describe Search, type: :model do
 
       it "correctly weights matches" do
         expect(Search.find_users_by_username_and_name('ian').to_a).to eq matches
+      end
+    end
+
+    context "when name includes accents" do
+      let!(:user_with_accent) { create(:public_user, :name => "Gørún Björn", :username => "ignore_me")}
+
+      it "finds the user regardless" do
+        expect(Search.find_users_by_username_and_name("Gorun Bjorn")).to include user_with_accent
       end
     end
 

@@ -5,7 +5,7 @@ class Search
     query = Search.escape_query(query)
     User.
     select("*, CASE #{Search.search_weights_for_user(query, :name)} END as rank").
-    where("name ILIKE ?", "%#{query.gsub(' ', '% ')}%").
+    where("unaccent(name) ILIKE unaccent(?)", "%#{query.gsub(' ', '% ')}%").
     merge(User.viewable_by_user(user)).
     order("rank, id")
   end
@@ -31,7 +31,7 @@ class Search
       User.
       select("*, CASE #{Search.search_weights_for_user(query)} END as rank").
       merge(User.viewable_by_user(user)).
-      where("name ILIKE ?", "%#{query.gsub(' ', '% ')}%")
+      where("unaccent(name) ILIKE unaccent(?)", "%#{query.gsub(' ', '% ')}%")
     ).
     order("rank, id")
   end
@@ -87,7 +87,7 @@ class Search
           # get the name of the column
           column = strategy[0..strategy.to_s.index("_")-1]
           "
-          WHEN #{column} ILIKE :#{strategy} then #{index} - 1.0/char_length(#{column})"
+          WHEN unaccent(#{column}) ILIKE unaccent(:#{strategy}) then #{index} - 1.0/char_length(#{column})"
         }.join(""),
         match_order
       ])
