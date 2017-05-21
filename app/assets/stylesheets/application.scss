@@ -420,6 +420,20 @@ form i.prefix ~ ul.errors {
   margin-left: 3rem;
 }
 
+// FORMS: Input (inline) buttons
+form div.input-field + div.input-button {
+  margin-top: 0.75rem;
+  padding-top: 15px;
+
+  // if button is full-width on small-and-down, remove the margins and paddings
+  &.s12 {
+    @media #{$small-and-down} {
+      margin-top: 0rem;
+      padding-top: 0px;
+    }
+  }
+}
+
 // FIXES
 
 // FIXES: parallax has a white space on the left
