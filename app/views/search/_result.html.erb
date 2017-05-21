@@ -12,13 +12,13 @@
 
         <div class="prevent_overflow">
           <strong>
-            <%= result.name %>
+            <%= highlight_query_in result.name, @search_query %>
           </strong>
         </div>
 
         <div>
           <em>
-            @<%= result.username %>
+            @<%= highlight_query_in result.username, @search_query %>
           </em>
         </div>
       </div>
