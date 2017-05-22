@@ -46,31 +46,5 @@
 
     <%= render(partial: "shared/notice", locals: {notice: notice}) if notice %>
 
-    <% if sidenav %>
-    <script type="text/javascript">
-
-      // make side nav full height
-      $(document).ready(function() {
-
-        // resize home div when the DOM is loaded
-        Application.resize_side_nav_to_full_height();
-
-        // and whenever we resize the window
-        $( window ).resize(function() {
-          Application.resize_side_nav_to_full_height();
-        });
-
-        // and whenever DOM height changes
-        new ResizeSensor(
-          $("body:not(.fullscreen)"),
-          function() {
-            Application.resize_side_nav_to_full_height();
-          });
-
-      });
-
-    </script>
-    <% end %>
-
   </body>
 </html>

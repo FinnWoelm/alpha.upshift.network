@@ -8,6 +8,7 @@ class @Application
   #//                      on the page
   #// is_viewport_at_bottom = is the viewport at the bottom of the screen?
   #// jump_to_bottom_of_page = moves viewport to bottom of the site
+  #// resize_search_to_full_width = sets search bar to full available width
   #// resize_side_nav_to_full_height = resizes the side navigation to height
   #//                                  of viewport or document (whichever is
   #//                                  bigger). Exception: Fullscreen pages
@@ -35,7 +36,24 @@ class @Application
     $('html, body').scrollTop( $(document).height() )
 
 
+  @resize_search_to_full_width: ->
+
+    return unless $("#search").length
+
+    # prevent search from interfering
+    #$("#search").width(0)
+
+    # set the new width
+    $("#search").width(
+      $("nav#main_navigation .nav-wrapper > .col.s12").width() - # width of nav
+      $("nav#main_navigation .brand-logo").outerWidth() - # logo
+      ($("nav#main_navigation ul").outerWidth() - $("#search").width()) # nav bar links
+    )
+
+
   @resize_side_nav_to_full_height: ->
+
+    return unless $("#desktop_side_navigation").length
 
     # reset height of side_nav
     $("#desktop_side_navigation").css("height", "unset")
