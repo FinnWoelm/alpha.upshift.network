@@ -14,25 +14,25 @@ class Notification < ApplicationRecord
   has_many :subscribers, through: :subscriptions, source: :subscriber
 
   # # Scopes
+
+  # gets a distinct count of notifications
+  scope :distinct_count, -> {
+    unscope(:select).unscope(:group).distinct.count
+  }
+
   # returns notifications for the given user
   scope :for_user, -> (user) {
-    includes(actions: [:actor]).
-    includes(:subscriptions).
-    preload(:notifier).
+    select(
+      "notifications.*, " +
+      "max(notification_subscriptions.seen_at) AS seen_at, " +
+      "max(notification_subscriptions.created_at) AS subscribed_at," +
+      "max(notification_subscriptions.reason_for_subscription) AS reason_for_subscription"
+    ).
+    joins(:subscriptions, :actions).
     where(notification_subscriptions: {subscriber_id: user.id}).
     where('"notification_actions"."created_at" >= notification_subscriptions.created_at and notification_actions.actor_id != ?', user.id).
-    order("notification_actions.created_at DESC")
-
-    # Alternative Syntax
-    # unfortunately this does not work with includes().
-    # Manually preloading is complex because of the conditions on the preloaded
-    # associations (action created after user has subscribed and actor is not
-    # user).
-    # joins(:subscriptions, :actions).
-    # where(notification_subscriptions: {subscriber_id: user.id}).
-    # where('"notification_actions"."created_at" >= notification_subscriptions.created_at and notification_actions.actor_id != ?', user.id).
-    # group("notifications.id").
-    # order("max(notification_actions.created_at) DESC")
+    group("notifications.id").
+    order("max(notification_actions.created_at) DESC")
   }
 
   scope :unseen_only, -> {
@@ -48,6 +48,15 @@ class Notification < ApplicationRecord
   # # Validations
   validates :notifier_type, inclusion: { in: notifier_types,
     message: "%{value} is not a valid notifier type" }
+
+  # parse the reason for subscription into hash if it is present
+  def reason_for_subscription
+    return nil unless self.read_attribute(:reason_for_subscription).present?
+    Notification::Subscription.
+      reason_for_subscriptions.key(
+        self.read_attribute(:reason_for_subscription)
+      )
+  end
 
   # reinitialize the notification actions
   def reinitialize_actions

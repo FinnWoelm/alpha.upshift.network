@@ -1,7 +1,10 @@
 <%
-  most_recent_actor = notification.actions.first.actor
-  is_unseen = (notification.subscriptions.first.seen_at.nil? or notification.actions.first.created_at > notification.subscriptions.first.seen_at)
-  others_have_acted = (notification.others_acted_before.present? and notification.others_acted_before > notification.subscriptions.first.created_at)
+  actions = notification.actions.select do |action|
+    action.created_at >= notification.subscribed_at and action.actor_id != @current_user.id
+  end
+  most_recent_actor = actions.first.actor
+  is_unseen = (notification.seen_at.nil? or actions.first.created_at > notification.seen_at)
+  others_have_acted = (notification.others_acted_before.present? and notification.others_acted_before > notification.subscribed_at)
 %>
 
       <div class="<%= is_unseen ? 'unseen' : 'seen'%> notification card-panel card-flat no_margin primary-color-text-on-hover" data-notification-id="<%= notification.id %>">
@@ -37,11 +40,11 @@
               <div class="prevent_overflow">
                 <strong>
                   <%= notification_title(
-                    notification.actions.map(&:actor),
+                    actions.map(&:actor),
                     others_have_acted,
                     notification.action_on_notifier,
                     notification.notifier,
-                    notification.subscriptions.first.reason_for_subscription
+                    notification.reason_for_subscription
                     )
                   %>
                 </strong>

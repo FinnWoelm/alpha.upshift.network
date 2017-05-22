@@ -5,15 +5,38 @@ feature 'Notification' do
   scenario 'User can see notifications' do
     given_i_am_logged_in_as_a_user
 
-    # and I have received a post from Brian
-    @brian = create(:user, :name => "Brian")
-    create(:post, :author => @brian, :recipient => @user)
+    # and I have received 3 posts
+    @posts = create_list(:post, 3, :recipient => @user)
+
+    # and I have received many comments on those posts
+    @comments = []
+    @posts.each do |post|
+      @comments << create_list(:comment, 3, :commentable => post)
+    end
+
+    # and I have received many likes on those posts
+    @likes = []
+    @posts.each do |post|
+      @likes << create_list(:like, 3, :likable => post)
+    end
+
+    # and I have received 5 friend requests
+    @requests = create_list(:friendship_request, 5, :recipient => @user)
 
     # when I visit my notifications
     visit notifications_path
 
-    # then I should see a notification from Brian
-    expect(page).to have_content("#{@brian.name} posted on your profile")
+    # then I should see 3 notifications about posts
+    expect(page).to have_content("posted on your profile", count: @posts.count)
+
+    # and I should see 3 notifications about comments
+    expect(page).to have_content("commented on a post on your profile", count: @posts.count)
+
+    # and I should see 3 notifications about likes
+    expect(page).to have_content("liked a post on your profile", count: @posts.count)
+
+    # and I should see one notification about friend requests
+    expect(page).to have_content("sent you a friend request", count: 1)
   end
 
   scenario "Users can mark a notification as seen" do

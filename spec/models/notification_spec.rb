@@ -22,6 +22,32 @@ RSpec.describe Notification, type: :model do
 
   describe "scopes" do
 
+    describe ":distinct_count" do
+      let!(:user) { create(:user) }
+      let!(:posts) { create_list(:post, 5, :recipient => user) }
+      before do
+        posts.each do |post|
+          create(:comment, :commentable => post)
+        end
+      end
+
+      it "returns 10" do
+        expect(Notification.for_user(user).distinct_count).to eq 10
+      end
+
+      context "when many actions per notification exist" do
+        before do
+          posts.each do |post|
+            create_list(:comment, 3, :commentable => post)
+          end
+        end
+
+        it "still returns 10" do
+          expect(Notification.for_user(user).distinct_count).to eq 10
+        end
+      end
+    end
+
     describe ":for_user" do
       let(:user) { create(:user) }
       let!(:post) { create(:post, :recipient => user) }
@@ -30,7 +56,7 @@ RSpec.describe Notification, type: :model do
       let(:notifications) { Notification.for_user(user) }
 
       it "returns 3 notifications the user is subscribed to" do
-        expect(notifications.count).to eq 3
+        expect(notifications.distinct_count).to eq 3
         expect(notifications.map(&:notifier)).to match [post, post, post]
         expect(notifications.map(&:action_on_notifier)).to match_array ["post", "comment", "like"]
       end
@@ -40,17 +66,31 @@ RSpec.describe Notification, type: :model do
         expect(notifications.second.actions.first.created_at).to be > notifications.third.actions.first.created_at
       end
 
-      it "returns all actions that occured after the user subscribed" do
-        comment_notification = Notification.find_by(:notifier => post, :action_on_notifier => "comment")
-        comment_notification.subscriptions.
-          find_by(:subscriber => user).update(:created_at => Time.now)
-        create(:comment, :commentable => post)
-        expect(notifications.includes(:actions).first.actions.size).to eq 1
+      it "sets seen_at on notification" do
+        notification = notifications.first
+        expect(notification.seen_at).
+          to eq Notification::Subscription.find_by(
+            :notification => notification,
+            :subscriber => user
+          ).seen_at
       end
 
-      it "returns only the user's subscription" do
-        expect(notifications.includes(:subscriptions).first.subscriptions.size).to eq 1
-        expect(notifications.includes(:subscriptions).first.subscriptions.first.subscriber_id).to eq user.id
+      it "sets created_at on notification" do
+        notification = notifications.first
+        expect(notification.subscribed_at).
+          to eq Notification::Subscription.find_by(
+            :notification => notification,
+            :subscriber => user
+          ).created_at
+      end
+
+      it "sets reason_for_subscription on notification" do
+        notification = notifications.first
+        expect(notification.reason_for_subscription).
+          to eq Notification::Subscription.find_by(
+            :notification => notification,
+            :subscriber => user
+          ).reason_for_subscription
       end
 
       describe "when the notification has no actions" do
@@ -58,7 +98,7 @@ RSpec.describe Notification, type: :model do
           expect {
             Notification.where(:notifier => post).first.actions.delete_all
           }.to change {
-            notifications.count
+            notifications.distinct_count
           }.by(-1)
         end
       end
@@ -69,7 +109,7 @@ RSpec.describe Notification, type: :model do
             Notification::Action.
             where(:actor => comment.author).update(:actor => user)
           }.to change {
-            notifications.count
+            notifications.distinct_count
           }.by(-1)
         end
       end
@@ -80,7 +120,7 @@ RSpec.describe Notification, type: :model do
             Notification::Subscription.
             where(:subscriber => user).first.update(:created_at => Time.now)
           }.to change {
-            notifications.count
+            notifications.distinct_count
           }.by(-1)
         end
       end
@@ -97,7 +137,7 @@ RSpec.describe Notification, type: :model do
             Notification::Subscription.
             where(:subscriber => user).first.touch(:seen_at)
           }.to change {
-            notifications.count
+            notifications.distinct_count
           }.by(-1)
         end
 
@@ -108,7 +148,7 @@ RSpec.describe Notification, type: :model do
             Notification::Subscription.
             where(:subscriber => user).first.update(:seen_at => nil)
           }.to change {
-            notifications.count
+            notifications.distinct_count
           }.by(1)
         end
       end
