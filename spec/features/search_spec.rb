@@ -14,8 +14,10 @@ feature 'Search' do
     visit search_path
 
     # and search for Bob
-    fill_in "query", with: "Brian"
-    click_on "Go"
+    within ".main" do
+      fill_in "query", with: "Brian"
+      click_on "Go"
+    end
 
     # then I should see five search results
     expect(page).to have_content("Brian", count: 5)
@@ -29,12 +31,14 @@ feature 'Search' do
       create_list(:public_user, Search.per_page+1)
       User.update_all(:name => "Mahatma Gandhi")
 
-      # when I visit the search page
+      # and I am on the search page
       visit search_path
 
-      # and search for Gandhi
-      fill_in "query", with: "Gandhi"
-      click_on "Go"
+      # when I search for Gandhi
+      within '#search' do
+        fill_in "query", with: "Gandhi"
+      end
+      page.find("#search").native.send_keys(:enter)
 
       # then I should see as many records as are shown per page
       expect(page).to have_selector("div.search_result", count: Search.per_page)

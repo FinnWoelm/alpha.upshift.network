@@ -1,10 +1,10 @@
 <div class="page_heading z-depth-1">
-  <h3>Search</h3>
+  <h3 class="prevent_overflow">Search<%= ": #{@search_query}" if @search_query.present? %></h3>
 </div>
 
 <div class="section"></div>
 
-<%= form_tag search_path, class: "", method: :get do %>
+<%= form_tag search_path, class: "hide-on-large-only", method: :get do %>
   <div class="row">
     <div class="input-field col s12 m10">
       <i class="mdi mdi-magnify prefix"></i>
@@ -17,6 +17,7 @@
       </button>
     </div>
   </div>
+  <div class="divider"></div>
 <% end %>
 
 <div class="row">
