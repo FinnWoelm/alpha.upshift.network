@@ -22,7 +22,9 @@
 <div class="row">
   <div class="col s12">
     <% if @search_query.present? %>
-      <%= render(partial: "result", collection: @results) || "No results found for: #{@search_query}" %>
+      <%= infinity_scroll_fallback @results %>
+      <%= render(partial: "result", collection: @results) || "No users found for: #{@search_query}" %>
+      <%= infinity_scroll @results %>
     <% else %>
       <p>Enter a query above to search for users by name or username.</p>
       <ul class="browser-default no_margin">

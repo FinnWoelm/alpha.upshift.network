@@ -1,5 +1,10 @@
 class Search
 
+  # # Pagination
+  def self.per_page
+    30
+  end
+
   # search for users by name and weight results
   def self.find_users_by_name query, user = nil
     query = Search.escape_query(query)
