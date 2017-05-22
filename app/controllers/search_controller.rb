@@ -40,5 +40,15 @@ class SearchController < ApplicationController
           @current_user
         )
     end
+
+    @results =
+      @results.
+        paginate_with_anchor(
+          :page => params[:page],
+          :per_page => Search.per_page,
+          :anchor => params[:anchor] || Time.zone.now,
+          :anchor_column => :created_at,
+          :anchor_orientation => :less_than
+        )
   end
 end
