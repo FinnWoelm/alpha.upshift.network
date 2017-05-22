@@ -392,7 +392,7 @@ class User < ApplicationRecord
   # gets the number of unread notifications, max 20
   def unread_notifications_count
     @unread_notifications_count ||=
-      Notification.for_user(self).unseen_only.count
+      Notification.for_user(self).unseen_only.distinct_count
   end
 
   # whether the user is visible to a given viewer
