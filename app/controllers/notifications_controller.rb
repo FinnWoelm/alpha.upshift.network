@@ -4,6 +4,8 @@ class NotificationsController < ApplicationController
   def index
     @notifications =
       Notification.
+      preload(:notifier).
+      preload(actions: [:actor]).
       for_user(@current_user).
       paginate_with_anchor(
         :page => params[:page],

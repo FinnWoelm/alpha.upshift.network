@@ -20,10 +20,10 @@ MagicLamp.define(controller: NotificationsController) do
     @current_user = FactoryGirl.create(:user)
     FactoryGirl.create_list(:post, 3, :recipient => @current_user)
     @notifications =
-      Notification.for_user(@current_user).
-      includes(actions: [:actor]).
-      includes(:subscriptions).
+      Notification.
       preload(:notifier).
+      preload(actions: [:actor]).
+      for_user(@current_user).
       paginate(:page => 1)
     render :index
   end
