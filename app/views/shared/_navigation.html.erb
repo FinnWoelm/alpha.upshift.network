@@ -16,7 +16,7 @@
 
         <ul class="right hide-on-med-and-down">
           <li>
-            <%= form_tag search_path, id: "search", class: "primary-color-text", method: :get do %>
+            <%= form_tag search_path, id: "search", class: "primary-color-text ignore-dirty", method: :get do %>
               <div class="input-field">
                 <%= text_field_tag :query, @search_query, :type => "search" %>
                 <%= label_tag :query do %>
