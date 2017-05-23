@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-  has_secure_password
   has_attached_file :profile_picture, styles: {
       large: ["250x250#", :jpg],
       medium: ["100x100#", :jpg]
@@ -29,6 +28,9 @@ class User < ApplicationRecord
   attr_readonly :username
 
   # # Associations
+
+  # ## Acount
+  belongs_to :account, optional: false, inverse_of: :user
 
   # ## Posts
   has_many :posts_made, :class_name => "Post", :foreign_key => "author_id",
@@ -170,21 +172,6 @@ class User < ApplicationRecord
     on: :create
   # Username cannot be any dictionary word
   validate :username_cannot_be_a_dictionary_word, on: :create
-
-  # Email
-  validates :email, presence: true
-  validates :email, format: {
-    with: /\A\S+@\S+\.\S+\z/,
-    message: "seems invalid"
-  }
-  validates :email,
-    uniqueness: { :case_sensitive => false }
-
-  # Password
-  validates :password, confirmation: true
-  validates :password,
-    length: { in: 8..50 },
-    unless: Proc.new { |u| u.password.nil? }
 
   # Profile picture
   validates_with AttachmentSizeValidator, attributes: :profile_picture,

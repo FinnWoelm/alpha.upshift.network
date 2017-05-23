@@ -8,8 +8,8 @@ feature 'Login' do
 
     # when_i_log_in
     visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
+    fill_in 'email',    with: @user.account.email
+    fill_in 'password', with: @user.account.password
     click_button 'Login'
 
     # then_i_should_be_logged_in

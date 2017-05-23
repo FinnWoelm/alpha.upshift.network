@@ -1,4 +1,5 @@
 require 'rails_helper.rb'
+require 'support/features/login_helper.rb'
 
 feature 'Comment' do
 
@@ -17,14 +18,6 @@ feature 'Comment' do
     and_write_a_comment
     and_delete_the_comment
     then_the_post_should_not_have_my_comment
-  end
-
-  def given_i_am_logged_in_as_a_user
-    @user = create(:user)
-    visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
-    click_button 'Login'
   end
 
   def and_someone_has_written_a_post

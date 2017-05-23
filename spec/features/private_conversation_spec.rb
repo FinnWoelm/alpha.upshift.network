@@ -1,4 +1,5 @@
 require 'rails_helper.rb'
+require 'support/features/login_helper.rb'
 
 feature 'Private Conversation' do
 
@@ -71,14 +72,6 @@ feature 'Private Conversation' do
     when_i_go_to_my_private_conversations
     and_i_delete_one_of_the_private_conversations
     then_i_should_no_longer_see_that_private_conversation
-  end
-
-  def given_i_am_logged_in_as_a_user
-    @user = create(:user)
-    visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
-    click_button 'Login'
   end
 
   def and_i_have_some_private_conversations

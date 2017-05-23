@@ -1,10 +1,9 @@
 FactoryGirl.define do
   factory :user do
-    email { Faker::Internet.email }
+    association :account
     name { Faker::Name.name }
     username {
       Faker::Internet.user_name( "#{name}".first(26).strip, %w(_) ) }
-    password { Faker::Internet.password(10, 50) }
     color_scheme { Color.color_options.sample }
     visibility { :network }
     bio { Faker::Lorem.paragraph }

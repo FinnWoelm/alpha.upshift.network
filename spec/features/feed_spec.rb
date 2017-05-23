@@ -1,4 +1,5 @@
 require 'rails_helper.rb'
+require 'support/features/login_helper.rb'
 
 feature 'Feed' do
 
@@ -39,21 +40,13 @@ feature 'Feed' do
 
   def when_i_log_in
     visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
+    fill_in 'email',    with: @user.account.email
+    fill_in 'password', with: @user.account.password
     click_button 'Login'
   end
 
   def then_i_should_see_my_feed
     expect(page).to have_content("Feed")
-  end
-
-  def given_i_am_logged_in_as_a_user
-    @user = create(:user)
-    visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
-    click_button 'Login'
   end
 
   def when_there_are_posts_from_and_to_my_network

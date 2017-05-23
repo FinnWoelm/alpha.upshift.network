@@ -1,4 +1,5 @@
 require 'rails_helper.rb'
+require 'support/features/login_helper.rb'
 
 feature 'Search' do
 
@@ -49,13 +50,5 @@ feature 'Search' do
       # then I should see as many records as are shown per page + 1
       expect(page).to have_selector("div.search_result", count: Search.per_page+1)
     end
-  end
-
-  def given_i_am_logged_in_as_a_user
-    @user = create(:user)
-    visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
-    click_button 'Login'
   end
 end

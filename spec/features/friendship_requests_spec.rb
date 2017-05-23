@@ -1,4 +1,5 @@
 require 'rails_helper.rb'
+require 'support/features/login_helper.rb'
 
 feature 'Friendship Request' do
 
@@ -79,14 +80,6 @@ feature 'Friendship Request' do
       # then I should see as many friendship requests as are shown per page + 1
       expect(page).to have_selector(".friendship_request", count: FriendshipRequest.per_page+1)
     end
-  end
-
-  def given_i_am_logged_in_as_a_user
-    @user = create(:user)
-    visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
-    click_button 'Login'
   end
 
   def when_i_visit_the_page_of_another_user
