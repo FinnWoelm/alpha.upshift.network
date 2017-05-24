@@ -356,6 +356,15 @@ div.page_heading {
   }
 }
 
+// PAGE HEADING: sub heading
+h5.page_subheading {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.24);
+  padding: 0px 0.75rem 5px 0.75rem;
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+  margin-top: 40px;
+}
+
 // when fullscreen
 body.fullscreen div.page_heading {
   @media #{$large-and-up} {

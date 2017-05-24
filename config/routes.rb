@@ -21,6 +21,11 @@ Rails.application.routes.draw do
     get 'confirm', on: :collection
   end
 
+  # Accounts Path
+  resource :account, only: [], :path => "settings" do
+    get '/', action: 'edit', as: :edit
+  end
+
   # Sessions
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'

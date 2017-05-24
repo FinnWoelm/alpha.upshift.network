@@ -1,0 +1,22 @@
+<div class="page_heading z-depth-1">
+  <h3>Settings</h3>
+</div>
+
+<h5 class="page_subheading">Edit Your Profile</h5>
+<div class="row">
+  <div class="col s12">
+    <p>To change your name, profile visibility, color scheme, and other profile
+      settings, click the button to edit your profile.</p>
+
+    <%= link_to "Edit Profile", edit_user_path, class: "primary-color primary-color-text btn waves-effect waves-light" %>
+  </div>
+</div>
+
+<h5 class="page_subheading">Your Email Address</h5>
+<div class="row">
+  <div class="input-field col s12">
+    <i class="mdi mdi-email mdi-inactive mdi-dark prefix"></i>
+    <input disabled value="<%= @account.email %>" type="text">
+    <p>At this time, you cannot change your email address.</p>
+  </div>
+</div>
