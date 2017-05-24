@@ -36,6 +36,37 @@ RSpec.describe Account, type: :model do
         is_expected.to be_valid
       end
     end
+
+    context "on update" do
+      before { account.save }
+
+      it "validates the current password" do
+        expect(account).to receive(:current_password_matches_password)
+        account.valid?
+      end
+    end
+  end
+
+  describe "#current_password" do
+    let(:account) { create(:account, :password => "super_secret_password" )}
+    after { account.send(:current_password_matches_password) }
+
+    context "when current password matches password" do
+      before { account.current_password = "super_secret_password" }
+
+      it "does not add an error message" do
+        expect(account.errors[:current_password]).not_to receive(:<<)
+      end
+    end
+
+    context "when recipient is a String" do
+      before { account.current_password = "not_my_password" }
+
+      it "adds an error message" do
+        expect(account.errors[:current_password]).to receive(:<<).
+          with("does not match your current password")
+      end
+    end
   end
 
 end

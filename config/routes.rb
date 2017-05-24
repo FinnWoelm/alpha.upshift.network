@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   # Accounts Path
   resource :account, only: [], :path => "settings" do
     get '/', action: 'edit', as: :edit
+    match '/', action: 'update', as: :update, via: [:patch, :put]
   end
 
   # Sessions

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "settings/index.html.erb", type: :view do
+RSpec.describe "accounts/edit.html.erb", type: :view do
 
   let(:account) { create(:account) }
   before { assign(:account, account) }
