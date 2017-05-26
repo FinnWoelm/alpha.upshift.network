@@ -1,0 +1,27 @@
+<div class="section">
+<div class="section">
+<div class="section">
+
+<div class="row">
+  <div class="col s12 center-align">
+    <%= image_tag @profile_picture, class: 'user_picture z-depth-3 rounded' %>
+    <div class="center-align">
+      <div class="user_name z-depth-3 single_line prevent_overflow rounded <%= @user.color_scheme_with_font_color %>" title="<%= @user.name %>">
+        <strong><%= @user.name %></strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col s12 m8 push-m2 no_padding">
+    <div class="row">
+      <div class="col s12 center-align">
+        <h5>Goodbye, <%= @user.name %>!</h5>
+        <p>Your posts, comments, private conversations and messages, friend
+          requests, and any other data associated with your account have been
+          deleted. We'll miss you here!
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,15 @@
 class Account < ApplicationRecord
   has_secure_password
+
+  # before_destroy callback must come before associations for it to be executed
+  # prior to deleting associated objects.
+  # See: https://github.com/rails/rails/issues/3458
+  # Aborts destruction if current password does not match user's password
+  before_destroy do
+    current_password_matches_password
+    throw(:abort) if self.errors[:current_password].any?
+  end
+
   has_one :user, dependent: :destroy, inverse_of: :account
 
   # # Accessors

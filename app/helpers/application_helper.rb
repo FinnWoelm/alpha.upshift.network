@@ -96,7 +96,7 @@ module ApplicationHelper
     elsif user.viewable_by?(@current_user) or not user.profile_picture.present?
       user.profile_picture.url(size)
     else
-      "data:image/jpeg;base64," + Base64.encode64(File.read(user.profile_picture.path(size)))
+      user.profile_picture_base64(size)
     end
   end
 

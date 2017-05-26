@@ -26,6 +26,10 @@ Rails.application.routes.draw do
     get '/', action: 'edit', as: :edit
     match '/', action: 'update', as: :update, via: [:patch, :put]
   end
+  resource :account, only: [] do
+    match '/delete', action: 'destroy', as: :delete, via: [:post]
+    match '/confirm_deletion', action: 'confirm_destroy', as: :confirm_delete, via: [:delete]
+  end
 
   # Sessions
   get '/login' => 'sessions#new'

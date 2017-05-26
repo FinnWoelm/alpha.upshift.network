@@ -336,6 +336,12 @@ class User < ApplicationRecord
     auto_generate_profile_picture if picture.nil?
   end
 
+  # returns base 64 representation of the user's profile picture
+  def profile_picture_base64 size = nil
+    size ||= self.profile_picture.options[:default_style]
+    "data:image/jpeg;base64," + Base64.encode64(File.read(self.profile_picture.path(size)))
+  end
+
   # We want to always use username in routes
   def to_param
     username

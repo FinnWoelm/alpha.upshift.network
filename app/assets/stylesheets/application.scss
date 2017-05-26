@@ -14,6 +14,7 @@ $input-focus-color: color("grey", "darken-4") !default;
 @import "integrations/material_design_icons/materialdesignicons";
 
 // App Stylesheets
+@import "account";
 @import "cards";
 @import "color_scheme";
 @import "democracy/community/decision";

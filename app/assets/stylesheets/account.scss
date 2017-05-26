@@ -1,0 +1,19 @@
+body.c-accounts {
+
+  // Formatting of conversation previews
+  &.a-destroy, &.a-confirm_destroy {
+
+    img.user_picture {
+      width: 100px;
+    }
+
+    div.user_name {
+      display: inline-block;
+      padding: 5px 20px;
+      position: relative;
+      top: -10px;
+      min-width: 120px;
+      font-size: 120%;
+    }
+  }
+}

@@ -14,6 +14,35 @@ RSpec.describe Account, type: :model do
     it { is_expected.to have_one(:user).dependent(:destroy) }
   end
 
+  describe "callbacks" do
+
+    context "before destroy" do
+      let(:account) { create(:account, :password => "my_password") }
+
+      context "when current password does not match password" do
+        before do
+          account.current_password = "not_my_password"
+        end
+
+        it "aborts the destruction" do
+          account.destroy
+          expect(account).not_to be_destroyed
+        end
+      end
+
+      context "when current password does match password" do
+        before do
+          account.current_password = "my_password"
+        end
+
+        it "continues the destruction" do
+          account.destroy
+          expect(account).to be_destroyed
+        end
+      end
+    end
+  end
+
   describe "validations" do
     it { is_expected.to validate_confirmation_of(:password) }
     it { is_expected.to validate_length_of(:password).is_at_least(8).is_at_most(50) }
