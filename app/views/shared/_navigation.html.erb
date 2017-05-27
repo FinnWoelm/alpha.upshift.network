@@ -15,6 +15,17 @@
         </a>
 
         <ul class="right hide-on-med-and-down">
+          <li>
+            <%= form_tag search_path, id: "search", class: "primary-color-text ignore-dirty", method: :get do %>
+              <div class="input-field">
+                <%= text_field_tag :query, @search_query, :type => "search" %>
+                <%= label_tag :query do %>
+                  <i class="mdi mdi-magnify"></i>
+                <% end %>
+                <i class="mdi mdi-close close"></i>
+              </div>
+            <% end %>
+          </li>
 
           <% if @current_user %>
 
@@ -72,6 +83,8 @@
 
             <li><div class="divider"></div></li>
 
+            <%= nav_link "Search", search_path,  {:icon => "magnify"} %>
+
             <li>
               <%= link_to notifications_path do %>
 
@@ -128,6 +141,7 @@
 
             <%= nav_link "Home",  root_path,  {:icon => "home"} %>
             <%= nav_link "Login", login_path, {:icon => "power"} %>
+            <%= nav_link "Search", search_path,  {:icon => "magnify"} %>
 
           <% end %>
         </ul>

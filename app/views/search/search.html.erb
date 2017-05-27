@@ -1,0 +1,37 @@
+<div class="page_heading z-depth-1">
+  <h3 class="prevent_overflow">Search<%= ": #{@search_query}" if @search_query.present? %></h3>
+</div>
+
+<div class="section"></div>
+
+<%= form_tag search_path, class: "hide-on-large-only ignore-dirty", method: :get do %>
+  <div class="row">
+    <div class="input-field col s12 m10">
+      <i class="mdi mdi-magnify prefix"></i>
+      <%= text_field_tag :query, @search_query, :placeholder => "Enter username or name to search for..." %>
+      <%= label_tag :query, "Search for users" %>
+    </div>
+    <div class="col s12 m2 input-button center-align">
+      <button class="waves-effect waves-light btn primary-color primary-color-text">
+        Go
+      </button>
+    </div>
+  </div>
+  <div class="divider"></div>
+<% end %>
+
+<div class="row">
+  <div class="col s12">
+    <% if @search_query.present? %>
+      <%= infinity_scroll_fallback @results %>
+      <%= render(partial: "result", collection: @results) || "No users found for: #{@search_query}" %>
+      <%= infinity_scroll @results %>
+    <% else %>
+      <p>Enter a query above to search for users by name or username.</p>
+      <ul class="browser-default no_margin">
+        <li>Tip: Limit your search to usernames by preceding your search query with the @ symbol (@username)</li>
+        <li>Tip: Limit your search to names by preceding your search query with the " symbol ("name)</li>
+      </ul>
+    <% end %>
+  </div>
+</div>

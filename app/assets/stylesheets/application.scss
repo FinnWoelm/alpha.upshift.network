@@ -136,6 +136,11 @@ nav > div.container-fluid > .row > .col.s12 {
   padding: 0px 16px;
 }
 
+// NAVIGATION: Brand logo has same padding as links in nav bar
+nav .brand-logo {
+  padding: 0px 15px;
+}
+
 // NAVIGATION: Brand logo fits height
 nav .brand-logo img {
 
@@ -221,6 +226,77 @@ nav ul:not(.side-nav) li a i+span.badge {
     z-index: 100;
   }
 }
+
+// NAVIGATION SEARCH
+
+// NAVIGATION SEARCH: do not slide up search icon on active
+#search label {
+  transform: none !important;
+}
+
+// NAVIGATION SEARCH: no pointer events on close icon when not active
+#search input:not(:focus) ~ i.close {
+  pointer-events: none;
+  color: transparent;
+}
+
+// NAVIGATION SEARCH: style the close icon
+#search i.close {
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  cursor: pointer;
+  font-size: 2rem;
+  transition: .3s color;
+  color: #444;
+}
+
+// NAVIGATION SEARCH: z-depth on focus
+#search input:focus {
+  @extend .z-depth-5;
+}
+
+// NAVIGATION SEARCH: opaque label if not active
+#search input:not(:focus) ~ label:not(.active) {
+  opacity: .7;
+}
+
+// NAVIGATION SEARCH: inherit color
+#search label,
+#search label i {
+  color: inherit;
+}
+
+// NAVIGATION SEARCH: dark text on focus
+#search input:focus ~ label i,
+#search input:focus {
+  color: black !important;
+}
+
+// NAVIGATION SEARCH: slight background shade on non-focus
+#search input:not(:focus) {
+  background-color: rgba(0, 0, 0, .05);
+}
+
+// NAVIGATION SEARCH: padding matches that of links
+#search {
+  padding: 0px 15px;
+}
+
+// NAVIGATION SEARCH: add padding-right on focus
+#search input {
+  padding-left: 4rem;
+
+  &:focus {
+    padding-right: 4rem;
+    width: calc(100% - 8rem);
+  }
+  &:not(:focus) {
+    padding-right: 1rem;
+    width: calc(100% - 5rem);
+  }
+}
+
 
 
 // TEXT
@@ -418,6 +494,20 @@ form label + ul.errors {
 // FORMS: List of errors when there is an icon prefix
 form i.prefix ~ ul.errors {
   margin-left: 3rem;
+}
+
+// FORMS: Input (inline) buttons
+form div.input-field + div.input-button {
+  margin-top: 0.75rem;
+  padding-top: 15px;
+
+  // if button is full-width on small-and-down, remove the margins and paddings
+  &.s12 {
+    @media #{$small-and-down} {
+      margin-top: 0rem;
+      padding-top: 0px;
+    }
+  }
 }
 
 // FIXES
