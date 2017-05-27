@@ -241,7 +241,7 @@ nav ul:not(.side-nav) li a i+span.badge {
 // ELEMENTS
 
 // PAGE HEADING: a page heading below the navigation
-div.page_heading {
+.container-fluid div.page_heading {
   @media #{$large-and-up} {
     background: white;
     left: 0px;
@@ -252,15 +252,26 @@ div.page_heading {
     padding-right: 13.33333%;
     margin-left: -39%;
     position: relative;
-    h1, h2, h3, h4, h5, h6 {
-      display: inline-block;
-    }
   }
 
   @media #{$medium-and-down} {
     position: relative;
     padding: 0 0.75rem;
     margin: 0 -0.75rem;
+    h1, h2, h3, h4, h5, h6 {
+      padding: 2.1rem 0 1.68rem 0;
+      margin: 0px;
+      text-align: center;
+    }
+  }
+}
+
+// PAGE HEADING: a page heading below the navigation > h styles
+div.page_heading {
+  @media #{$large-and-up} {
+    h1, h2, h3, h4, h5, h6 { display: inline-block; }
+  }
+  @media #{$medium-and-down} {
     h1, h2, h3, h4, h5, h6 {
       padding: 2.1rem 0 1.68rem 0;
       margin: 0px;
