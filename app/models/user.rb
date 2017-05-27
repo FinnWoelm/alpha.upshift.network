@@ -1,6 +1,5 @@
 class User < ApplicationRecord
   has_secure_password
-  has_secure_token :registration_token
   has_attached_file :profile_picture, styles: {
       large: ["250x250#", :jpg],
       medium: ["100x100#", :jpg]
@@ -355,26 +354,6 @@ class User < ApplicationRecord
     username
   end
 
-  # send the registration email
-  def send_registration_email
-    Mailjet::Send.create(
-      "FromEmail": "hello@upshift.network",
-      "FromName": "Upshift Network",
-      "Subject": "Please Confirm Your Registration",
-      "Mj-TemplateID": ENV['USER_REGISTRATION_EMAIL_TEMPLATE_ID'],
-      "Mj-TemplateLanguage": "true",
-      "Mj-trackclick": "1",
-      recipients: [{
-        'Email' => email,
-        'Name' => name
-        }],
-      vars: {
-        "NAME" => name,
-        "CONFIRMATION_PATH" => registration_confirmation_path
-      }
-    )
-  end
-
   # gets unread conversations
   def unread_private_conversations
     private_conversations.most_recent_activity_first.
@@ -450,14 +429,6 @@ class User < ApplicationRecord
     # destroy the original profile picture (b/c it is not needed)
     def destroy_original_profile_picture
       File.unlink(self.profile_picture.path(:original))
-    end
-
-    # return the path for confirming the registration
-    def registration_confirmation_path
-      confirm_registration_path(
-        :email => email,
-        :registration_token => registration_token
-      )
     end
 
     def username_cannot_be_a_dictionary_word

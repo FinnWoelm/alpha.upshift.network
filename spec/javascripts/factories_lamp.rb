@@ -93,11 +93,3 @@ MagicLamp.define(controller: PrivateMessagesController) do
     render :create
   end
 end
-
-MagicLamp.define(controller: RegistrationsController) do
-
-  fixture do
-    @user = User.new
-    render :new
-  end
-end

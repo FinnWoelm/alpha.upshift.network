@@ -15,7 +15,6 @@ alice = User.new(
   :username => "alice",
   :email => "alice@upshift.network",
   :password => "password",
-  :confirmed_registration => true,
   :color_scheme => Color.color_options.sample,
   :visibility => :network
 )
@@ -25,7 +24,6 @@ brian = User.new(
   :username => "brian",
   :email => "brian@upshift.network",
   :password => "password",
-  :confirmed_registration => true,
   :color_scheme => Color.color_options.sample
 )
 
@@ -34,7 +32,6 @@ carla = User.new(
   :username => "carla",
   :email => "carla@upshift.network",
   :password => "password",
-  :confirmed_registration => true,
   :color_scheme => Color.color_options.sample
 )
 
@@ -43,7 +40,6 @@ dennis = User.new(
   :username => "dennis",
   :email => "dennis@upshift.network",
   :password => "password",
-  :confirmed_registration => true,
   :color_scheme => Color.color_options.sample
 )
 
@@ -65,7 +61,6 @@ Friendship.create(:initiator => alice, :acceptor => dennis)
     :password => "password",
     :name => "user#{i}",
     :email => "user#{i}@upshift.network",
-    :confirmed_registration => true,
     :color_scheme => Color.color_options.sample,
     :visibility => :network,
     :bio => "Hi, my name is user#{i}! :)"
