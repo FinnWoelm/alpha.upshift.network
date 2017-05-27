@@ -21,13 +21,6 @@ Rails.application.routes.draw do
     get 'confirm', on: :collection
   end
 
-  # Registrations
-  resource :signup, controller: 'registrations', as: 'registration', only: [:new, :create], path_names: { new: '' } do
-    get 'confirm', on: :collection
-    get 'confirmation_reminder', on: :collection
-    post 'resend_confirmation', on: :collection, :constraints => { :format => 'js' }
-  end
-
   # Sessions
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'

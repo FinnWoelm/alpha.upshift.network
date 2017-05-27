@@ -10,7 +10,6 @@ class ApplicationController < ActionController::Base
 
   def authorize
     redirect_to '/login' and return unless current_user
-    redirect_to confirmation_reminder_registration_path unless current_user.confirmed_registration
   end
 
   # Returns a shallow path for a given object, such as decision_path for

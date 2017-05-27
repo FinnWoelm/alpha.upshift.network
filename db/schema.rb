@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170521092701) do
+ActiveRecord::Schema.define(version: 20170523161941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -175,8 +175,6 @@ ActiveRecord::Schema.define(version: 20170521092701) do
     t.datetime "last_seen_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "confirmed_registration", default: false, null: false
-    t.string "registration_token"
     t.string "profile_picture_file_name"
     t.string "profile_picture_content_type"
     t.integer "profile_picture_file_size"
@@ -190,7 +188,6 @@ ActiveRecord::Schema.define(version: 20170521092701) do
     t.datetime "profile_banner_updated_at"
     t.text "bio"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["registration_token"], name: "index_users_on_registration_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
