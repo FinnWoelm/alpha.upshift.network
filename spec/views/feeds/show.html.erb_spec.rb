@@ -11,7 +11,7 @@ RSpec.describe "feeds/show.html.erb", type: :view do
    assign(:posts, Post.none)
    render
 
-   expect(rendered).to have_selector("h1", text: "Feed")
+   expect(rendered).to have_text("Feed")
   end
 
   it "has a form for creating a new post" do
