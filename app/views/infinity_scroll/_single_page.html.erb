@@ -8,7 +8,7 @@
 %>
 
 <div class="infinity_scroll initial <%= use_javascript ? 'ready' : 'fallback' %> <%= direction %>" data-page-limit="<%= page_limit %>" data-page-anchor="<%= records.anchor %>" >
-  <%= link_to url_for(:params => {:page => records.send("#{direction}_page".to_sym), :anchor => pagination_anchor}), :remote => use_javascript do %>
+  <%= link_to url_for(:params => params.except(:action, :controller).permit!.merge(:page => records.send("#{direction}_page".to_sym), :anchor => pagination_anchor)), :remote => use_javascript do %>
     <div>
       <span class="initial-text">
         <%= records.try(:pagination_link_text, direction, :initial, default_initial_link_text) || default_initial_link_text %>

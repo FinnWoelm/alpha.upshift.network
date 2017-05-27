@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170430061523) do
+ActiveRecord::Schema.define(version: 20170521092701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "citext"
   enable_extension "uuid-ossp"
+  enable_extension "unaccent"
 
   create_table "comments", id: :serial, force: :cascade do |t|
     t.integer "author_id"
