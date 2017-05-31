@@ -69,7 +69,7 @@ class User < ApplicationRecord
   has_many :friendship_requests_received,
     :class_name => "FriendshipRequest",
     :foreign_key => "recipient_id",
-    dependent: :destroy
+    dependent: :delete_all
 
   # ## Friendships / Friends
   has_many :friendships_initiated,
@@ -208,12 +208,16 @@ class User < ApplicationRecord
   # ## After destroy:
   # ### blacklist_username
   # ### delete_attachment_folder
+  # ### destroy_notifications
 
   # blacklist username (to prevent re-assignment)
   after_destroy :blacklist_username
 
   # delete folder containing attachments of this user
   after_destroy :delete_attachment_folder
+
+  # destroy notifications
+  after_destroy :destroy_notifications
 
   # set friends_ids after finding records in database
   after_find { |user| user.friends_ids = user["friends_ids"] }
@@ -411,6 +415,11 @@ class User < ApplicationRecord
       path_to_folder =
         File.expand_path("..", File.dirname(path_to_attachment))
       FileUtils.remove_dir(path_to_folder) if Dir.exists?(path_to_folder)
+    end
+
+    # destroy all notifications where the user is notifier
+    def destroy_notifications
+      Notification.where(:notifier => self).destroy_all
     end
 
     # destroy the original profile picture (b/c it is not needed)

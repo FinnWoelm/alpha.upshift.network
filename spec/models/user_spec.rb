@@ -41,7 +41,7 @@ RSpec.describe User, type: :model do
       dependent(:destroy).class_name("FriendshipRequest").
       with_foreign_key("sender_id") }
     it { is_expected.to have_many(:friendship_requests_received).
-      dependent(:destroy).class_name("FriendshipRequest").
+      dependent(:delete_all).class_name("FriendshipRequest").
       with_foreign_key("recipient_id") }
 
     it { is_expected.to have_many(:friendships_initiated).
@@ -217,6 +217,7 @@ RSpec.describe User, type: :model do
 
       it { is_expected.to receive(:blacklist_username) }
       it { is_expected.to receive(:delete_attachment_folder) }
+      it { is_expected.to receive(:destroy_notifications) }
     end
 
     describe "after save" do
@@ -353,6 +354,22 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#destroy_notifications" do
+    before do
+      # these are NOT valid notifications that would actually exist in this way
+      # all of these notifications should normally not have user as their
+      # notifier
+      create(:post_notification, :notifier => user)
+      create(:comment_notification, :notifier => user)
+      create(:like_notification, :notifier => user)
+    end
+
+    it "destroys all notifications where user is notifier" do
+      user.send(:destroy_notifications)
+      expect(Notification).not_to exist(:notifier => user)
+    end
+
+  end
 
   describe "#friends" do
     let(:friends_made) { build_stubbed_list(:user, 3) }
