@@ -1,7 +1,7 @@
 RSpec.shared_examples "a likable object" do
 
   describe "associations" do
-    it { is_expected.to have_many(:likes).dependent(:destroy) }
+    it { is_expected.to have_many(:likes).dependent(:delete_all) }
     it { is_expected.to have_many(:likers).dependent(false).
       through(:likes).source(:liker) }
   end
