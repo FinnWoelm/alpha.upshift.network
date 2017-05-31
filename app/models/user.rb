@@ -39,7 +39,7 @@ class User < ApplicationRecord
     dependent: :destroy
 
   # ## Comments
-  has_many :comments, :foreign_key => "author_id", dependent: :destroy
+  has_many :comments, -> { includes :commentable }, :foreign_key => "author_id", dependent: :destroy
 
   # ## Likes
   has_many :likes, :foreign_key => "liker_id", dependent: :destroy
@@ -63,6 +63,7 @@ class User < ApplicationRecord
 
   # ## Friendship Requests
   has_many :friendship_requests_sent,
+    -> { includes :recipient },
     :class_name => "FriendshipRequest",
     :foreign_key => "sender_id",
     dependent: :destroy
