@@ -1,4 +1,5 @@
 require 'rails_helper.rb'
+require 'support/features/login_helper.rb'
 
 feature 'Post' do
 
@@ -20,14 +21,6 @@ feature 'Post' do
     when_i_write_a_post
     and_click_on_the_post_timestamp
     then_i_should_see_the_post_on_a_separate_page
-  end
-
-  def given_i_am_logged_in_as_a_user
-    @user = create(:user)
-    visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
-    click_button 'Login'
   end
 
   def when_i_write_a_post

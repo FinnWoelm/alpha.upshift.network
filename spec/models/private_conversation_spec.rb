@@ -13,7 +13,7 @@ RSpec.describe PrivateConversation, type: :model do
   describe "associations" do
     it {
       is_expected.to have_many(:participantships).
-        dependent(:destroy).autosave(true).
+        dependent(:delete_all).autosave(true).
         class_name('ParticipantshipInPrivateConversation').
         with_foreign_key("private_conversation_id").
         inverse_of(:private_conversation)
@@ -23,7 +23,7 @@ RSpec.describe PrivateConversation, type: :model do
         through(:participantships).source(:participant)
     }
     it {
-      is_expected.to have_many(:messages).dependent(:destroy).
+      is_expected.to have_many(:messages).dependent(:delete_all).
         class_name('PrivateMessage').
         with_foreign_key("private_conversation_id").
         inverse_of(:conversation)

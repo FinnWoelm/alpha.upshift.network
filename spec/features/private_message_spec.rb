@@ -1,4 +1,5 @@
 require 'rails_helper.rb'
+require 'support/features/login_helper.rb'
 
 feature 'Private Message' do
 
@@ -52,14 +53,6 @@ feature 'Private Message' do
     and_i_send_a_new_message
     then_i_should_see_my_new_message_in_the_private_conversation
     and_i_should_see_my_new_message_in_the_side_nav
-  end
-
-  def given_i_am_logged_in_as_a_user
-    @user = create(:user)
-    visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
-    click_button 'Login'
   end
 
   def and_i_have_some_private_conversations_with_messages

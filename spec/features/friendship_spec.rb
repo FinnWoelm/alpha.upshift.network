@@ -1,4 +1,5 @@
 require 'rails_helper.rb'
+require 'support/features/login_helper.rb'
 
 feature 'Friendship' do
 
@@ -8,14 +9,6 @@ feature 'Friendship' do
     when_i_visit_the_page_of_my_friend
     and_i_end_the_friendship
     then_we_should_not_be_friends
-  end
-
-  def given_i_am_logged_in_as_a_user
-    @user = create(:user)
-    visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
-    click_button 'Login'
   end
 
   def and_i_have_a_friend

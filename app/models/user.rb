@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-  has_secure_password
   has_attached_file :profile_picture, styles: {
       large: ["250x250#", :jpg],
       medium: ["100x100#", :jpg]
@@ -30,6 +29,9 @@ class User < ApplicationRecord
 
   # # Associations
 
+  # ## Acount
+  belongs_to :account, optional: false, inverse_of: :user
+
   # ## Posts
   has_many :posts_made, :class_name => "Post", :foreign_key => "author_id",
     dependent: :destroy
@@ -37,7 +39,7 @@ class User < ApplicationRecord
     dependent: :destroy
 
   # ## Comments
-  has_many :comments, :foreign_key => "author_id", dependent: :destroy
+  has_many :comments, -> { includes :commentable }, :foreign_key => "author_id", dependent: :destroy
 
   # ## Likes
   has_many :likes, :foreign_key => "liker_id", dependent: :destroy
@@ -57,17 +59,18 @@ class User < ApplicationRecord
   # ## Private Messages
   #has_many :private_messages, :through => :private_conversations, :source => :messages
   has_many :private_messages_sent, :class_name => "PrivateMessage",
-    :foreign_key => "sender_id", :inverse_of => :sender, dependent: :destroy
+    :foreign_key => "sender_id", :inverse_of => :sender, dependent: :delete_all
 
   # ## Friendship Requests
   has_many :friendship_requests_sent,
+    -> { includes :recipient },
     :class_name => "FriendshipRequest",
     :foreign_key => "sender_id",
     dependent: :destroy
   has_many :friendship_requests_received,
     :class_name => "FriendshipRequest",
     :foreign_key => "recipient_id",
-    dependent: :destroy
+    dependent: :delete_all
 
   # ## Friendships / Friends
   has_many :friendships_initiated,
@@ -171,21 +174,6 @@ class User < ApplicationRecord
   # Username cannot be any dictionary word
   validate :username_cannot_be_a_dictionary_word, on: :create
 
-  # Email
-  validates :email, presence: true
-  validates :email, format: {
-    with: /\A\S+@\S+\.\S+\z/,
-    message: "seems invalid"
-  }
-  validates :email,
-    uniqueness: { :case_sensitive => false }
-
-  # Password
-  validates :password, confirmation: true
-  validates :password,
-    length: { in: 8..50 },
-    unless: Proc.new { |u| u.password.nil? }
-
   # Profile picture
   validates_with AttachmentSizeValidator, attributes: :profile_picture,
     less_than: 10.megabytes
@@ -221,12 +209,16 @@ class User < ApplicationRecord
   # ## After destroy:
   # ### blacklist_username
   # ### delete_attachment_folder
+  # ### destroy_notifications
 
   # blacklist username (to prevent re-assignment)
   after_destroy :blacklist_username
 
   # delete folder containing attachments of this user
   after_destroy :delete_attachment_folder
+
+  # destroy notifications
+  after_destroy :destroy_notifications
 
   # set friends_ids after finding records in database
   after_find { |user| user.friends_ids = user["friends_ids"] }
@@ -344,6 +336,12 @@ class User < ApplicationRecord
     auto_generate_profile_picture if picture.nil?
   end
 
+  # returns base 64 representation of the user's profile picture
+  def profile_picture_base64 size = nil
+    size ||= self.profile_picture.options[:default_style]
+    "data:image/jpeg;base64," + Base64.encode64(File.read(self.profile_picture.path(size)))
+  end
+
   # We want to always use username in routes
   def to_param
     username
@@ -424,6 +422,11 @@ class User < ApplicationRecord
       path_to_folder =
         File.expand_path("..", File.dirname(path_to_attachment))
       FileUtils.remove_dir(path_to_folder) if Dir.exists?(path_to_folder)
+    end
+
+    # destroy all notifications where the user is notifier
+    def destroy_notifications
+      Notification.where(:notifier => self).destroy_all
     end
 
     # destroy the original profile picture (b/c it is not needed)

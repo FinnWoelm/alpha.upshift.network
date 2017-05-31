@@ -1,0 +1,50 @@
+<div class="section">
+<div class="section">
+<div class="section">
+
+<div class="row">
+  <div class="col s12 center-align">
+    <%= image_tag @user.profile_picture, class: 'user_picture z-depth-3 rounded' %>
+    <div class="center-align">
+      <div class="user_name z-depth-3 single_line prevent_overflow rounded <%= @user.color_scheme_with_font_color %>" title="<%= @user.name %>">
+        <strong><%= @user.name %></strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col s12 m8 push-m2 no_padding">
+
+    <div class="row">
+      <div class="col s12 center-align">
+        <h5>Are you sure you want to permanently delete your account?</h5>
+        <p>This will delete all your posts, comments, private conversations and
+          messages, friend requests, and any other data associated with your
+          account. <b>You cannot undo this action.</b></p>
+        <p>To continue with the account deletion process, enter your password below
+          and click 'Permanently Delete Account'.</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <%= form_for @account, url: confirm_delete_account_path, id: "confirm_deletion", class: "col s12 no_padding", method: :delete do |f| %>
+        <div class="row no_margin_bottom">
+          <div class="input-field col s12">
+            <i class="mdi mdi-key prefix"></i>
+            <%= f.password_field :current_password %>
+            <%= f.label :current_password, "Current password" %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12 center-align">
+            <button class="primary-color primary-color-text btn waves-effect waves-light" type="submit" name="action">
+              Permanently Delete Account
+            </button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+</div>

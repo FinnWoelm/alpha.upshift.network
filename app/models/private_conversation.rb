@@ -5,7 +5,7 @@ class PrivateConversation < ApplicationRecord
   has_many :participantships,
     :class_name => "ParticipantshipInPrivateConversation",
     :foreign_key => "private_conversation_id",
-    :dependent => :destroy,
+    :dependent => :delete_all,
     :autosave => true,
     :inverse_of => :private_conversation
   has_many :participants,
@@ -18,7 +18,7 @@ class PrivateConversation < ApplicationRecord
     },
     :class_name => "PrivateMessage",
     :foreign_key => "private_conversation_id",
-    :dependent => :destroy,
+    :dependent => :delete_all,
     :inverse_of => :conversation
   has_one :most_recent_message, -> {
       self.select_values = ["DISTINCT ON(private_messages.private_conversation_id) private_messages.*"]

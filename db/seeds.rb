@@ -10,36 +10,36 @@
 FileUtils.rm_rf(Dir["#{Rails.root}/uploads/users"])
 
 # Create some users
-alice = User.new(
-  :name => "Alice",
-  :username => "alice",
-  :email => "alice@upshift.network",
-  :password => "password",
-  :color_scheme => Color.color_options.sample,
-  :visibility => :network
-)
+alice =
+  Account.new(:email => "alice@upshift.network", :password => "password").
+  build_user(
+    :name => "Alice",
+    :username => "alice",
+    :color_scheme => Color.color_options.sample,
+    :visibility => :network
+  )
 
-brian = User.new(
-  :name => "Brian",
-  :username => "brian",
-  :email => "brian@upshift.network",
-  :password => "password",
-  :color_scheme => Color.color_options.sample
-)
+brian =
+  Account.new(:email => "brian@upshift.network", :password => "password").
+  build_user(
+    :name => "Brian",
+    :username => "brian",
+    :color_scheme => Color.color_options.sample
+  )
 
-carla = User.new(
-  :name => "Carla",
-  :username => "carla",
-  :email => "carla@upshift.network",
-  :password => "password",
-  :color_scheme => Color.color_options.sample
-)
+carla =
+  Account.new(:email => "carla@upshift.network", :password => "password").
+  build_user(
+    :name => "Carla",
+    :username => "carla",
+    :color_scheme => Color.color_options.sample
+  )
 
-dennis = User.new(
+dennis =
+  Account.new(:email => "dennis@upshift.network", :password => "password").
+  build_user(
   :name => "Dennis",
   :username => "dennis",
-  :email => "dennis@upshift.network",
-  :password => "password",
   :color_scheme => Color.color_options.sample
 )
 
@@ -56,15 +56,15 @@ Friendship.create(:initiator => alice, :acceptor => dennis)
 
 # Create some private conversations
 20.times do |i|
-  u = User.new(
-    :username => "user#{i}",
-    :password => "password",
-    :name => "user#{i}",
-    :email => "user#{i}@upshift.network",
-    :color_scheme => Color.color_options.sample,
-    :visibility => :network,
-    :bio => "Hi, my name is user#{i}! :)"
-  )
+  u =
+    Account.new(:email => "user#{i}@upshift.network", :password => "password").
+    build_user(
+      :username => "user#{i}",
+      :name => "user#{i}",
+      :color_scheme => Color.color_options.sample,
+      :visibility => :network,
+      :bio => "Hi, my name is user#{i}! :)"
+    )
   u.auto_generate_profile_picture
   u.save
   FriendshipRequest.create(:sender => u, :recipient => alice)

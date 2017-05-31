@@ -39,6 +39,40 @@ RSpec.describe ParticipantshipInPrivateConversation, type: :model do
     end
   end
 
+  describe "callbacks" do
+
+    context "after destroy" do
+      let(:participantship) { create(:participantship_in_private_conversation) }
+      let(:conversation) { participantship.private_conversation }
+
+      context "when only two participantships exist" do
+
+        before do
+          conversation.sender.destroy
+          expect(conversation.participantships.count).to eq 2
+          participantship.destroy
+        end
+
+        it "deletes the conversation" do
+          expect(PrivateConversation).not_to exist(conversation.id)
+        end
+      end
+
+      context "when three or more participantship exist" do
+
+        before do
+          expect(conversation.participantships.count).to eq 3
+          participantship.destroy
+        end
+
+        it "deletes the conversation" do
+          expect(PrivateConversation).to exist(conversation.id)
+        end
+      end
+    end
+
+  end
+
   describe "#uniqueness_for_participant_and_private_conversation" do
     let(:participant)   { participantship.participant }
     let(:private_conversation) { participantship.private_conversation }

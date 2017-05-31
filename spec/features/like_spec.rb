@@ -1,4 +1,5 @@
 require 'rails_helper.rb'
+require 'support/features/login_helper.rb'
 
 feature 'Like' do
 
@@ -30,14 +31,6 @@ feature 'Like' do
     when_i_like_the_comment
     and_i_unlike_the_comment
     then_the_comment_should_not_have_my_like
-  end
-
-  def given_i_am_logged_in_as_a_user
-    @user = create(:user)
-    visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
-    click_button 'Login'
   end
 
   def and_i_view_a_post

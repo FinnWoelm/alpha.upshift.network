@@ -1,4 +1,5 @@
 require 'rails_helper.rb'
+require 'support/features/login_helper.rb'
 
 feature 'User' do
 
@@ -126,14 +127,6 @@ feature 'User' do
     # then my profile picture should be auto-generated
     expect(@user.reload.profile_picture).to be_present
     expect(@user.options[:auto_generate_profile_picture]).to be true
-  end
-
-  def given_i_am_logged_in_as_a_user
-    @user = create(:user)
-    visit login_path
-    fill_in 'email',    with: @user.email
-    fill_in 'password', with: @user.password
-    click_button 'Login'
   end
 
   def when_i_visit_my_own_page

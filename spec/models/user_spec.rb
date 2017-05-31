@@ -8,12 +8,13 @@ RSpec.describe User, type: :model do
     is_expected.to be_valid
   end
 
-  it { is_expected.to have_secure_password }
   it { is_expected.to have_attached_file(:profile_picture) }
   it { is_expected.to have_attached_file(:profile_banner) }
   it { is_expected.to have_readonly_attribute(:username)}
 
   describe "associations" do
+
+    it { is_expected.to belong_to(:account).dependent(false) }
 
     it { is_expected.to have_many(:posts_made).class_name("Post").
       dependent(:destroy).with_foreign_key("author_id") }
@@ -32,7 +33,7 @@ RSpec.describe User, type: :model do
       through(:participantships_in_private_conversations).
       source(:private_conversation) }
 
-    it { is_expected.to have_many(:private_messages_sent).dependent(:destroy).
+    it { is_expected.to have_many(:private_messages_sent).dependent(:delete_all).
       class_name("PrivateMessage").with_foreign_key("sender_id").
       inverse_of(:sender) }
 
@@ -40,7 +41,7 @@ RSpec.describe User, type: :model do
       dependent(:destroy).class_name("FriendshipRequest").
       with_foreign_key("sender_id") }
     it { is_expected.to have_many(:friendship_requests_received).
-      dependent(:destroy).class_name("FriendshipRequest").
+      dependent(:delete_all).class_name("FriendshipRequest").
       with_foreign_key("recipient_id") }
 
     it { is_expected.to have_many(:friendships_initiated).
@@ -137,29 +138,8 @@ RSpec.describe User, type: :model do
   end
 
   describe "validations" do
+    it { is_expected.to validate_presence_of(:account).with_message("must exist") }
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_confirmation_of(:password) }
-    it { is_expected.to validate_length_of(:password).is_at_least(8).is_at_most(50) }
-
-    it { is_expected.to validate_uniqueness_of(:email).case_insensitive }
-
-    context "validates format of email" do
-      it "must contain an @ symbol" do
-        user.email = "somestringwithoutatsymbol"
-        is_expected.to be_invalid
-      end
-
-      it "must not contain spaces" do
-        user.email = "address@witha space.com"
-        is_expected.to be_invalid
-      end
-
-      it "passes actual email addresses" do
-        user.email = "email@example.com"
-        is_expected.to be_valid
-      end
-
-    end
 
     it { is_expected.to validate_length_of(:username).is_at_least(3).is_at_most(26) }
     it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
@@ -237,6 +217,7 @@ RSpec.describe User, type: :model do
 
       it { is_expected.to receive(:blacklist_username) }
       it { is_expected.to receive(:delete_attachment_folder) }
+      it { is_expected.to receive(:destroy_notifications) }
     end
 
     describe "after save" do
@@ -373,6 +354,22 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#destroy_notifications" do
+    before do
+      # these are NOT valid notifications that would actually exist in this way
+      # all of these notifications should normally not have user as their
+      # notifier
+      create(:post_notification, :notifier => user)
+      create(:comment_notification, :notifier => user)
+      create(:like_notification, :notifier => user)
+    end
+
+    it "destroys all notifications where user is notifier" do
+      user.send(:destroy_notifications)
+      expect(Notification).not_to exist(:notifier => user)
+    end
+
+  end
 
   describe "#friends" do
     let(:friends_made) { build_stubbed_list(:user, 3) }

@@ -13,6 +13,14 @@ class ParticipantshipInPrivateConversation < ApplicationRecord
   validate :private_conversation_cannot_change, on: :update
 
 
+  # callbacks
+  # destroy the private conversation if only one participant remains
+  after_destroy do
+    if ParticipantshipInPrivateConversation.where(:private_conversation_id => self.private_conversation_id).count == 1
+      PrivateConversation.find(self.private_conversation_id).destroy
+    end
+  end
+
   private
 
     # validates that this participantship is unique
