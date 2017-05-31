@@ -59,7 +59,7 @@ class User < ApplicationRecord
   # ## Private Messages
   #has_many :private_messages, :through => :private_conversations, :source => :messages
   has_many :private_messages_sent, :class_name => "PrivateMessage",
-    :foreign_key => "sender_id", :inverse_of => :sender, dependent: :destroy
+    :foreign_key => "sender_id", :inverse_of => :sender, dependent: :delete_all
 
   # ## Friendship Requests
   has_many :friendship_requests_sent,

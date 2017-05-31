@@ -33,7 +33,7 @@ RSpec.describe User, type: :model do
       through(:participantships_in_private_conversations).
       source(:private_conversation) }
 
-    it { is_expected.to have_many(:private_messages_sent).dependent(:destroy).
+    it { is_expected.to have_many(:private_messages_sent).dependent(:delete_all).
       class_name("PrivateMessage").with_foreign_key("sender_id").
       inverse_of(:sender) }
 
