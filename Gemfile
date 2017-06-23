@@ -68,6 +68,8 @@ group :development, :test do
   gem 'magic_lamp', '~> 1.1'
   # Automatically generate testing models
   gem 'factory_girl_rails', '~> 4.7'
+  # Generate favicons
+  gem 'rails_real_favicon'
 end
 
 group :development do
