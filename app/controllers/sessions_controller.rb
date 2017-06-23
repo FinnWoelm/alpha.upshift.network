@@ -4,6 +4,8 @@ class SessionsController < ApplicationController
 
   # GET /login
   def new
+    # clear any active session
+    session[:user_id] = nil
   end
 
   # POST /login
