@@ -31,14 +31,6 @@ RSpec.describe FeedsController do
             most_recent_first
           )
       end
-
-      it "applies scope: limit(30)" do
-        expect(assigns(:posts)).
-          to apply_scope(
-            Post.
-            limit(30)
-          )
-      end
     end
 
     context "@post" do

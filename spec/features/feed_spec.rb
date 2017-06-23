@@ -34,6 +34,28 @@ feature 'Feed' do
     end
   end
 
+  context "When user scrolls to bottom of feed (infinity scroll)" do
+    scenario 'User can see older posts', :js => true do
+      given_i_am_logged_in_as_a_user
+
+      # and there are more feed items than fit on a page
+      feed_items_per_page = Rails.configuration.x.feed.items_per_page
+      create_list(:post, feed_items_per_page+1, :recipient => @user)
+
+      # when I visit my feed
+      visit root_path
+
+      # then I should see as many feed items as are shown per page
+      expect(page).to have_selector(".post-wrapper:not(.post_form)", count: feed_items_per_page)
+
+      # when I scroll to the bottom
+      page.driver.scroll_to(0, 10000)
+
+      # then I should see as many feed items as are shown per page + 1
+      expect(page).to have_selector(".post-wrapper:not(.post_form)", count: feed_items_per_page+1)
+    end
+  end
+
   def given_i_am_a_user
     @user = create(:user)
   end

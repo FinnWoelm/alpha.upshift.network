@@ -44,6 +44,9 @@ module InfinityScroll
         end
       end
 
+      # set per_page manually
+      rel.per_page = options[:per_page] if options[:per_page]
+
       # apply pagination
       rel.paginate(options)
     end
