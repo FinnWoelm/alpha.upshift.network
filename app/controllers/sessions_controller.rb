@@ -22,8 +22,10 @@ class SessionsController < ApplicationController
       redirect_to session[:return_to] || root_path
       session[:return_to] = nil
     else
-    # If user's login doesn't work, send them back to the login form.
-      redirect_to '/login'
+      # If user's login doesn't work, render the login form.
+      flash.now[:notice] = "Login failed: Email or password incorrect."
+      @login_failed = true
+      render :new
     end
 
   end
