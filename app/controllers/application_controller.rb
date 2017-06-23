@@ -9,7 +9,10 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def authorize
-    redirect_to '/login' and return unless current_user
+    if not current_user
+      session[:return_to] = request.url
+      redirect_to '/login' and return
+    end
   end
 
   # Returns a shallow path for a given object, such as decision_path for
