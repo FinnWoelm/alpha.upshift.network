@@ -12,6 +12,15 @@ MagicLamp.define(controller: UsersController) do
     @user = FactoryGirl.create(:user)
     render :edit
   end
+
+  fixture do
+    @current_user = FactoryGirl.create(:user)
+    @user = @current_user
+    FactoryGirl.create_list(:post, 3, :author => @user)
+    @posts = @user.posts_made_and_received.paginate(:page => 1)
+    @post = Post.new(:recipient => @user)
+    render :show
+  end
 end
 
 MagicLamp.define(controller: NotificationsController) do

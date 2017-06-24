@@ -7,3 +7,6 @@ $(".post-wrapper").last().after(
 # Initialize new toopltips & dropdowns
 Application.init_new_tooltips()
 Application.init_new_dropdowns()
+
+# Initialize (new) comment forms
+Comment.initialize_new_forms()
