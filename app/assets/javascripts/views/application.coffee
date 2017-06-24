@@ -19,3 +19,6 @@ $(document).on 'turbolinks:load', ->
 
   # execute actions right now
   actions_on_resize()
+
+  # initialize all comment forms (force reinitialization)
+  Comment.initialize_new_forms(true)

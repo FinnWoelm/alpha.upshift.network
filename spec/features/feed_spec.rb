@@ -49,7 +49,7 @@ feature 'Feed' do
       expect(page).to have_selector(".post-wrapper:not(.post_form)", count: feed_items_per_page)
 
       # when I scroll to the bottom
-      page.driver.scroll_to(0, 10000)
+      page.execute_script "window.scrollBy(0, $('.infinity_scroll.next').offset().top)"
 
       # then I should see as many feed items as are shown per page + 1
       expect(page).to have_selector(".post-wrapper:not(.post_form)", count: feed_items_per_page+1)

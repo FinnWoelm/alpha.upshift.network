@@ -208,4 +208,22 @@ div.comments-wrapper {
       padding-bottom: 20px;
     }
   }
+
+  // Inactive comment
+  & > div.comment.form-wrapper.initialized:not(.active) {
+    opacity: 0.3;
+    transition: all 0.3s;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  // Toggles the actual form
+  & > div.comment.form-wrapper > div.content.toggle-form {
+    padding: 10px;
+    line-height: 40px;
+    vertical-align: middle;
+    text-transform: uppercase;
+  }
 }
