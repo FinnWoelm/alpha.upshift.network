@@ -36,7 +36,7 @@ feature 'Post' do
   end
 
   def and_i_delete_the_post
-    click_link "Delete Post"
+    click_on "Delete Post"
   end
 
   def then_i_should_not_have_a_post_on_my_profile
