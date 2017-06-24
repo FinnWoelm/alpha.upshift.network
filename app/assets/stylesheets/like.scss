@@ -1,23 +1,15 @@
 // SLIDING EFFECT BUTTONS
-form.like_button.sliding button,
-div.unlike_button.sliding a {
-  span {
-    display: block;
-    transition: transform .3s ease-in-out;
-  }
-
-  &:hover, &:focus {
+form.like_button, form.unlike_button {
+  &.sliding button {
     span {
-      transform: translateY(-36px);
+      display: block;
+      transition: transform .3s ease-in-out;
+    }
+
+    &:hover, &:focus {
+      span {
+        transform: translateY(-36px);
+      }
     }
   }
-
-}
-
-
-// MINIMAL EFFECT BUTTONS
-form.like_button.minimal button,
-div.unlike_button.minimal a {
-
-
 }

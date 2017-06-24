@@ -1,8 +1,10 @@
-<div class="unlike_button sliding">
-  <%=
-    link_to unlike_path(:likable_id => object.id, :likable_type => object.class.base_class.to_s),
-      method: :delete,
-      class: 'btn-flat waves-effect waves-light primary-color primary-color-text' do %>
+<%=
+  form_tag(
+    unlike_path(:likable_id => object.id, :likable_type => object.class.base_class.to_s),
+    method: :delete,
+    class: 'unlike_button sliding'
+  ) do %>
+  <button class="btn-flat waves-effect waves-light primary-color primary-color-text" type="submit" name="action">
     <span>
       <i class="mdi mdi-thumb-up left"></i>
       <%= object.likes_count || 0 %>
@@ -10,5 +12,5 @@
     <span>
       UNLIKE
     </span>
-  <% end %>
-</div>
+  </button>
+<% end %>

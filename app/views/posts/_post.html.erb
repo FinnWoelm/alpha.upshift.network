@@ -8,8 +8,16 @@
         <div class="administrative-actions">
           <%= options_dropdown_button post do %>
             <li>
-              <%= link_to (post), method: :delete, data: { confirm: 'Are you sure?' } do %>
-                <i class="mdi mdi-delete"></i> Delete Post
+              <%=
+                form_tag(
+                  post,
+                  method: :delete,
+                  data: { confirm: 'Are you sure you want to delete this post?' }
+                ) do %>
+                <button class="as_link with_icon" type="submit" name="action">
+                  <i class="mdi mdi-delete"></i>
+                  Delete Post
+                </button>
               <% end %>
             </li>
           <% end %>
