@@ -1,5 +1,11 @@
 module ApplicationHelper
 
+  # Gets the current layout
+  # Credits: https://stackoverflow.com/a/40174627/6451879
+  def current_layout
+    controller.send :_layout, ["any-text-can-go-here"]
+  end
+
   # Renders an options dropdown button that activates the element with the given
   # id. This is used for the administrative actions button for post, comment,
   # private conversation, etc...

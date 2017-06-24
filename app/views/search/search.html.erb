@@ -1,6 +1,8 @@
-<div class="page_heading z-depth-1">
-  <h3 class="prevent_overflow">Search<%= ": #{@search_query}" if @search_query.present? %></h3>
-</div>
+<%
+  heading = "Search"
+  heading += ": #{@search_query}" if @search_query.present?
+%>
+<%= render partial: "shared/page_heading", locals: { heading: heading } %>
 
 <div class="section"></div>
 

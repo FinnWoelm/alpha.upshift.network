@@ -1,0 +1,19 @@
+<% # render page heading so it best fits with the current layout %>
+
+<% if current_layout == "application" %>
+
+<div class="page_heading z-depth-1">
+  <h3 class="prevent_overflow"><%= heading %></h3>
+</div>
+
+<% elsif current_layout == "without_sidenav" %>
+
+</div>
+  <div class="page_heading z-depth-1">
+    <div class="container">
+      <h3 class="prevent_overflow"><%= heading %></h3>
+    </div>
+  </div>
+<div class="container">
+
+<% end %>

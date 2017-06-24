@@ -1,15 +1,8 @@
-</div>
-<div class="page_heading z-depth-1">
-  <div class="container">
-    <h3>Login</h3>
-  </div>
-</div>
+<%= render partial: "shared/page_heading", locals: { heading: "Login" } %>
 
 <%
   input_class = "invalid" if @login_failed
 %>
-
-<div class="container">
 
 <div class="section"></div>
 
