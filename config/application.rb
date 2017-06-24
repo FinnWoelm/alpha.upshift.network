@@ -34,5 +34,8 @@ module UpshiftNetwork
     config.paperclip_defaults = { convert_options: {all: "-strip"} }
     config.attachment_storage_location = "/uploads/"
 
+    # set items shown per page for feed
+    config.x.feed.items_per_page = 20
+
   end
 end
