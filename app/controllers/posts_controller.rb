@@ -45,8 +45,13 @@ class PostsController < ApplicationController
 
   # DELETE /post/1
   def destroy
-    @post.destroy
-    redirect_to @current_user, notice: 'Post was successfully destroyed.'
+    if @post.deletable_by? @current_user
+      @post.destroy
+      notice = "Post was successfully deleted"
+    else
+      notice = "Post could not be deleted. Please try again"
+    end
+    redirect_to @current_user, notice: notice
   end
 
   private

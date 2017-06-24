@@ -32,8 +32,13 @@ class CommentsController < ApplicationController
 
   # DELETE /object/:object_id/comment/:id
   def destroy
-    @comment.destroy
-    redirect_to shallow_path_to(@comment.commentable), notice: 'Comment was successfully removed.'
+    if @comment.deletable_by? @current_user
+      @comment.destroy
+      notice = "Comment was successfully deleted"
+    else
+      notice = "Comment could not be deleted. Please try again"
+    end
+    redirect_to shallow_path_to(@comment.commentable), notice: notice
   end
 
   private
