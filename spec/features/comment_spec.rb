@@ -41,7 +41,7 @@ feature 'Comment' do
   end
 
   def and_delete_the_comment
-    click_link "Delete Comment"
+    click_on "Delete Comment"
   end
 
   def then_the_post_should_not_have_my_comment
