@@ -78,7 +78,7 @@ class Post < ApplicationRecord
   # whether the post can be deleted by a given user
   def deletable_by? user
     return false unless user
-    return self.author.id == user.id
+    return (self.author.id == user.id || self.recipient.id == user.id)
   end
 
   def recipient_username=(username)

@@ -16,6 +16,23 @@ feature 'Post' do
     then_i_should_not_have_a_post_on_my_profile
   end
 
+  scenario 'User can delete a post' do
+    given_i_am_logged_in_as_a_user
+
+    # and I have a post
+    @post = create(:post, :recipient => @user)
+
+    # when I visit my profile
+    visit @user
+
+    # and I delete the post
+    click_on "Delete Post"
+
+    # then I should not have a post on my profile
+    expect(@user.posts_made_and_received.size).to eq(0)
+    expect(page).not_to have_content(@post.content)
+  end
+
   scenario 'User can view a post' do
     given_i_am_logged_in_as_a_user
     when_i_write_a_post
