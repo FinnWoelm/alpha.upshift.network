@@ -1,6 +1,0 @@
-<%= form_tag(like_path(:likable_id => object.id, :likable_type => object.class.base_class.to_s), class: 'like_button minimal', method: "post") do %>
-  <button class="btn-flat btn-small waves-effect waves-light" type="submit" name="action">
-    <i class="mdi mdi-thumb-up left"></i>
-    <%= object.likes_count || 0 %>
-  </button>
-<% end %>

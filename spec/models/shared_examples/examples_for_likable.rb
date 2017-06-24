@@ -16,54 +16,13 @@ RSpec.shared_examples "a likable object" do
       end
     end
 
-    context "when content is already liked by user" do
-      let(:user) { build_stubbed(:user) }
-      before { allow(subject).to receive(:liked_by?) { true } }
-
-      it "returns false" do
-        is_expected.not_to be_likable_by(user)
-      end
-    end
-
-    context "when content is not already liked by user" do
-      let(:user) { build_stubbed(:user) }
-      before { allow(subject).to receive(:liked_by?) { false } }
+    context "when user exists" do
+      let(:user) { create(:user) }
 
       it "returns true" do
         is_expected.to be_likable_by(user)
       end
     end
-
-  end
-
-  describe "#unlikable_by?" do
-
-    context "when user is nil" do
-      let(:user) { nil }
-
-      it "returns false" do
-        is_expected.not_to be_unlikable_by(user)
-      end
-    end
-
-    context "when content is already liked by user" do
-      let(:user) { build_stubbed(:user) }
-      before { allow(subject).to receive(:liked_by?) { true } }
-
-      it "returns true" do
-        is_expected.to be_unlikable_by(user)
-      end
-    end
-
-    context "when content is not already liked by user" do
-      let(:user) { build_stubbed(:user) }
-      before { allow(subject).to receive(:liked_by?) { false } }
-
-      it "returns false" do
-        is_expected.not_to be_unlikable_by(user)
-      end
-    end
-
   end
 
   describe "#liked_by?" do
