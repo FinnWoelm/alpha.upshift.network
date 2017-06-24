@@ -8,14 +8,8 @@ module Likable
 
   # whether the object can be liked by a given user
   def likable_by? user
-    return false unless user
-    ! self.liked_by?(user)
-  end
-
-  # whether the object can be unliked by a given user
-  def unlikable_by? user
-    return false unless user
-    !! self.liked_by?(user)
+    return true if user
+    return false
   end
 
   # whether the object is liked by a given user

@@ -7,16 +7,46 @@ class LikesController < ApplicationController
   # POST /:likable_type/:likable_id/like
   def create
     if @object.likes.create(:liker => @current_user)
-      redirect_back fallback_location: root_path, notice: "Successfully liked #{params[:likable_type].downcase}."
+      respond_to do |format|
+        format.html {
+          redirect_back(
+            fallback_location: root_path,
+            notice: "Successfully liked #{params[:likable_type].downcase}"
+          )}
+        format.js { render :toggle_button }
+      end
+
     else
-      redirect_back fallback_location: root_path, notice: "Error liking #{params[:likable_type].downcase}."
+      @error = "Error liking #{params[:likable_type].downcase}"
+      respond_to do |format|
+        format.html { redirect_back fallback_location: root_path, notice: @error }
+        format.js { render :error }
+      end
     end
   end
 
   # DELETE /:likable_type/:likable_id/like
   def destroy
-    @like.destroy
-    redirect_back fallback_location: root_path, notice: "Successfully unliked #{params[:likable_type].downcase}."
+    if @like.destroy
+      respond_to do |format|
+        format.html {
+          redirect_back(
+            fallback_location: root_path,
+            notice: "Successfully unliked #{params[:likable_type].downcase}"
+          )}
+        format.js {
+          @object = @like.likable
+          render :toggle_button
+        }
+      end
+
+    else
+      @error = "Error unliking #{params[:likable_type].downcase}"
+      respond_to do |format|
+        format.html { redirect_back fallback_location: root_path, notice: @error }
+        format.js { render :error }
+      end
+    end
   end
 
   private

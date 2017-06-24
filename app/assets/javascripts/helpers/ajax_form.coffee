@@ -16,9 +16,10 @@ $(document).on 'turbolinks:load', ->
     $(@).find("input, textarea").prop("readonly", true)
     $(@).find("input[type=submit], button[type=submit]").addClass("disabled")
 
-    # show loader icon and hide others
-    $(@).find("input[type=submit], button[type=submit]").first().find("i.loading-indicator").removeClass("hide")
-    $(@).find("input[type=submit], button[type=submit]").first().find("i:not(.loading-indicator)").addClass("hide")
+    # show loader icon and hide others (if exists)
+    if $(@).find("input[type=submit], button[type=submit]").first().find("i.loading-indicator").length
+      $(@).find("input[type=submit], button[type=submit]").first().find("i.loading-indicator").removeClass("hide")
+      $(@).find("input[type=submit], button[type=submit]").first().find("i:not(.loading-indicator)").addClass("hide")
 
 
 # on completed ajax call, re-enable buttons, text area, and icons
@@ -31,8 +32,10 @@ $(document).ajaxComplete (event, xhr, settings) ->
       $(@).find("input, textarea").prop("readonly", false)
       $(@).find("input[type=submit], button[type=submit]").removeClass("disabled")
 
-      $(@).find("input[type=submit], button[type=submit]").first().find("i.loading-indicator").addClass("hide")
-      $(@).find("input[type=submit], button[type=submit]").first().find("i:not(.loading-indicator)").removeClass("hide")
+      # hide loader icon and re enable default icon (if exists)
+      if $(@).find("input[type=submit], button[type=submit]").first().find("i.loading-indicator").length
+        $(@).find("input[type=submit], button[type=submit]").first().find("i.loading-indicator").addClass("hide")
+        $(@).find("input[type=submit], button[type=submit]").first().find("i:not(.loading-indicator)").removeClass("hide")
 
 
 # on failed ajax call, show toast (only if it's a failed form submission)

@@ -1,0 +1,23 @@
+<% content_for :like_button, flush: true do %>
+  <button class="btn-flat waves-effect waves-light" type="submit" name="action">
+    <span>
+      <i class="mdi mdi-thumb-up left"></i>
+      <%= likes_without_user %>
+    </span>
+    <span>
+      LIKE
+    </span>
+  </button>
+<% end %>
+
+<% content_for :unlike_button, flush: true do %>
+  <button class="btn-flat waves-effect waves-light primary-color primary-color-text" type="submit" name="action">
+    <span>
+      <i class="mdi mdi-thumb-up left"></i>
+      <%= likes_without_user + 1 %>
+    </span>
+    <span>
+      UNLIKE
+    </span>
+  </button>
+<% end %>

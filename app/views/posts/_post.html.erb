@@ -70,9 +70,7 @@
         <%# LIKE & UNLIKE %>
         <div class="col s12 m6 no_padding">
         <% if post.likable_by?(@current_user) %>
-          <%= like_action post, "sliding" %>
-        <% elsif post.unlikable_by?(@current_user) %>
-          <%= unlike_action post, "sliding" %>
+          <%= like_action post, "sliding", post.liked_by?(@current_user) %>
         <% else %>
           <div class="fake_button">
             <i class="mdi mdi-thumb-up left"></i>

@@ -1,0 +1,22 @@
+<%=
+  form_tag(
+    like_path(:likable_id => object.id, :likable_type => object.class.base_class.to_s),
+    id: get_like_action_id(:like, object),
+    class: "like_button #{button_type}",
+    style: ("display: none" if is_liked),
+    method: "post",
+    remote: true
+  ) do %>
+  <%= content_for :like_button %>
+<% end %>
+<%=
+  form_tag(
+    unlike_path(:likable_id => object.id, :likable_type => object.class.base_class.to_s),
+    id: get_like_action_id(:unlike, object),
+    class: "unlike_button #{button_type}",
+    style: ("display: none" if not is_liked),
+    method: :delete,
+    remote: true
+  ) do %>
+  <%= content_for :unlike_button %>
+<% end %>

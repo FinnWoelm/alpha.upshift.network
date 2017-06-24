@@ -74,16 +74,6 @@ module ApplicationHelper
     "#{time_ago_in_words timestamp} ago"
   end
 
-  # renders the like action
-  def like_action object, style
-    render :partial => "likes/like_#{style}", locals: {object: object}
-  end
-
-  # renders the unlike action
-  def unlike_action object, style
-    render :partial => "likes/unlike_#{style}", locals: {object: object}
-  end
-
   # links to the profile of a given user
   def link_to_profile user, options = {}, &link_content
     href = user_path(user) if user.viewable_by?(@current_user)
