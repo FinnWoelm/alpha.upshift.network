@@ -34,11 +34,6 @@ RSpec.describe User::AttachmentsController, type: :controller do
       expect(controller.response.header["Cache-Control"]).to include("private")
     end
 
-    it "sets etag" do
-      perform_action
-      expect(controller.response.header.keys).to include "ETag"
-    end
-
     context "when user is not found" do
       let(:user) { build(:user) }
       before { perform_action }
