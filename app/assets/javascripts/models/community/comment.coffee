@@ -29,6 +29,9 @@ class @Comment
       $(@).find("div.content.toggle-form").first().slideUp()
       $(@).find("div.content.form").first().slideDown()
 
+      # focus textarea
+      $(@).find("textarea").focus()
+
       # remove the click listener
       $(@).addClass('active')
       $(@).off('click')
