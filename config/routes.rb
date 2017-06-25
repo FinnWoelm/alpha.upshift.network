@@ -21,6 +21,8 @@ Rails.application.routes.draw do
     get 'confirm', on: :collection
   end
 
+  get '/colors/test', :to => "helpers/colors#test"
+
   # Accounts Path
   resource :account, only: [], :path => "settings" do
     get '/', action: 'edit', as: :edit

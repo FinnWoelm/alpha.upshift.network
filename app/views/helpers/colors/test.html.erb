@@ -1,0 +1,11 @@
+<%= render partial: "shared/page_heading", locals: { heading: "Color Test" } %>
+
+<div class="section"></div>
+
+<% @color_schemes.each do |scheme| %>
+
+  <div class="<%= scheme %>" style="padding:20px; margin-bottom: 20px; border-top-left-radius: 15px; border-bottom-right-radius: 15px;">
+    <%= scheme %>
+  </div>
+
+<% end %>
