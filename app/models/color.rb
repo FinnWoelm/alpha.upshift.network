@@ -13,13 +13,27 @@ class Color
     # returns the preferred font color for the given color_scheme (based on
     # which color will result in the higher contrast)
     # based on http://charliepark.tumblr.com/post/827693445/calculating-color-contrast-for-legible-text-in
+    # Includes manual overrides for a few colors
     def font_color_for color_scheme
-      hex_color = self.convert_to_hex color_scheme
-      sum_of_hex_values = hex_color[1..-1].scan(/../).map(&:hex).sum
-      if sum_of_hex_values > 382.5
+
+      case color_scheme
+      when "teal accent-4", "green accent-3", "green accent-4",
+          "light-green accent-3", "light-green accent-4"
         "black-text text-basic"
-      else
+      when "pink lighten-1", "indigo accent-2", "indigo accent-3",
+          "purple accent-4", "purple lighten-1", "purple accent-3",
+          "deep-purple lighten-1", "deep-purple accent-3",
+          "deep-purple accent-2", "indigo lighten-1", "blue accent-4",
+          "brown lighten-2"
         "white-text text-basic"
+      else
+        hex_color = self.convert_to_hex color_scheme
+        sum_of_hex_values = hex_color[1..-1].scan(/../).map(&:hex).sum
+        if sum_of_hex_values > 382.5
+          "black-text text-basic"
+        else
+          "white-text text-basic"
+        end
       end
     end
 
@@ -33,7 +47,12 @@ class Color
 
     # contains all the colors of a rainbow
     def rainbow_colors
-      ["red", "purple", "indigo", "light-blue", "green", "light-green", "orange"]
+      ["red", "amber", "yellow", "light-green", "light-blue", "indigo", "purple"]
+    end
+
+    def rainbow_color_schemes
+      color_options
+      # rainbow_colors.map {|color| "#{color} basic"}
     end
 
     # contains all the colors as an array of hashes

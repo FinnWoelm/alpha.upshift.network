@@ -131,7 +131,7 @@ module ApplicationHelper
 
     "<li>".html_safe +
     link_to(text, path,
-      class: "waves-effect" + (is_active ? ' active' : '') + (options[:classes] ? " #{options[:classes]}" : ""),
+      class: "waves-effect" + (is_active ? ' active primary-color primary-color-text waves-light' : '') + (options[:classes] ? " #{options[:classes]}" : ""),
       :data => options[:data]) +
     "</li>".html_safe
   end
@@ -170,9 +170,8 @@ module ApplicationHelper
 
   # sets the color scheme on the body class
   def set_color_scheme scheme
-    scheme ||= "red basic" # default scheme
     # rainbow scheme:
-    # scheme ||= Color.rainbow_colors.sample + " darken-2"
+    scheme ||= Color.rainbow_color_schemes.sample + " rainbow"
     scheme += " " + Color.font_color_for(scheme)
     "color-scheme " +
       scheme.split(" ").map {|color| "primary-#{color}"}.join(" ")

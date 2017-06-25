@@ -88,14 +88,6 @@ div#desktop_side_navigation, ul#mobile_navigation {
       background-color: rgba(0,0,0,0.05);
     }
 
-    a.active {
-      background: $primary-color;
-      color: white;
-      & > i {
-        color: inherit !important;
-      }
-    }
-
     a.multiple_lines {
       &.two {
         height: 72px;

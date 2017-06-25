@@ -13,12 +13,17 @@ class @Color
     }
 
   @base_colors: ->
-
     Object.keys(Color.color_options())
 
   @shades_for_color: (color) ->
-
     Color.color_options()[color]
+
+  @rainbow_color_schemes: ->
+    [
+      <% Color.rainbow_color_schemes.each do |color| %>
+        "<%= color.to_s %>",
+      <% end %>
+    ]
 
   @font_color_for: (color_scheme) ->
     switch color_scheme
