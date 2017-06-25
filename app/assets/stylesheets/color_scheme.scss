@@ -87,7 +87,7 @@ body.color-scheme {
     0 3px 1px rgba(0, 0, 0, 0.2);
 }
 // NAVIGATION: Invert color of logo if black text
-body.color-scheme.primary-black-text nav a.brand-logo img {
+body.color-scheme.primary-black-text nav a.brand-logo img.primary-color-text {
   filter: invert(1);
   -webkit-filter: invert(1);
   -moz-filter: invert(1);
