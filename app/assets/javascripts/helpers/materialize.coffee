@@ -45,6 +45,8 @@ $(document).on 'turbolinks:load', ->
   # Autoresize textfields
   $('.materialize-textarea').trigger('autoresize')
 
+  # Reset wave effect
+  window.Waves.displayEffect()
 
 ##############################################################
 ## BEFORE CACHE ##############################################
