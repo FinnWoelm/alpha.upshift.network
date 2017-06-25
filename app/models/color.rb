@@ -37,7 +37,8 @@ class Color
     end
 
     def rainbow_color_schemes
-      rainbow_colors.map {|color| "#{color} basic"}
+      color_options
+      # rainbow_colors.map {|color| "#{color} basic"}
     end
 
     # contains all the colors as an array of hashes
