@@ -131,7 +131,7 @@ module ApplicationHelper
 
     "<li>".html_safe +
     link_to(text, path,
-      class: "waves-effect" + (is_active ? ' active' : '') + (options[:classes] ? " #{options[:classes]}" : ""),
+      class: "waves-effect" + (is_active ? ' active primary-color primary-color-text waves-light' : '') + (options[:classes] ? " #{options[:classes]}" : ""),
       :data => options[:data]) +
     "</li>".html_safe
   end
